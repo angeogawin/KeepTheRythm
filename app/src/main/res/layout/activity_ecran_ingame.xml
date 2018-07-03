@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layoutingame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
+
+    <!-- Holds the Toolbar and a nested LinearLayout-->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- This Toolbar will be used as our action bar using setSupportActionBar() -->
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/ingame_toolbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/white"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+        <!-- This LinearLayout will be displayed below the Toolbar and contain our "main" views -->
+        <RelativeLayout
+            android:id="@+id/symbole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/bandeaupourfleche"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/orange">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+
+
+          <!--  <ImageView
+                android:id="@+id/flecheactuelle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/fleche_droite2"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="7dp"/>-->
+           <!-- <TextView
+                android:id="@+id/timeringame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignBottom="@id/flecheactuelle"
+                android:layout_marginRight="40dp"
+                android:text="00 : 50"
+                android:textColor="#000"
+                android:textSize="16sp"/>-->
+
+                    <!--<TextView
+                        android:background="@color/vert"
+                        android:layout_width="50dp"
+                        android:text="         "
+                        android:layout_below="@id/timeringame"
+                        android:layout_height="5dp"
+                        android:layout_marginTop="15dp"/>-->
+
+
+
+            </RelativeLayout>
+            <TextView
+                android:id="@+id/score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+           <!-- <View
+                android:id="@+id/view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </View>-->
+            <android.gesture.GestureOverlayView
+                android:id="@+id/gOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.07"
+                android:gestureColor="#00000000"
+                android:uncertainGestureColor="#00000000"
+                android:gestureStrokeType="multiple" >
+            </android.gesture.GestureOverlayView>
+
+           <!-- <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            </android.support.v4.view.ViewPager>-->
+
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ListView android:id="@+id/left_drawer"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:entries="@array/menustop"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:background="#EEEEEE"/>
+
+</android.support.v4.widget.DrawerLayout>
+

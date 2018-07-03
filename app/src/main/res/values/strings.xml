@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">KeepTheRythm</string>
+    <string-array name="menusettings">
+        <item>Sons</item>
+        <item>Langue</item>
+        <item>Devenir VIP</item>
+        <item>Règles du jeu</item>
+        <item>Conditions d\'utilisation</item>
+        <item>Politique de confidentialité</item>
+    </string-array>
+    <string-array name="menustop">
+        <item>Stopper la partie</item>
+        <item>Musique</item>
+    </string-array>
+
+    <string name="activity_ecran_accueil_classement">Classement</string>
+
+
+
+
+
+
+
+
+        <string-array name="jazzy_effects">
+            <item>Standard</item>
+            <item>Tablet</item>
+            <item>CubeIn</item>
+            <item>CubeOut</item>
+            <item>FlipVertical</item>
+            <item>FlipHorizontal</item>
+            <item>Stack</item>
+            <item>ZoomIn</item>
+            <item>ZoomOut</item>
+            <item>RotateUp</item>
+            <item>RotateDown</item>
+            <item>Accordion</item>
+        </string-array>
+
+
+</resources>

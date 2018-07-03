@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".EcranAccueil">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="300"
+        android:title="settings"
+        android:icon="@drawable/settings"
+        app:showAsAction="ifRoom"></item>
+
+
+    <item
+        android:id="@+id/action_heart"
+        android:orderInCategory="300"
+        android:title="heart"
+        android:icon="@drawable/hearticon"
+        app:showAsAction="ifRoom"></item>
+    <item
+        android:id="@+id/action_plus"
+        android:orderInCategory="300"
+        android:title="plus"
+        android:icon="@drawable/plus"
+        app:showAsAction="ifRoom"></item>
+
+
+
+
+</menu>
