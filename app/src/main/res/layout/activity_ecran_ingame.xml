@@ -20,62 +20,74 @@
             android:id="@+id/ingame_toolbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:minHeight="?attr/actionBarSize"
-            android:background="@color/white"
+            android:minHeight="?android:attr/actionBarSize"
+            android:background="#4aa9b2"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
         <!-- This LinearLayout will be displayed below the Toolbar and contain our "main" views -->
-        <RelativeLayout
+
+      <!--  <RelativeLayout
             android:id="@+id/symbole"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
 
-        </RelativeLayout>
+
+
+           >
+
+        </RelativeLayout>-->
         <RelativeLayout
             android:id="@+id/bandeaupourfleche"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/orange">
+            android:background="@color/white">
             <RelativeLayout
+                android:id="@+id/zonejeu"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/gOverlay"></RelativeLayout>
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:id="@+id/progress"
 
-
-          <!--  <ImageView
-                android:id="@+id/flecheactuelle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/fleche_droite2"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="7dp"/>-->
-           <!-- <TextView
-                android:id="@+id/timeringame"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignBottom="@id/flecheactuelle"
-                android:layout_marginRight="40dp"
-                android:text="00 : 50"
-                android:textColor="#000"
-                android:textSize="16sp"/>-->
-
-                    <!--<TextView
-                        android:background="@color/vert"
-                        android:layout_width="50dp"
-                        android:text="         "
-                        android:layout_below="@id/timeringame"
-                        android:layout_height="5dp"
-                        android:layout_marginTop="15dp"/>-->
-
-
-
-            </RelativeLayout>
+                android:max="100"
+                android:progress="0"/>
             <TextView
                 android:id="@+id/score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/classement_shape"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:layout_below="@id/progress"
                 />
+
+            <Button
+                android:id="@+id/go"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Go !"
+                android:background="@drawable/jouer_shape"
+                android:textColor="@color/white"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
+
+           <!-- <ImageView
+                android:id="@+id/rondCentral"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rondcentral_shape"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone"/>-->
 
            <!-- <View
                 android:id="@+id/view"
@@ -90,14 +102,19 @@
                 android:layout_weight="1.07"
                 android:gestureColor="#00000000"
                 android:uncertainGestureColor="#00000000"
-                android:gestureStrokeType="multiple" >
-            </android.gesture.GestureOverlayView>
+                android:gestureStrokeType="multiple"
+                android:layout_below="@id/go"
+                android:background="#b3dee7">
 
-           <!-- <android.support.v4.view.ViewPager
-                android:id="@+id/pager"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            </android.support.v4.view.ViewPager>-->
+                <!--<RelativeLayout
+                    android:id="@+id/symboleMis"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+                </RelativeLayout>-->
+            </android.gesture.GestureOverlayView>
 
 
 
@@ -112,7 +129,7 @@
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
-        android:background="#EEEEEE"/>
+        android:background="#b3dee7"/>
 
 </android.support.v4.widget.DrawerLayout>
 

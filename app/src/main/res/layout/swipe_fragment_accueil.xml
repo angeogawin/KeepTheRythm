@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@color/orange">
+    >
 <RelativeLayout
     android:orientation="vertical"
     android:layout_width="fill_parent"
@@ -34,6 +34,28 @@
 
         android:layout_centerHorizontal="true"/>
     <TextView
+        android:id="@+id/titre_musique"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+
+
+        android:textColor="@color/vert"
+        android:textSize="18sp"
+        android:layout_below="@id/niveau"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:marqueeRepeatLimit ="marquee_forever"
+        android:scrollHorizontally="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:duplicateParentState="true"/>
+
+
+    <TextView
         android:id="@+id/numeroNiveau"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,7 +68,7 @@
         android:id="@+id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Meilleur temps - "
+        android:text="Meilleur score - "
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="15dp"

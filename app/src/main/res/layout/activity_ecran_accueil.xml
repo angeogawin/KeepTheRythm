@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    android:background="@drawable/drawable_gradient_animation">
 
     <!-- Holds the Toolbar and a nested LinearLayout-->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -20,17 +21,25 @@
             android:id="@+id/main_toolbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:minHeight="?attr/actionBarSize"
-            android:background="@color/white"
+            android:minHeight="?android:attr/actionBarSize"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
         <!-- This LinearLayout will be displayed below the Toolbar and contain our "main" views -->
         <RelativeLayout
+            android:id="@+id/relativelayout_accueil"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/orange">
+           >
+
+            <View android:id="@+id/emiter_top_left"
+               android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_width="10dp"
+                android:layout_height="1dp" />
+
 
             <Button
+                android:id="@+id/btnClassement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/classement_shape"
@@ -43,6 +52,7 @@
                 android:textSize="14sp"
 
                 />
+
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
@@ -75,7 +85,7 @@
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
-        android:background="#EEEEEE"/>
+        android:background="#b3dee7"/>
 
 </android.support.v4.widget.DrawerLayout>
 <!--
