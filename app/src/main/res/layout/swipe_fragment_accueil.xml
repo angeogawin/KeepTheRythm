@@ -61,9 +61,69 @@
         android:layout_height="wrap_content"
         android:text="6"
         android:textColor="@color/vert"
-        android:textSize="90sp"
+        android:textSize="80sp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"/>
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Doigts d'or : "
+        android:textStyle="italic"
+       android:layout_below="@id/numeroNiveau"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="15dp"
+        android:textColor="#ffa000"
+        android:textSize="12sp"/>
+    <TextView
+        android:id="@+id/scoreOr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignBottom="@id/text2"
+        android:layout_toRightOf="@id/text2"
+        android:textColor="#ffa000"
+        android:textSize="12sp"/>
+    <TextView
+        android:id="@+id/text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Doigts d'argent : "
+        android:layout_below="@id/text2"
+        android:layout_marginBottom="2dp"
+        android:textStyle="italic"
+        android:layout_marginLeft="15dp"
+        android:textColor="#bdc3c7"
+        android:textSize="12sp"/>
+    <TextView
+        android:id="@+id/scoreArgent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/text3"
+
+        android:layout_toRightOf="@id/text3"
+        android:textColor="#bdc3c7"
+        android:textSize="12sp"/>
+    <TextView
+        android:id="@+id/text4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:text="Doigts de bronze : "
+        android:layout_below="@id/text3"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="15dp"
+        android:textColor="#d35400"
+        android:textSize="12sp"/>
+    <TextView
+        android:id="@+id/scoreBronze"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/text4"
+
+        android:layout_toRightOf="@id/text4"
+        android:textColor="#d35400"
+        android:textSize="12sp"/>
     <TextView
         android:id="@+id/text1"
         android:layout_width="wrap_content"
@@ -75,18 +135,27 @@
         android:textColor="#000"
         android:textSize="15sp"/>
     <TextView
-        android:id="@+id/bestime"
+        android:id="@+id/bestscore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/text1"
+        android:textColor="#000"
         android:layout_alignBottom="@id/text1"/>
+    <TextView
+        android:id="@+id/nbTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/bestscore"
+        android:textColor="#000"
+        android:text="/"
+        android:layout_alignBottom="@id/bestscore"/>
     <ImageView
         android:id="@+id/trophy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/trophy_argent"
-        android:layout_toRightOf="@id/bestime"
-        android:layout_alignBottom="@id/bestime"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_alignBottom="@id/bestscore"
         />
 
 </RelativeLayout>

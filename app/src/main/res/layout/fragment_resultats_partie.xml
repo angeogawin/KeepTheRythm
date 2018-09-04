@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:id="@+id/fragment_resultats"
+    android:background="@drawable/drawable_green_gradient"
+    >
+<RelativeLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/fragment_accueil_shape"
+    android:layout_marginLeft="50dp"
+    android:layout_marginRight="50dp"
+    android:layout_marginTop="110dp"
+    android:layout_marginBottom="110dp"
+
+    >
+
+
+    <TextView
+        android:id="@+id/niveauText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="Niveau"
+        android:textColor="#000"
+        android:textSize="19sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        />
+    <TextView
+        android:id="@+id/niveauValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text=""
+        android:textColor="@color/vert"
+        android:textSize="19sp"
+        android:layout_toRightOf="@id/niveauText"
+        android:layout_marginLeft="15dp"
+        android:layout_alignBottom="@id/niveauText"
+        />
+
+
+    <TextView
+        android:id="@+id/scoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Score : "
+        android:textColor="#000"
+        android:layout_marginLeft="10dp"
+
+
+        android:textSize="18sp"
+        android:layout_below="@id/niveauText"
+
+        android:layout_marginTop="10dp"
+
+       />
+    <TextView
+        android:id="@+id/scoreValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/scoreText"
+        android:textColor="@color/vert"
+        android:textSize="18sp"
+
+        android:layout_alignBottom="@id/scoreText"
+        android:layout_marginTop="10dp"
+
+        />
+
+    <TextView
+        android:id="@+id/manquesText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Manqués : "
+        android:layout_marginLeft="10dp"
+        android:textColor="#000"
+
+
+        android:textSize="18sp"
+        android:layout_below="@id/scoreText"
+
+        android:layout_marginTop="10dp"
+
+        />
+    <TextView
+        android:id="@+id/manquesValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/vert"
+
+
+        android:layout_toRightOf="@id/manquesText"
+        android:textSize="18sp"
+       android:layout_alignBottom="@id/manquesText"
+
+        android:layout_marginTop="10dp"
+
+        />
+
+
+
+
+    <ImageView
+        android:id="@+id/trophy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+       android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        />
+    <Button
+        android:id="@+id/accepter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/jouer_shape"
+        android:layout_alignParentBottom="true"
+        android:text="Ok"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="15dp"
+
+        android:textColor="@color/white"
+        android:textAllCaps="false"/>
+    <Button
+        android:id="@+id/rejouer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/jouer_shape"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/accepter"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="15dp"
+        android:text="Rejouer"
+        android:textColor="@color/white"
+        android:textAllCaps="false"/>
+
+</RelativeLayout>
+</RelativeLayout>
