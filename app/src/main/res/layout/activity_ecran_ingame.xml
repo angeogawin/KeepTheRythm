@@ -97,15 +97,19 @@
                 android:layout_height="wrap_content">
 
             </View>-->
-
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/go"
+                android:id="@+id/viewOverlay"> </View>
             <android.gesture.GestureOverlayView
                 android:id="@+id/gOverlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                  android:gestureColor="#0000"
                 android:gestureStrokeType="single"
-
                 android:layout_below="@id/go"
+
 
             android:background="#b3dee7"
 
@@ -128,15 +132,6 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <ListView android:id="@+id/left_drawer"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:entries="@array/menustop"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="#b3dee7"/>
 
 </android.support.v4.widget.DrawerLayout>
 

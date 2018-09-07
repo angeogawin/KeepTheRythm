@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">KeepTheRythm</string>
     <string-array name="menusettings">
-        <item>Sons</item>
-        <item>Langue</item>
-        <item>Devenir VIP</item>
+        <item>Supprimer les pubs</item>
         <item>Règles du jeu</item>
         <item>Conditions d\'utilisation</item>
         <item>Politique de confidentialité</item>

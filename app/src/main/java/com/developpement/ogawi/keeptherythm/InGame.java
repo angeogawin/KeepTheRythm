@@ -72,6 +72,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -84,6 +85,8 @@ import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
+
+import com.plattysoft.leonids.ParticleSystem;
 
 import static java.util.logging.Logger.global;
 //import com.jfeinstein.jazzyviewpager.JazzyViewPager;
@@ -105,6 +108,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     float y1, y2;
     static ArrayList<String> sequence;
     static int indiceActuelSequence;
+
+
     static ImageView flecheactuelle;
     static int dernierePositionConnue = 24;//on part de 0 donc à 25,positionActuelle=24
     boolean leftToRight = false;
@@ -168,11 +173,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         listeImagesAnimationsActives = new ArrayList<>();
         // rondCentral=(ImageView) findViewById(R.id.rondCentral);
         progress = findViewById(R.id.progress);
-        animationEstLancee=false;
-        sequences=new ArrayList<>();
+        animationEstLancee = false;
+        sequences = new ArrayList<>();
 
         sequences.add("tap:6778;tap:8689;tap:10637;tap:12552;tap:14464;tap:16392;d:18073;g:19978;tap:22261;tap:26000;d:27658;g:29638;tap:31752;tap:33681;tap:36032;tap:37034;tap:37950;tap:39439;tap:40416;tap:43275;g:44029;d:44926;d:45931;g:46908;g:47875;d:49807;d:50737;d:51716;g:52680;g:53606;g:54595;tap:56264;tap:56746;tap:57213;tap:57696;tap:58662;tap:60546;tap:62522;d:63651;g:64217;d:65642;g:66082;tap:69186;tap:72072;tap:72476;tap:75898;tap:76275;tap:77836;tap:78241;g:81475;d:81907;g:82441;d:82939;tap:83641;tap:85550;tap:87423;d:89126;g:89674;g:90596;d:91051;d:91522;tap:93194;tap:95091;tap:98962;tap:100860;tap:102781;tap:103219;tap:104741;tap:105102;tap:106195;tap:106652;b:106652;h:106652;tap:113367;tap:113900;tap:114367;tap:116272;tap:116616;tap:116983;d:120849;d:121357;g:121829;g:123661;g:125129;g:125621;tap:127731;tap:128764;tap:129697;");
-        sequences.add("tap:2985;tap:4251;tap:5537;tap:8099;tap:9060;tap:10581;d:11023;tap:12289;d:12811;tap:13775;d:14102;tap:15058;d:15368;tap:16258;d:16537;tap:17525;d:17949;tap:18825;tap:19258;g:19752;tap:20674;d:21054;tap:22556;g:22957;tap:23823;d:24178;tap:25157;tap:26340;tap:27638;d:28656;g:29331;d:29934;tap:30773;b:30773;b:30773;tap:33968;tap:35286;d:36259;d:37528;tap:38370;g:38726;d:39122;tap:39903;g:40073;tap:40919;d:41281;tap:42835;tap:44107;tap:45354;d:46320;g:47691;d:48851;tap:50342;tap:50684;d:50832;tap:51667;tap:52940;d:53910;g:55160;tap:56660;tap:57975;b:57975;h:57975;tap:59782;tap:60482;tap:60815;d:61006;tap:61765;tap:62967;tap:64257;g:65200;d:66443;tap:67998;tap:69296;g:70339;d:71550;tap:73052;tap:74388;tap:75654;tap:76935;d:77775;b:77775;h:77775;tap:80681;b:80681;tap:82561;tap:83260;tap:84478;d:85468;tap:86971;tap:88230;tap:89550;tap:90804;tap:92103;tap:93314;d:94296;g:95547;d:96848;tap:98379;tap:99615;g:100574;tap:102164;tap:103998;tap:109115;tap:110424;d:113263;g:114555;b:114555;h:114555;b:114555;d:119513;tap:120185;tap:120785;tap:121419;g:121565;tap:122384;");
+        sequences.add("tap:2985;tap:4251;tap:5537;tap:8099;tap:9060;tap:10581;d:11023;tap:12289;d:12811;tap:13775;d:14102;tap:15058;d:15368;tap:16258;d:16537;tap:17525;d:17949;tap:18825;tap:19258;g:19752;tap:20674;d:21054;tap:22556;g:22957;tap:23823;d:24178;tap:25157;tap:26340;tap:27638;d:28656;g:29331;d:29934;tap:30773;b:30773;b:30773;tap:33968;tap:35286;d:36259;d:37528;tap:38370;g:38726;d:39122;tap:39903;g:40073;tap:40919;d:41281;tap:42835;tap:44107;tap:45354;d:46320;g:47691;d:48851;tap:50342;tap:50684;d:50832;tap:51667;tap:52940;d:53910;g:55160;tap:56660;tap:57975;b:57975;h:57975;tap:59782;tap:60482;tap:60815;d:61006;tap:61765;tap:62967;tap:64257;g:65200;d:66443;tap:67998;tap:69296;g:70339;d:71550;tap:73052;tap:74388;tap:75654;tap:76935;d:77775;b:77777;h:77779;tap:80681;b:80681;tap:82561;tap:83260;tap:84478;d:85468;tap:86971;tap:88230;tap:89550;tap:90804;tap:92103;tap:93314;d:94296;g:95547;d:96848;tap:98379;tap:99615;g:100574;tap:102164;tap:103998;tap:109115;tap:110424;d:113263;g:114555;b:114555;h:114555;b:114555;d:119513;tap:120185;tap:120785;tap:121419;g:121565;tap:122384;");
         sequences.add("tap:4512;tap:6826;tap:8543;tap:9720;d:10689;g:11262;tap:12018;tap:14302;tap:16599;tap:18855;d:19769;g:20311;d:20575;tap:21132;d:21451;tap:22265;d:22665;tap:23465;g:23755;tap:24565;d:24994;tap:25765;g:26130;tap:26931;d:27261;tap:28031;g:28392;tap:29114;d:30112;tap:30898;g:31779;tap:32564;d:32858;tap:33697;g:34088;tap:34880;d:35175;tap:36531;g:36921;tap:37679;tap:38824;d:39155;tap:39979;g:40297;g:40932;tap:41712;d:42032;b:42032;b:42032;tap:43995;tap:44545;b:44545;tap:45762;tap:48590;h:48590;tap:49657;h:49657;tap:50876;h:50876;tap:52010;h:52010;d:52908;tap:53710;tap:54928;tap:55985;tap:57189;g:57522;tap:58292;tap:59493;tap:60569;tap:61795;tap:62837;g:63767;tap:64624;tap:66315;d:67118;tap:67990;g:68394;tap:69157;g:69527;tap:70256;d:71768;tap:72556;g:72959;tap:73705;d:74056;tap:74973;tap:77686;tap:79922;tap:82858;tap:84603;d:85495;g:86648;d:87719;tap:89176;tap:90342;b:90342;h:90342;b:90342;g:93543;tap:94018;d:94178;tap:94900;tap:96082;tap:97169;g:98105;tap:99405;tap:100613;d:101526;d:102092;g:102757;tap:103432;tap:105763;tap:107446;tap:108568;tap:109759;d:111182;g:111495;d:111735;g:112014;tap:112597;");
         sequences.add("tap:4080;tap:5651;tap:7234;tap:8554;tap:9450;tap:10367;d:10496;tap:11586;g:12227;tap:12949;d:13563;tap:14166;tap:15033;tap:15449;tap:15882;d:16075;d:17350;g:19120;d:20739;b:20739;h:20739;b:20739;h:20739;b:20739;h:20739;b:20739;tap:27861;tap:30476;tap:31279;d:31875;g:32376;tap:33011;d:33217;tap:33895;g:34089;tap:34728;tap:36421;tap:38129;d:38369;g:38843;d:39239;tap:39877;tap:40328;b:40328;h:40328;tap:43294;b:43294;h:43294;b:43294;d:49864;g:51642;tap:53545;b:53545;tap:58711;tap:60403;g:61013;d:61356;g:61720;tap:62223;d:64412;g:64775;d:65097;b:65097;d:67890;g:68244;d:68559;b:68559;d:70473;tap:70854;g:71320;d:71647;g:71994;b:71994;tap:75900;d:78117;g:78548;d:78836;b:78836;tap:82830;tap:84439;tap:86136;tap:89567;b:89567;h:89567;g:96169;d:99631;b:99631;h:99631;tap:106733;tap:107545;tap:108408;tap:109326;tap:110161;");
         sequences.add("tap:3227;tap:3609;tap:4042;tap:6614;tap:7041;tap:9616;tap:10007;tap:12605;tap:13023;tap:15664;tap:16057;d:17654;g:18008;tap:19365;tap:21576;tap:22021;tap:23899;tap:24238;tap:24621;d:26516;g:26909;d:27389;d:30358;g:30800;d:31148;b:31148;b:31148;b:31148;b:31148;d:38661;g:39078;d:39358;tap:40385;tap:41151;tap:41884;tap:42251;tap:42617;tap:45309;tap:45700;tap:48593;tap:50178;b:50178;h:50178;d:54331;g:56661;d:57441;g:60408;b:60408;h:60408;d:65256;g:65648;d:65962;tap:66579;d:69006;g:69353;tap:69961;d:71653;g:72053;d:72341;tap:72960;b:72960;b:72960;b:72960;h:72960;d:81379;tap:82445;tap:83141;tap:84648;tap:86126;g:86648;d:87379;b:87379;b:87379;b:87379;h:87379;g:93372;g:94099;tap:96221;tap:96638;tap:99618;tap:100421;tap:101137;tap:102605;tap:103403;tap:104119;tap:108619;tap:109402;tap:110169;tap:111643;tap:112435;tap:113185;tap:115407;tap:116134;tap:116884;tap:119883;tap:120666;d:122635;g:123052;d:123349;g:125210;d:125635;g:125991;d:126356;d:129373;g:130099;d:130835;b:130835;h:130835;b:130835;h:130835;b:130835;h:130835;d:138360;g:139137;b:139137;h:139137;b:139137;b:139137;tap:148312;tap:149077;tap:149876;tap:150611;tap:151377;tap:153609;tap:155886;tap:156691;tap:157424;tap:158124;");
@@ -183,7 +188,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         sequences.add("tap:2206;tap:2737;tap:3304;tap:3803;tap:4320;tap:4803;tap:5336;tap:5820;tap:6888;tap:7337;tap:7836;tap:8786;tap:9336;tap:9869;tap:10802;tap:11286;tap:11819;tap:12585;tap:13336;tap:14103;tap:14819;tap:15819;tap:17289;tap:17801;d:18087;tap:18801;g:19060;g:20819;d:21099;tap:21800;d:21997;tap:22783;d:23022;tap:23783;g:24558;tap:25283;g:25544;tap:26299;b:26299;tap:27832;tap:28815;d:29511;b:29511;b:29511;tap:33276;h:33276;tap:34231;tap:35295;tap:36574;tap:37297;b:37297;tap:38197;g:38546;tap:39246;d:39508;tap:40263;h:40263;b:40263;tap:41763;tap:42762;d:43020;tap:43778;b:43778;tap:44778;d:45016;tap:45762;tap:47259;d:47474;tap:48261;h:48261;tap:49277;tap:51277;g:51507;tap:52776;d:53054;tap:53811;g:54499;tap:55260;b:55260;tap:56813;d:57047;tap:57777;b:57777;tap:58759;d:58985;tap:59742;b:59742;tap:60792;d:61017;tap:61742;b:61742;tap:62841;d:63474;tap:64458;b:64458;tap:65325;d:65619;tap:69332;d:69544;tap:70356;d:70531;tap:71289;g:71478;tap:72288;h:72288;tap:73800;b:73800;tap:74755;d:74984;b:74984;tap:76255;d:76462;tap:77289;b:77289;tap:78172;g:78444;tap:79238;h:79238;tap:80288;d:80600;tap:81287;b:81287;tap:82320;d:82519;tap:83271;h:83271;tap:84732;d:84956;tap:85805;b:85805;tap:86804;g:87010;tap:88244;b:88244;tap:89302;d:89507;tap:90255;g:90506;tap:91269;h:91269;tap:92241;d:92469;tap:93764;tap:94784;tap:95735;tap:96766;tap:99245;tap:100234;tap:101234;tap:102233;tap:103199;tap:104215;tap:104750;tap:105249;g:105528;d:106075;g:106992;d:107997;g:109006;d:109904;g:110873;d:111998;g:112950;d:114002;g:114940;d:115968;g:116890;d:117947;g:118815;d:119918;b:119918;b:119918;b:119918;b:119918;b:119918;b:119918;b:119918;h:119918;b:119918;h:119918;b:119918;h:119918;d:142490;g:144210;d:144966;g:146465;d:147510;g:148614;d:149470;b:149470;h:149470;b:149470;tap:155716;d:155961;tap:156771;d:156996;tap:157754;d:158021;tap:158755;d:159009;tap:159703;d:160034;g:160546;b:160546;h:160546;tap:162737;b:162737;h:162737;tap:164759;d:165432;tap:166729;g:167408;tap:168253;b:168253;tap:169286;");
         sequences.add("tap:2444;tap:2805;tap:3421;tap:3804;tap:4137;tap:4454;tap:5071;tap:5487;tap:5954;tap:6354;tap:6753;tap:7187;tap:7554;tap:7958;tap:8371;tap:8770;tap:9187;tap:9603;tap:9986;tap:10403;tap:10820;tap:11603;tap:12019;tap:12403;tap:13640;tap:14018;tap:15233;tap:15652;tap:16892;tap:17318;tap:18512;tap:18917;tap:20161;tap:20567;tap:21775;tap:22183;tap:23407;tap:23817;tap:25047;tap:25449;tap:26669;tap:27918;tap:28732;d:29308;tap:30352;g:30914;tap:31615;b:31615;tap:33198;d:34149;tap:34864;h:34864;tap:36481;g:37451;tap:39712;d:39932;tap:41002;b:41002;tap:42986;g:43105;tap:44591;h:44591;tap:46237;d:46405;tap:47857;g:48035;tap:49502;d:49663;tap:51125;b:51125;tap:52741;h:52741;tap:56068;tap:56892;tap:57692;tap:58575;tap:59341;tap:60177;tap:60572;tap:61022;tap:62224;tap:62657;tap:63041;tap:64242;tap:64657;tap:65855;tap:66723;d:67294;tap:68273;g:68879;tap:69960;tap:70389;tap:70773;h:70773;tap:72417;h:72417;tap:73993;d:74457;tap:75616;b:75616;tap:77231;h:77231;tap:78897;tap:79804;tap:81785;b:81785;g:83580;d:85151;tap:86278;g:86860;tap:88750;tap:90351;tap:91019;tap:91985;tap:92635;tap:93601;tap:95235;tap:95834;tap:96284;tap:97566;d:98396;g:99173;d:99542;b:99542;b:99542;b:99542;tap:101766;tap:105047;tap:105865;d:106491;g:106830;d:107304;tap:107915;d:108069;tap:108681;b:108681;b:108681;d:110472;d:110922;d:111316;tap:111981;g:112332;d:112989;g:113741;d:114621;b:114621;b:114621;h:114621;d:116575;g:117032;tap:117663;h:117663;d:118248;tap:118896;g:119091;tap:119712;h:119712;d:120360;tap:120978;b:120978;tap:121811;g:121993;tap:122611;tap:124619;h:124619;d:125233;g:125691;b:125691;tap:126660;h:126660;h:126660;g:127695;d:128093;tap:128761;b:128761;g:130176;tap:131161;d:131329;tap:132750;g:133294;tap:134414;b:134414;tap:135995;d:136468;tap:137683;h:137683;tap:139313;g:139894;tap:140907;b:140907;tap:142594;d:142929;tap:144231;b:144231;tap:145903;b:145903;tap:147459;h:147459;tap:149164;d:149651;tap:150752;d:151267;tap:152384;b:152384;tap:154005;tap:155620;tap:157289;tap:158870;tap:160586;tap:161453;tap:162236;tap:163787;d:164415;tap:165456;g:166029;tap:167072;d:167764;tap:168735;g:169331;tap:170352;d:170899;tap:171970;b:171970;b:171970;b:171970;b:171970;tap:176121;tap:176917;tap:177633;tap:180149;tap:180999;tap:181816;tap:183385;h:183385;tap:185013;g:185496;tap:186634;d:187242;tap:188326;d:188869;tap:189917;g:190504;tap:191551;d:192131;tap:193180;g:193767;tap:194799;d:195273;tap:196456;tap:198091;tap:199728;tap:201413;");
         sequences.add("tap:1222;tap:2633;tap:3601;tap:4584;tap:5384;tap:5817;tap:6234;d:7914;g:8380;d:8806;g:9681;d:10593;b:10593;h:10593;b:10593;b:10593;g:16010;b:16010;tap:19019;d:19643;tap:20768;d:21475;tap:22600;tap:23497;b:23497;b:23497;tap:26261;g:26973;tap:28063;tap:29029;h:29029;d:29659;g:30588;b:30588;tap:32599;h:32599;b:32599;h:32599;b:32599;d:35976;g:36479;b:36479;tap:38985;tap:39994;h:39994;b:39994;tap:41727;d:42332;tap:43576;g:44198;tap:45291;tap:47089;d:47399;b:47399;tap:49024;tap:50840;g:51455;h:51455;b:51455;d:53267;tap:54425;b:54425;g:56039;b:56039;h:56039;tap:58064;d:58701;g:59638;b:59638;tap:61713;h:61713;b:61713;tap:63450;tap:65355;h:65355;b:65355;tap:67174;d:67848;tap:68983;tap:69454;d:69677;g:70553;b:70553;h:70553;b:70553;tap:73471;d:74163;g:74701;d:75185;tap:76306;b:76306;h:76306;b:76306;h:76306;g:78760;d:79627;tap:80845;g:81395;d:81887;b:81887;tap:83543;tap:84451;g:84896;d:85160;b:85160;h:85160;tap:88140;tap:89050;tap:89467;tap:89933;tap:90883;tap:91799;d:92370;g:92844;g:93770;g:94694;tap:95870;g:96486;tap:97148;g:97828;tap:98935;b:98935;b:98935;h:98935;tap:102602;b:102602;tap:104469;h:104469;b:104469;h:104469;tap:107109;tap:109948;g:110484;d:111500;tap:112683;g:113372;tap:117239;tap:118110;d:119705;g:120595;d:121119;g:121921;g:123293;b:123293;h:123293;b:123293;h:123293;g:126022;d:126986;tap:128117;d:128753;b:128753;h:128753;tap:130784;b:130784;tap:132679;h:132679;tap:134432;b:134432;h:134432;tap:136213;tap:138091;tap:139006;g:139643;tap:141721;d:142349;tap:143502;tap:144938;g:145968;b:145968;tap:148032;h:148032;tap:149946;b:149946;h:149946;b:149946;tap:152621;d:153293;g:154205;d:154654;g:155171;d:155563;b:155563;tap:157207;d:157854;g:158326;d:158753;b:158753;tap:160836;tap:162463;tap:164532;tap:166264;tap:168041;b:168041;h:168041;tap:173514;tap:174782;tap:177114;tap:179013;tap:180344;g:180641;g:181534;d:182485;tap:183551;g:183773;d:184237;g:186023;d:186656;g:186969;b:186969;tap:188078;h:188078;tap:189965;b:189965;h:189965;b:189965;h:189965;g:191568;d:192473;b:192473;h:192473;b:192473;tap:194910;d:195178;tap:196415;b:196415;");
-        sequences=new ArrayList<>();
+        sequences = new ArrayList<>();
 
         sequences.add("tap:6778;tap:8689;tap:10637;tap:12552;tap:14464;tap:16392;d:18073;g:19978;tap:22261;tap:26000;d:27658;g:29638;tap:31752;tap:33681;tap:36032;tap:37034;tap:37950;tap:39439;tap:40416;tap:43275;g:44029;d:44926;d:45931;g:46908;g:47875;d:49807;d:50737;d:51716;g:52680;g:53606;g:54595;tap:56264;tap:56746;tap:57213;tap:57696;tap:58662;tap:60546;tap:62522;d:63651;g:64217;d:65642;g:66082;tap:69186;tap:72072;tap:72476;tap:75898;tap:76275;tap:77836;tap:78241;g:81475;d:81907;g:82441;d:82939;tap:83641;tap:85550;tap:87423;d:89126;g:89674;g:90596;d:91051;d:91522;tap:93194;tap:95091;tap:98962;tap:100860;tap:102781;tap:103219;tap:104741;tap:105102;tap:106195;tap:106652;b:106652;h:106652;tap:113367;tap:113900;tap:114367;tap:116272;tap:116616;tap:116983;d:120849;d:121357;g:121829;g:123661;g:125129;g:125621;tap:127731;tap:128764;tap:129697;");
         sequences.add("tap:2985;tap:4251;tap:5537;tap:8099;tap:9060;tap:10581;d:11023;tap:12289;d:12811;tap:13775;d:14102;tap:15058;d:15368;tap:16258;d:16537;tap:17525;d:17949;tap:18825;tap:19258;g:19752;tap:20674;d:21054;tap:22556;g:22957;tap:23823;d:24178;tap:25157;tap:26340;tap:27638;d:28656;g:29331;d:29934;tap:30773;b:30773;b:30773;tap:33968;tap:35286;d:36259;d:37528;tap:38370;g:38726;d:39122;tap:39903;g:40073;tap:40919;d:41281;tap:42835;tap:44107;tap:45354;d:46320;g:47691;d:48851;tap:50342;tap:50684;d:50832;tap:51667;tap:52940;d:53910;g:55160;tap:56660;tap:57975;b:57975;h:57975;tap:59782;tap:60482;tap:60815;d:61006;tap:61765;tap:62967;tap:64257;g:65200;d:66443;tap:67998;tap:69296;g:70339;d:71550;tap:73052;tap:74388;tap:75654;tap:76935;d:77775;b:77775;h:77775;tap:80681;b:80681;tap:82561;tap:83260;tap:84478;d:85468;tap:86971;tap:88230;tap:89550;tap:90804;tap:92103;tap:93314;d:94296;g:95547;d:96848;tap:98379;tap:99615;g:100574;tap:102164;tap:103998;tap:109115;tap:110424;d:113263;g:114555;b:114555;h:114555;b:114555;d:119513;tap:120185;tap:120785;tap:121419;g:121565;tap:122384;");
@@ -219,7 +224,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                     }
                 });*/
-               animationEstLancee=true;
+                animationEstLancee = true;
                 go.setVisibility(View.INVISIBLE);
                 // rondCentral.setVisibility(View.VISIBLE);
                 lancerAnimation(sequence);
@@ -305,6 +310,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         mPlayer = MediaPlayer.create(this, listeMusique.get(pos - 1));
 
         indiceActuelSequence = 0;
+        indicesequence=0;
+
         score = 0;
         mChronometer = new Chronometer(this);
         derniereAction = new StringModified();
@@ -323,12 +330,12 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         //dernierSymbole = actualiserSymbole(flecheactuelle, sequence, indiceActuelSequence);
 
         //dernierSymbole=sequence.get(0);
+        dernierSymbole = (traiterSequences(sequences.get(pos - 1)).split(";")[0]).split(":")[0];
+       // dernierSymbole = (sequences.get(pos - 1).split(";")[0]).split(":")[0];
 
-        dernierSymbole = (sequences.get(pos-1).split(";")[0]).split(":")[0];
+        //isDrawerOpen = false;
 
-        isDrawerOpen = false;
-
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layoutingame);
+        //  mDrawer = (DrawerLayout) findViewById(R.id.drawer_layoutingame);
 
         mTopToolbar = (Toolbar) findViewById(R.id.ingame_toolbar);
         setSupportActionBar(mTopToolbar);
@@ -338,27 +345,27 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // Make the hamburger button work
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, R.string.app_name, R.string.app_name) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-            }
-        };
-        mDrawer.addDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
-
-        // Change the TextView message when ListView item is clicked
-        mDrawerListView = (ListView) findViewById(R.id.left_drawer);
-        mDrawerListView.setOnItemClickListener(new ListView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //    messageTextView.setText("Menu Item at position " + position + " clicked.");;
-                mDrawer.closeDrawer(GravityCompat.START);
-            }
-        });
+//        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, R.string.app_name, R.string.app_name) {
+//            @Override
+//            public void onDrawerClosed(View drawerView) {
+//            }
+//
+//            @Override
+//            public void onDrawerOpened(View drawerView) {
+//            }
+//        };
+//        mDrawer.addDrawerListener(mDrawerToggle);
+//        mDrawerToggle.syncState();
+//
+//        // Change the TextView message when ListView item is clicked
+//        mDrawerListView = (ListView) findViewById(R.id.left_drawer);
+//        mDrawerListView.setOnItemClickListener(new ListView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                //    messageTextView.setText("Menu Item at position " + position + " clicked.");;
+//                mDrawer.closeDrawer(GravityCompat.START);
+//            }
+//        });
 
 
         derniereAction.setValueChangeListener(new StringModified.onValueChangeListener() {
@@ -372,7 +379,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 // indiceActuelSequence += 1;
                 timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
                 //tmin=listeTminToClick.get(indiceActuelSequence);
-               // elementActuelClickable = false;
+                // elementActuelClickable = false;
 //                if (listeImagesAnimationsActives.contains(derniereAction.getValeur())) {
 //                    elementActuelClickable = true;
 //
@@ -381,19 +388,18 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 //                }
 
                 if (zoneJeu.getChildCount() > 0) {
-
-                    if(timeOfDerniereAction>=Integer.valueOf(couples[indiceActuelSequence].split(":")[1])){
-                        elementActuelClickable=true;
+                    Toast.makeText(InGame.this, String.valueOf(indiceActuelSequence), Toast.LENGTH_SHORT).show();
+                    if (timeOfDerniereAction >= Integer.valueOf(couples[indiceActuelSequence].split(":")[1])) {
+                        elementActuelClickable = true;
+                    } else {
+                        elementActuelClickable = false;
                     }
-                    else{
-                        elementActuelClickable=false;
-                    }
-                if (elementActuelClickable) {
+                    if (elementActuelClickable) {
 
-                    //Toast.makeText(InGame.this, String.valueOf(elementActuelClickable), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(InGame.this, String.valueOf(elementActuelClickable), Toast.LENGTH_SHORT).show();
 
-                         (zoneJeu.getChildAt(indiceActuelSequence)).clearAnimation();
-                             ((ImageView) (zoneJeu.getChildAt(indiceActuelSequence))).setVisibility(View.GONE);
+                       // (zoneJeu.getChildAt(indiceActuelSequence)).clearAnimation();
+                     //   ((ImageView) (zoneJeu.getChildAt(indiceActuelSequence))).setVisibility(View.GONE);
                         //     zoneJeu.removeViewAt(0);
 //                   Drawable d=((ImageView)(zoneJeu.getChildAt(0))).getDrawable();
 //                   ((ImageView)(zoneJeu.getChildAt(0))).setImageDrawable(trouverSymbole2( d));
@@ -401,24 +407,25 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                             //  Toast.makeText(InGame.this, "Amaz", Toast.LENGTH_SHORT).show();
 
-                            ImageView img = new ImageView(InGame.this);
 
-                            // give the drawble resource for the ImageView
-                            img.setImageResource(R.drawable.emoji_muscle);
-                            layout.addView(img);
-                            Toast toast = new Toast(InGame.this); //context is object of Context write "this" if you are an Activity
-                            // Set The layout as Toast View
-                            toast.setView(layout);
-
-                            // Position you toast here toast position is 50 dp from bottom you can give any integral value
-                            toast.setGravity(Gravity.TOP, 0, -80);
-                            toast.show();
-
-
-
-                            progress.setProgress(score * 100 / couples.length);
                             if (indiceActuelSequence <= couples.length - 1) {
+
                                 if (verifierBonRythmeJoueur()) {
+                                    ImageView img = new ImageView(InGame.this);
+
+                                    // give the drawble resource for the ImageView
+                                    img.setImageResource(R.drawable.emoji_muscle);
+                                    layout.addView(img);
+                                    Toast toast = new Toast(InGame.this); //context is object of Context write "this" if you are an Activity
+                                    // Set The layout as Toast View
+                                    toast.setView(layout);
+
+                                    // Position you toast here toast position is 50 dp from bottom you can give any integral value
+                                    toast.setGravity(Gravity.TOP, 0, -80);
+                                    toast.show();
+
+
+                                    progress.setProgress(score * 100 / couples.length);
                                     //actualiser score en conséquence
                                     actualiserScore();
                                 }
@@ -427,9 +434,9 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                 //Toast.makeText(InGame.this, dernierSymbole, Toast.LENGTH_SHORT).show();
 
                             } else if (indiceActuelSequence > couples.length - 1) {
-                            //    Toast.makeText(InGame.this, "Jeu terminé", Toast.LENGTH_SHORT).show();
+                                //    Toast.makeText(InGame.this, "Jeu terminé", Toast.LENGTH_SHORT).show();
                                 //  zoneJeu.removeAllViews();
-                              //  mPlayer.stop();
+                                //  mPlayer.stop();
                             }
                         } else {
                             ImageView img = new ImageView(InGame.this);
@@ -454,7 +461,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                             //mPlayer.stop();
 
                         }
-                      //  (zoneJeu.getChildAt()).clearAnimation();
+                        //  (zoneJeu.getChildAt()).clearAnimation();
                     }
 
 
@@ -471,9 +478,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     // dernierSymbole = actualiserSymbole(flecheactuelle, sequence, indiceActuelSequence);
 
 
-                }
-                else{
-                 //   Toast.makeText(InGame.this, "Jeu terminé", Toast.LENGTH_SHORT).show();
+                } else {
+                    //   Toast.makeText(InGame.this, "Jeu terminé", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -489,9 +495,9 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             @Override
             public void run() {
                 //zoneJeu= findViewById(R.id.bandeaupourfleche);
-               // widthView = v.getWidth(); //height is ready
-               // widthZoneJeu = zoneJeu.getWidth();
-             //   heightZoneJeu = zoneJeu.getHeight();
+                // widthView = v.getWidth(); //height is ready
+                // widthZoneJeu = zoneJeu.getWidth();
+                //   heightZoneJeu = zoneJeu.getHeight();
             }
         });
 
@@ -529,7 +535,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     @Override
     protected void onResume() {
         super.onResume();
-        if(animationEstLancee) {
+        if (animationEstLancee) {
             mPlayer.seekTo(media_length);
             mPlayer.start();
         }
@@ -567,6 +573,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
             return mDetector.onTouchEvent(event);
 
+
         }
     };
 
@@ -591,6 +598,9 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
     class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
         ImageView i = new ImageView(getApplicationContext());
+        //   View viewOverLay=findViewById(R.id.viewOverlay);
+        //  GestureOverlayView v=findViewById(R.id.gOverlay);
+        RelativeLayout band = findViewById(R.id.bandeaupourfleche);
 
         @Override
         public boolean onDown(MotionEvent event) {
@@ -603,6 +613,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
+
+            new ParticleSystem(InGame.this, 20, R.drawable.notemusique, 30000)
+                    .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
+//                        .setAcceleration(0.00005f, 45)
+                    .oneShot(findViewById(R.id.gOverlay), 10);
+
+            // .emit(x,y,5,1000);
 
             derniereAction.setVariable("tap");
             // i.setImageDrawable(getDrawable(R.drawable.tap));
@@ -662,7 +679,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     //   symboleUtilisateur.removeAllViews();
                     //   symboleUtilisateur.addView(i);
                     //    i.startAnimation(fadeOut);
-                //    Toast.makeText(InGame.this, "up", Toast.LENGTH_SHORT).show();
+                    //    Toast.makeText(InGame.this, "up", Toast.LENGTH_SHORT).show();
 
                 } else if (event2.getY() - event1.getY() < 0) {
 
@@ -671,7 +688,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     //    symboleUtilisateur.removeAllViews();
                     //    symboleUtilisateur.addView(i);
                     //  i.startAnimation(fadeOut);
-                 //   Toast.makeText(InGame.this, "down", Toast.LENGTH_SHORT).show();
+                    //   Toast.makeText(InGame.this, "down", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -698,15 +715,16 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         if (id == R.id.action_pauseplay) {
             Toast.makeText(InGame.this, "Action clicked", Toast.LENGTH_LONG).show();
             return true;
-        } else if (id == R.id.action_stop) {
-            if (mDrawer.isDrawerOpen(GravityCompat.START)) {
-                mDrawer.closeDrawer(GravityCompat.START);
-            } else {
-                mDrawer.openDrawer(GravityCompat.START);
-            }
-
-            return true;
         }
+//        } else if (id == R.id.action_stop) {
+//            if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+//                mDrawer.closeDrawer(GravityCompat.START);
+//            } else {
+//                mDrawer.openDrawer(GravityCompat.START);
+//            }
+//
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -831,8 +849,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
         zoneJeu.removeAllViews();
         zoneJeu.clearAnimation();
-       // sequenceARealiser = ReadTxt();
-        sequenceARealiser=sequences.get(pos-1);
+        // sequenceARealiser = ReadTxt();
+        sequenceARealiser = traiterSequences( sequences.get(pos - 1));
         couples = sequenceARealiser.split(";");
         //   Toast.makeText(InGame.this, s, Toast.LENGTH_LONG).show();
         listeTminToClick = new ArrayList<>();
@@ -875,7 +893,6 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             int yDepart;
 
 
-
             Random n = new Random();
             xDepart = n.nextInt(widthZoneJeu - 500) + 250;//n.nextInt(max-min)+min
             n = new Random();
@@ -886,21 +903,21 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
             int dureeAnimation = 1000;//1s par defaut
             if (j < couples.length - 1) {
-                if (Integer.valueOf(couples[j + 1].split(":")[1]) - offset < 1000) {
-                    //on adapte la durée des animations lorsque le ryhtme s'accelere
-                   // dureeAnimation = Integer.valueOf(couples[j + 1].split(":")[1]) - offset;
-                }
+                //  if (Integer.valueOf(couples[j + 1].split(":")[1]) - offset < 1000) {
+                //on adapte la durée des animations lorsque le ryhtme s'accelere
+              //  dureeAnimation = Integer.valueOf(couples[j + 1].split(":")[1]) - offset;
+                //  }
             }
             Animation fadeIn = new AlphaAnimation(0, 1);
             fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
-            fadeIn.setDuration((int) (dureeAnimation / 2));
+            fadeIn.setDuration( (dureeAnimation / 2));
             fadeIn.setStartOffset(offset);
             // fadeIn.setFillAfter(true);
 
             Animation fadeOut = new AlphaAnimation(1, 0);
             fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
-            fadeOut.setStartOffset(offset + (int) (dureeAnimation / 2));
-            fadeOut.setDuration((int) (dureeAnimation / 2));
+            fadeOut.setStartOffset(offset +  (dureeAnimation / 2));
+            fadeOut.setDuration( (dureeAnimation / 2));
             // fadeOut.setFillAfter(true);
 
             final AnimationSet animation = new AnimationSet(false); //change to false
@@ -908,8 +925,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             animation.addAnimation(fadeOut);
             animation.setFillAfter(true);
 
-          //  animation.setDuration(dureeAnimation);
-          //  i.setAnimation(animation);
+            //  animation.setDuration(dureeAnimation);
+            //  i.setAnimation(animation);
             //this.setAnimation(animation);
             MyAnimationListener1 listener1 = new MyAnimationListener1();
             listener1.addAction(symbole);
@@ -922,60 +939,29 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             zoneJeu.addView(i, j);
 
 
-
-          //  i.startAnimation(animation);
-
+             i.startAnimation(animation);
 
 
         }
-       // Toast.makeText(getApplicationContext(), String.valueOf(zoneJeu.getChildCount()), Toast.LENGTH_SHORT).show();
-        ArrayList<AnimationSet> anim2=new ArrayList<>();
-       anim2=listeAnimations;
+        // Toast.makeText(getApplicationContext(), String.valueOf(zoneJeu.getChildCount()), Toast.LENGTH_SHORT).show();
+        ArrayList<AnimationSet> anim2 = new ArrayList<>();
+        anim2 = listeAnimations;
         List<Animator> mAnimatorList = new ArrayList<>();
-        RelativeLayout zoneJeuCopie=new RelativeLayout(getApplicationContext());
-        zoneJeuCopie=zoneJeu;
-        for (int q = 0; q < zoneJeuCopie.getChildCount() ; q++) {
-            zoneJeu.getChildAt(q).startAnimation(anim2.get(q));
+        RelativeLayout zoneJeuCopie = new RelativeLayout(getApplicationContext());
+        zoneJeuCopie = zoneJeu;
+        for (int q = 0; q < zoneJeuCopie.getChildCount(); q++) {
+         //   zoneJeu.getChildAt(q).startAnimation(anim2.get(q));
 
         }
-/*
-        final ArrayList<AnimationSet> anim2=listeAnimations;
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                // Actions to do after 10 seconds
-
-
-                for (int q = 0; q < zoneJeu.getChildCount() ; q++) {
-                    zoneJeu.getChildAt(q).startAnimation(anim2.get(q));
-                }
-            }
-        }, 100);*/
-
-
-
-       /* final ArrayList<AnimationSet> anim2=listeAnimations;
-
-                for(int q=0;q<zoneJeu.getChildCount()-1;q++){
-                    zoneJeu.getChildAt(q).startAnimation(anim2.get(q));
-                }*/
-
-
-
-
-
-
-
-
 
 
 
     }
 
-    public Drawable trouverSymbole(String symbole, String couleur ){
+    public Drawable trouverSymbole(String symbole, String couleur) {
         Drawable retour;
-        retour=getDrawable(R.drawable.fleche_gauche4_vert);
-        if(couleur.equals("vert")) {
+        retour = getDrawable(R.drawable.fleche_gauche4_vert);
+        if (couleur.equals("vert")) {
             if (symbole.equals("g")) {
                 retour = getDrawable(R.drawable.fleche_gauche4_vert);
 
@@ -1003,9 +989,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
             }
 
-        }
-
-        else if(couleur.equals("rouge")){
+        } else if (couleur.equals("rouge")) {
             if (symbole.equals("g")) {
                 retour = getDrawable(R.drawable.fleche_gauche4_rouge);
 
@@ -1037,63 +1021,62 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         return retour;
     }
 
-    public Drawable trouverSymbole2(Drawable d ) {
+    public Drawable trouverSymbole2(Drawable d) {
         Drawable retour;
         retour = getDrawable(R.drawable.fleche_gauche4_vert);
 
-            if (d.getConstantState().equals(getDrawable((R.drawable.fleche_gauche4_vert)).getConstantState())){
-                retour = getDrawable(R.drawable.fleche_gauche4_rouge);
+        if (d.getConstantState().equals(getDrawable((R.drawable.fleche_gauche4_vert)).getConstantState())) {
+            retour = getDrawable(R.drawable.fleche_gauche4_rouge);
 
 
-            } else if (d.getConstantState().equals(getDrawable((R.drawable.fleche_droite4_vert)).getConstantState())) {
-                retour = getDrawable(R.drawable.fleche_droite4_rouge);
+        } else if (d.getConstantState().equals(getDrawable((R.drawable.fleche_droite4_vert)).getConstantState())) {
+            retour = getDrawable(R.drawable.fleche_droite4_rouge);
 
-            } else if (d.getConstantState().equals(getDrawable((R.drawable.fleche_haut4_vert)).getConstantState())) {
-                retour = getDrawable(R.drawable.fleche_haut4_rouge);
+        } else if (d.getConstantState().equals(getDrawable((R.drawable.fleche_haut4_vert)).getConstantState())) {
+            retour = getDrawable(R.drawable.fleche_haut4_rouge);
 
-            } else if (d.getConstantState().equals(getDrawable((R.drawable.fleche_bas4_vert)).getConstantState())) {
-                retour = getDrawable(R.drawable.fleche_bas4_rouge);
+        } else if (d.getConstantState().equals(getDrawable((R.drawable.fleche_bas4_vert)).getConstantState())) {
+            retour = getDrawable(R.drawable.fleche_bas4_rouge);
 
-            } else if (d.getConstantState().equals(getDrawable((R.drawable.cr2)).getConstantState())) {
-                retour = getDrawable(R.drawable.cr2);
+        } else if (d.getConstantState().equals(getDrawable((R.drawable.cr2)).getConstantState())) {
+            retour = getDrawable(R.drawable.cr2);
 
-            } else if (d.getConstantState().equals(getDrawable((R.drawable.cl)).getConstantState())) {
-                retour = getDrawable(R.drawable.cl);
+        } else if (d.getConstantState().equals(getDrawable((R.drawable.cl)).getConstantState())) {
+            retour = getDrawable(R.drawable.cl);
 
-            } else if (d.getConstantState().equals(getDrawable((R.drawable.tap)).getConstantState())) {
-                retour = getDrawable(R.drawable.touch);
+        } else if (d.getConstantState().equals(getDrawable((R.drawable.tap)).getConstantState())) {
+            retour = getDrawable(R.drawable.touch);
 
-            } else if (d.getConstantState().equals(getDrawable((R.drawable.touch)).getConstantState())) {
-                retour = getDrawable(R.drawable.touch);
+        } else if (d.getConstantState().equals(getDrawable((R.drawable.touch)).getConstantState())) {
+            retour = getDrawable(R.drawable.touch);
 
-            }
+        }
 
 
-        return  retour;
+        return retour;
     }
 
     public String ReadTxt() {
         //reading text from file
         //g:6302;d:6612;g:6928;d:7134;g:7364;d:8440;g:8804;d:9099;tap:9793;tap:10275;tap:10592;d:10741;g:11022;d:11374;g:11523;d:11832;b:11832;b:11832;h:11832;d:13751;g:14190;d:14520;tap:16631;tap:17174;tap:17707;tap:19197;tap:20495;d:21696;g:22114;d:22489;g:22846;b:22846;h:22846;b:22846;h:22846;
-        String s="";
-       // String big_deal="g:1301;tap:1867;tap:2400;tap:3699;tap:4233;d:5196;tap:6082;tap:6532;tap:6982;g:7385;d:7640;h:7640;b:7640;h:7640;d:10000;g:10624;d:11148;d:11520;d:11817;g:12056;d:12425;b:12425;h:12425;b:12425;h:12425;b:12425;h:12425;b:12425;d:17803;d:18165;g:18740;d:19046;g:19678;g:20533;g:21156;g:21428;d:21758;g:22029;b:22029;h:22029;b:22029;b:22029;h:22029;b:22029;d:30231;d:30799;d:31070;b:31070;h:31070;d:35531;g:35812;d:36212;tap:40275;tap:40825;tap:41475;b:41813;d:44173;g:44512;d:44751;g:45160;d:45399;b:45755;h:45755;b:45755;h:45755;d:48914;d:49332;d:49849;d:50129;d:50352;g:50559;tap:51107;tap:51690;tap:52291;tap:52889;tap:53506;tap:54123;g:55025;d:55351;tap:55906;tap:56839;d:57730;b:58028;h:58028;g:61942;d:62185;g:62516;d:62796;g:63414;d:63716;g:64383;d:64664;g:65265;d:66707;g:67016;d:67338;g:67632;d:68016;g:69167;d:69709;g:70071;d:72217;g:72440;d:72848;g:73936;d:74226;g:74562;d:74833;g:77192;d:77637;d:78059;tap:79069;g:80215;d:81149;g:81420;tap:82252;d:82559;g:82960;d:83218;g:83546;d:83826;g:84140;d:84429;tap:85202;tap:85668;g:85862;d:86839;tap:87651;tap:88200;g:89806;g:90719;g:91018;d:91879;g:92172;d:92700;g:93078;d:93402;g:93975;h:93975;b:93975;h:93975;b:93975;b:93975;h:93975;b:93975;b:93975;h:93975;b:93975;h:93975;b:93975;b:93975;b:93975;b:93975;b:93975;b:93975;b:93975;b:93975;d:110751;d:111392;d:112115;d:112580;g:113114;d:113825;g:114796;d:115063;tap:115843;tap:116428;tap:117078;tap:118297;b:118297";
-       String retour="tap:6778;tap:8689;tap:10637;tap:12552;tap:14464;tap:16392;d:18073;g:19978;tap:22261;tap:26000;d:27658;g:29638;tap:31752;tap:33681;tap:36032;tap:37034;tap:37950;tap:39439;tap:40416;tap:43275;g:44029;d:44926;d:45931;g:46908;g:47875;d:49807;d:50737;d:51716;g:52680;g:53606;g:54595;tap:56264;tap:56746;tap:57213;tap:57696;tap:58662;tap:60546;tap:62522;d:63651;g:64217;d:65642;g:66082;tap:69186;tap:72072;tap:72476;tap:75898;tap:76275;tap:77836;tap:78241;g:81475;d:81907;g:82441;d:82939;tap:83641;tap:85550;tap:87423;d:89126;g:89674;g:90596;d:91051;d:91522;tap:93194;tap:95091;tap:98962;tap:100860;tap:102781;tap:103219;tap:104741;tap:105102;tap:106195;tap:106652;b:106652;h:106652;tap:113367;tap:113900;tap:114367;tap:116272;tap:116616;tap:116983;d:120849;d:121357;g:121829;g:123661;g:125129;g:125621;tap:127731;tap:128764;tap:129697";
+        String s = "";
+        // String big_deal="g:1301;tap:1867;tap:2400;tap:3699;tap:4233;d:5196;tap:6082;tap:6532;tap:6982;g:7385;d:7640;h:7640;b:7640;h:7640;d:10000;g:10624;d:11148;d:11520;d:11817;g:12056;d:12425;b:12425;h:12425;b:12425;h:12425;b:12425;h:12425;b:12425;d:17803;d:18165;g:18740;d:19046;g:19678;g:20533;g:21156;g:21428;d:21758;g:22029;b:22029;h:22029;b:22029;b:22029;h:22029;b:22029;d:30231;d:30799;d:31070;b:31070;h:31070;d:35531;g:35812;d:36212;tap:40275;tap:40825;tap:41475;b:41813;d:44173;g:44512;d:44751;g:45160;d:45399;b:45755;h:45755;b:45755;h:45755;d:48914;d:49332;d:49849;d:50129;d:50352;g:50559;tap:51107;tap:51690;tap:52291;tap:52889;tap:53506;tap:54123;g:55025;d:55351;tap:55906;tap:56839;d:57730;b:58028;h:58028;g:61942;d:62185;g:62516;d:62796;g:63414;d:63716;g:64383;d:64664;g:65265;d:66707;g:67016;d:67338;g:67632;d:68016;g:69167;d:69709;g:70071;d:72217;g:72440;d:72848;g:73936;d:74226;g:74562;d:74833;g:77192;d:77637;d:78059;tap:79069;g:80215;d:81149;g:81420;tap:82252;d:82559;g:82960;d:83218;g:83546;d:83826;g:84140;d:84429;tap:85202;tap:85668;g:85862;d:86839;tap:87651;tap:88200;g:89806;g:90719;g:91018;d:91879;g:92172;d:92700;g:93078;d:93402;g:93975;h:93975;b:93975;h:93975;b:93975;b:93975;h:93975;b:93975;b:93975;h:93975;b:93975;h:93975;b:93975;b:93975;b:93975;b:93975;b:93975;b:93975;b:93975;b:93975;d:110751;d:111392;d:112115;d:112580;g:113114;d:113825;g:114796;d:115063;tap:115843;tap:116428;tap:117078;tap:118297;b:118297";
+        String retour = "tap:6778;tap:8689;tap:10637;tap:12552;tap:14464;tap:16392;d:18073;g:19978;tap:22261;tap:26000;d:27658;g:29638;tap:31752;tap:33681;tap:36032;tap:37034;tap:37950;tap:39439;tap:40416;tap:43275;g:44029;d:44926;d:45931;g:46908;g:47875;d:49807;d:50737;d:51716;g:52680;g:53606;g:54595;tap:56264;tap:56746;tap:57213;tap:57696;tap:58662;tap:60546;tap:62522;d:63651;g:64217;d:65642;g:66082;tap:69186;tap:72072;tap:72476;tap:75898;tap:76275;tap:77836;tap:78241;g:81475;d:81907;g:82441;d:82939;tap:83641;tap:85550;tap:87423;d:89126;g:89674;g:90596;d:91051;d:91522;tap:93194;tap:95091;tap:98962;tap:100860;tap:102781;tap:103219;tap:104741;tap:105102;tap:106195;tap:106652;b:106652;h:106652;tap:113367;tap:113900;tap:114367;tap:116272;tap:116616;tap:116983;d:120849;d:121357;g:121829;g:123661;g:125129;g:125621;tap:127731;tap:128764;tap:129697";
         try {
             //FileInputStream fileIn=openFileInput(getApplicationContext().getFilesDir().getAbsolutePath() + "/sequence/"+nom_txt.get(pos-1));
-            FileInputStream fileIn= new FileInputStream(getApplicationContext().getFilesDir().getAbsolutePath() + "/sequence/"+nom_txt.get(pos-1));
-            InputStreamReader InputRead= new InputStreamReader(fileIn);
+            FileInputStream fileIn = new FileInputStream(getApplicationContext().getFilesDir().getAbsolutePath() + "/sequence/" + nom_txt.get(pos - 1));
+            InputStreamReader InputRead = new InputStreamReader(fileIn);
 
-            char[] inputBuffer= new char[READ_BLOCK_SIZE];
+            char[] inputBuffer = new char[READ_BLOCK_SIZE];
 
             int charRead;
 
-            while ((charRead=InputRead.read(inputBuffer))>0) {
+            while ((charRead = InputRead.read(inputBuffer)) > 0) {
                 // char to string conversion
-                String readstring=String.copyValueOf(inputBuffer,0,charRead);
-                s +=readstring;
+                String readstring = String.copyValueOf(inputBuffer, 0, charRead);
+                s += readstring;
             }
             InputRead.close();
-
 
 
         } catch (Exception e) {
@@ -1102,22 +1085,64 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         return s;
     }
 
+    public String traiterSequences(String entree){
+
+        String[] couples=entree.split(";");
+        ArrayList<String> couplesTraites = new ArrayList<>();
+        int i=0;
+        while (i<couples.length-1){
+
+            if(couples[i+1].split(":")[1].equals(couples[i].split(":")[1])){
+                couplesTraites.add(couples[i]);
+                i++;
+                String tempsActuel=couples[i].split(":")[1];
+
+                    while (couples[i].split(":")[1].equals(tempsActuel)) {
+                        if(i<couples.length-1) {
+                        i++;
+                    }
+                }
+
+            }
+            else {
+                couplesTraites.add(couples[i]);
+                i++;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String s : couplesTraites)
+        {
+            sb.append(s);
+            sb.append(";");
+        }
+
+
+        return sb.toString();
+    }
 
 
     public class MyAnimationListener1 implements Animation.AnimationListener {
         ImageView view;
         int indiceVue;
         String symbole;
+
         public void setImage(ImageView view) {
             this.view = view;
         }
+
         public void addAction(String symbole) {
 
 
-            this.symbole=symbole;
+            this.symbole = symbole;
         }
-        public  void setIndice(int indice){this.indiceVue=indice;}
+
+        public void setIndice(int indice) {
+            this.indiceVue = indice;
+        }
+
         public void onAnimationEnd(Animation animation) {
+
+
 // Do whatever you want
            /* if (zoneJeu.getChildCount() > 1 && zoneJeu.getChildAt(0).getClass()==ImageView.class) {
                 zoneJeu.removeViewAt(0);
@@ -1128,65 +1153,66 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 dernierSymbole = (ReadTxt().split(";")[indiceActuelSequence]).split(":")[0];
             }*/
 
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    // remove fragment from here
+           // if (animation.hasEnded()) {
 
-            if (zoneJeu.getChildCount() > 1 && zoneJeu.getChildAt(0).getClass()==ImageView.class) {
-                //zoneJeu.removeViewAt(0);
-                indiceActuelSequence++;
-                //if(zoneJeu.getChildAt(0).getClass()==ImageView.class){
+//                new Handler(Looper.getMainLooper()).post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        // remove fragment from here
 
+                        if (zoneJeu.getChildCount() > 1 && zoneJeu.getChildAt(0).getClass() == ImageView.class) {
+                            //zoneJeu.removeViewAt(0);
+                            indiceActuelSequence++;
 
-
-
-                    if (indiceActuelSequence < couples.length) {
-                        Drawable d = ((ImageView) (zoneJeu.getChildAt(indiceActuelSequence))).getDrawable();
-                        ((ImageView) (zoneJeu.getChildAt(indiceActuelSequence))).setImageDrawable(trouverSymbole2(d));
-                        dernierSymbole = (sequences.get(pos-1).split(";")[indiceActuelSequence]).split(":")[0];
-                    }
-                    else {
-                        dernierSymbole="";
-                        listeImagesAnimationsActives.clear();
-
-                        v.setOnTouchListener(null);
+                            //if(zoneJeu.getChildAt(0).getClass()==ImageView.class){
 
 
+                            if (indiceActuelSequence < couples.length) {
+                                Drawable d = ((ImageView) (zoneJeu.getChildAt(indiceActuelSequence))).getDrawable();
+                                ((ImageView) (zoneJeu.getChildAt(indiceActuelSequence))).setImageDrawable(trouverSymbole2(d));
+                                dernierSymbole = (traiterSequences( sequences.get(pos - 1)).split(";")[indiceActuelSequence]).split(":")[0];
+                            } else {
+                                dernierSymbole = "";
+                                listeImagesAnimationsActives.clear();
 
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            public void run() {
-                                // Actions to do after 10 seconds
-                                Intent j=new Intent(getApplicationContext(),ResultatsPartie.class);
-                                j.putExtra("niveau",pos);
-                                j.putExtra("score",score);
-                                j.putExtra("nbTotalMvts",couples.length);
-                                j.putExtra("manques",couples.length-score);
-                                startActivity(j);
+                                v.setOnTouchListener(null);
+
+
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    public void run() {
+                                        // Actions to do after 10 seconds
+                                        Intent j = new Intent(getApplicationContext(), ResultatsPartie.class);
+                                        j.putExtra("niveau", pos);
+                                        j.putExtra("score", score);
+                                        j.putExtra("nbTotalMvts", couples.length);
+                                        j.putExtra("manques", couples.length - score);
+                                        startActivity(j);
+                                    }
+                                }, 4000);
+
+
                             }
-                        }, 4000);
+                        }
+           //         }
+                    //  }
+           //     });
+         //   }
 
-
-
-                    }
-                }
-            }
-              //  }
-            });
         }
         public void onAnimationRepeat(Animation animation) {
         }
+
         public void onAnimationStart(Animation animation) {
             listeImagesAnimationsActives.add(symbole);
           /*  zoneJeu.getChildAt(indiceVue).setVisibility(View.VISIBLE);
 
             zoneJeu.invalidate();*/
 
+
+
         }
     }
-
-
 }
 /*
 public class InGame extends AppCompatActivity {//implements OnGesturePerformedListener{

@@ -11,18 +11,18 @@
         app:showAsAction="ifRoom"></item>
 
 
-    <item
-        android:id="@+id/action_heart"
-        android:orderInCategory="300"
-        android:title="heart"
-        android:icon="@drawable/hearticon"
-        app:showAsAction="ifRoom"></item>
-    <item
-        android:id="@+id/action_plus"
-        android:orderInCategory="300"
-        android:title="plus"
-        android:icon="@drawable/plus"
-        app:showAsAction="ifRoom"></item>
+    <!--<item-->
+        <!--android:id="@+id/action_heart"-->
+        <!--android:orderInCategory="300"-->
+        <!--android:title="heart"-->
+        <!--android:icon="@drawable/hearticon"-->
+        <!--app:showAsAction="ifRoom"></item>-->
+    <!--<item-->
+        <!--android:id="@+id/action_plus"-->
+        <!--android:orderInCategory="300"-->
+        <!--android:title="plus"-->
+        <!--android:icon="@drawable/plus"-->
+        <!--app:showAsAction="ifRoom"></item>-->
 
 
 

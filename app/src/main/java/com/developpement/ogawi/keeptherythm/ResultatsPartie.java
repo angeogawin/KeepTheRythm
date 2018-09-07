@@ -53,12 +53,24 @@ public class ResultatsPartie  extends AppCompatActivity {
         accepter=findViewById(R.id.accepter);
 
         sharedPreferences = getBaseContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
+
         if((int)(score*100/nbTotalMvts)>=70){
             //on actualise le niveau maximum atteint
-            sharedPreferences
-                    .edit()
-                    .putInt("niveau_max_atteint",niveau+1)
-                    .apply();
+            if(sharedPreferences.contains("niveau_max_atteint")){
+                if(niveau>sharedPreferences.getInt("niveau_max_atteint",0)) {
+                    sharedPreferences
+                            .edit()
+                            .putInt("niveau_max_atteint",niveau+1)
+                            .apply();
+
+                }
+            }
+            else{
+                sharedPreferences
+                        .edit()
+                        .putInt("niveau_max_atteint",niveau+1)
+                        .apply();
+            }
 
             //fonction pour debloquer si necessaire niveau suivant
 

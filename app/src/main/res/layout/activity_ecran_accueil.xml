@@ -45,14 +45,38 @@
                 android:background="@drawable/classement_shape"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:textColor="@color/white"
                 android:text="@string/activity_ecran_accueil_classement"
                 android:textAllCaps="false"
                 android:textSize="14sp"
 
                 />
+            <TextView
+                android:id="@+id/progressionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Progression"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
 
+
+                android:layout_centerHorizontal="true"/>
+
+            <com.github.lzyzsd.circleprogress.DonutProgress
+
+                android:id="@+id/donut_progress"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerHorizontal="true"
+                app:donut_unfinished_stroke_width="3dp"
+                app:donut_finished_stroke_width="3dp"
+               app:donut_unfinished_color="@color/white"
+                app:donut_finished_color="@color/vert"
+                app:donut_text_size="13sp"
+                app:donut_text_color="@color/vert"
+                android:layout_below="@id/progressionText"
+               />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
@@ -73,7 +97,18 @@
                 android:textAllCaps="false"
                 android:background="@drawable/jouer_shape"/>
 
-
+        <TextView
+            android:id="@+id/messageVerrouille"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="15dp"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:text="Terminer les précédents niveaux"
+            android:visibility="invisible"
+            />
         </RelativeLayout>
     </LinearLayout>
 

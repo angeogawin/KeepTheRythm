@@ -1,12 +1,10 @@
 package com.developpement.ogawi.keeptherythm;
 
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,25 +14,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.LinearInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
-import com.plattysoft.leonids.ParticleSystem;
+import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -59,6 +55,8 @@ public class EcranAccueil extends AppCompatActivity {
     MediaPlayer playerAccueil;
     int media_length;
 
+    DonutProgress donutProgress;
+
     SharedPreferences sharedPreferences;
 
 
@@ -69,21 +67,43 @@ public class EcranAccueil extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_ecran_accueil);
+        final TextView messageVerrou=findViewById(R.id.messageVerrouille);
+        final Animation myAnimDisparait = AnimationUtils.loadAnimation(this, R.anim.disappear);
+        final Animation myAnimAparait = AnimationUtils.loadAnimation(this, R.anim.appear);
 
 
-
-
+        donutProgress=findViewById(R.id.donut_progress);
+        donutProgress.setProgress((int)(obtenirAvancement()*100/NUM_ITEMS));
         btnJouer=(Button) findViewById(R.id.btnJouer);
         i=new Intent(getApplicationContext(),InGame.class);
         i.putExtra("niveau",1);
         int maxVolume = 50;
 
-
-        isDrawerOpen=false;
-
         imageFragmentPagerAdapter = new ImageFragmentPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setAdapter(imageFragmentPagerAdapter);
+
+
+        sharedPreferences = getApplicationContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
+
+        sharedPreferences
+                .edit()
+                .putInt("niveau_max_jouable",5)
+                .apply();
+        if(sharedPreferences.contains("niveau_max_atteint")){
+            viewPager.setCurrentItem(sharedPreferences.getInt("niveau_max_atteint",0)-1);
+            if(sharedPreferences.getInt("niveau_max_atteint",0)>=5){
+
+                sharedPreferences
+                        .edit()
+                        .putInt("niveau_max_jouable",sharedPreferences.getInt("niveau_max_atteint",0)+1)
+                        .apply();
+            }
+        }
+
+
+        isDrawerOpen=false;
+
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {}
@@ -96,15 +116,30 @@ public class EcranAccueil extends AppCompatActivity {
                 // Check if this is the page you want.
 
                 i.putExtra("niveau",position+1);
+                sharedPreferences = getApplicationContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
+                if(sharedPreferences.contains("niveau_max_jouable")){
+                   if(position+1>sharedPreferences.getInt("niveau_max_jouable",0)) {
+                       if (btnJouer.isClickable()) {
+                           btnJouer.setClickable(false);
+                           btnJouer.startAnimation(myAnimDisparait);
+                           messageVerrou.setVisibility(View.VISIBLE);
+                       }
+                   }
+                   else{
+                       if(!btnJouer.isClickable()){
+                           btnJouer.setClickable(true);
+                           btnJouer.startAnimation(myAnimAparait);
+                           messageVerrou.setVisibility(View.INVISIBLE);
+                       }
+
+                   }
+                }
 
 
             }
         });
 
-        sharedPreferences = getApplicationContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
-        if(sharedPreferences.contains("niveau_max_atteint")){
-            viewPager.setCurrentItem(sharedPreferences.getInt("niveau_max_atteint",0)-1);
-        }
+
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layoutaccueil);
 
@@ -234,15 +269,15 @@ public class EcranAccueil extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_heart) {
-            Toast.makeText(EcranAccueil.this, "Action clicked", Toast.LENGTH_LONG).show();
-            return true;
-        }
-        else if(id==R.id.action_plus){
+//        if (id == R.id.action_heart) {
+//            Toast.makeText(EcranAccueil.this, "Action clicked", Toast.LENGTH_LONG).show();
+//            return true;
+//        }
+//        else if(id==R.id.action_plus){
+//
+//        }
 
-        }
-
-        else if(id==R.id.action_settings) {
+         if(id==R.id.action_settings) {
             if (mDrawer.isDrawerOpen(GravityCompat.START)) {
                 mDrawer.closeDrawer(GravityCompat.START);
             } else {
@@ -252,6 +287,20 @@ public class EcranAccueil extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+
+    }
+
+    public int obtenirAvancement(){
+        int retour=0;
+
+        sharedPreferences = getApplication().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
+        for(int i=0;i<NUM_ITEMS;i++){
+            if(sharedPreferences.contains("trophy_niveau"+String.valueOf(i+1))){
+                retour++;
+            }
+        }
+
+        return retour;
 
     }
 
