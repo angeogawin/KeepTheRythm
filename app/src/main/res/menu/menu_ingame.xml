@@ -6,12 +6,12 @@
 
 
 
-    <item
-        android:id="@+id/action_pauseplay"
-        android:orderInCategory="300"
-        android:title="heart"
-        android:icon="@drawable/pause"
-        app:showAsAction="ifRoom"></item>
+    <!--<item-->
+        <!--android:id="@+id/action_pauseplay"-->
+        <!--android:orderInCategory="300"-->
+        <!--android:title="heart"-->
+        <!--android:icon="@drawable/pause"-->
+        <!--app:showAsAction="ifRoom"></item>-->
 
 
 

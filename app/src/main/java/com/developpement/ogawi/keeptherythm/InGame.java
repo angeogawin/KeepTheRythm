@@ -160,6 +160,9 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     String sequenceARealiser;
     ArrayList<String> sequences;
 
+    ImageView nextTrophy;
+    TextView nextPalierScore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,6 +176,10 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         listeImagesAnimationsActives = new ArrayList<>();
         // rondCentral=(ImageView) findViewById(R.id.rondCentral);
         progress = findViewById(R.id.progress);
+        nextTrophy=findViewById(R.id.nextTrophy);
+
+        nextPalierScore=findViewById(R.id.nextPalierScore);
+
         animationEstLancee = false;
         sequences = new ArrayList<>();
 
@@ -700,7 +707,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_ingame, menu);
+      //  getMenuInflater().inflate(R.menu.menu_ingame, menu);
         return true;
     }
 
@@ -712,10 +719,10 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_pauseplay) {
-            Toast.makeText(InGame.this, "Action clicked", Toast.LENGTH_LONG).show();
-            return true;
-        }
+//        if (id == R.id.action_pauseplay) {
+//            Toast.makeText(InGame.this, "Action clicked", Toast.LENGTH_LONG).show();
+//            return true;
+//        }
 //        } else if (id == R.id.action_stop) {
 //            if (mDrawer.isDrawerOpen(GravityCompat.START)) {
 //                mDrawer.closeDrawer(GravityCompat.START);
@@ -740,6 +747,18 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         score += 1;
 
         scoreT.setText(String.valueOf(score));
+
+         if(score>=(int)(0.8*couples.length)){
+            nextTrophy.setImageDrawable(getDrawable( R.drawable.trophy_or));
+            nextPalierScore.setText(String.valueOf(Math.round(0.9*couples.length)));
+
+        }
+         else if(score>=(int)(0.7*couples.length)){
+             nextTrophy.setImageDrawable(getDrawable( R.drawable.trophy_argent));
+             nextPalierScore.setText(String.valueOf(Math.round(0.8*couples.length)));
+
+         }
+
 
 
     }
@@ -852,6 +871,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         // sequenceARealiser = ReadTxt();
         sequenceARealiser = traiterSequences( sequences.get(pos - 1));
         couples = sequenceARealiser.split(";");
+        nextPalierScore.setText(String.valueOf (Math.round((int)(0.7*couples.length))));
+        nextTrophy.setImageDrawable(getDrawable(R.drawable.trophy_bronze));
         //   Toast.makeText(InGame.this, s, Toast.LENGTH_LONG).show();
         listeTminToClick = new ArrayList<>();
 

@@ -73,7 +73,7 @@ public class EcranAccueil extends AppCompatActivity {
 
 
         donutProgress=findViewById(R.id.donut_progress);
-        donutProgress.setProgress((int)(obtenirAvancement()*100/NUM_ITEMS));
+        donutProgress.setProgress(Math.round((int)(obtenirAvancement()*100/NUM_ITEMS)));
         btnJouer=(Button) findViewById(R.id.btnJouer);
         i=new Intent(getApplicationContext(),InGame.class);
         i.putExtra("niveau",1);
@@ -304,6 +304,9 @@ public class EcranAccueil extends AppCompatActivity {
 
     }
 
+
+
+
     public static class ImageFragmentPagerAdapter extends FragmentPagerAdapter {
 
         public ImageFragmentPagerAdapter(FragmentManager fm) {
@@ -395,7 +398,7 @@ public class EcranAccueil extends AppCompatActivity {
             sequences.add("tap:1222;tap:2633;tap:3601;tap:4584;tap:5384;tap:5817;tap:6234;d:7914;g:8380;d:8806;g:9681;d:10593;b:10593;h:10593;b:10593;b:10593;g:16010;b:16010;tap:19019;d:19643;tap:20768;d:21475;tap:22600;tap:23497;b:23497;b:23497;tap:26261;g:26973;tap:28063;tap:29029;h:29029;d:29659;g:30588;b:30588;tap:32599;h:32599;b:32599;h:32599;b:32599;d:35976;g:36479;b:36479;tap:38985;tap:39994;h:39994;b:39994;tap:41727;d:42332;tap:43576;g:44198;tap:45291;tap:47089;d:47399;b:47399;tap:49024;tap:50840;g:51455;h:51455;b:51455;d:53267;tap:54425;b:54425;g:56039;b:56039;h:56039;tap:58064;d:58701;g:59638;b:59638;tap:61713;h:61713;b:61713;tap:63450;tap:65355;h:65355;b:65355;tap:67174;d:67848;tap:68983;tap:69454;d:69677;g:70553;b:70553;h:70553;b:70553;tap:73471;d:74163;g:74701;d:75185;tap:76306;b:76306;h:76306;b:76306;h:76306;g:78760;d:79627;tap:80845;g:81395;d:81887;b:81887;tap:83543;tap:84451;g:84896;d:85160;b:85160;h:85160;tap:88140;tap:89050;tap:89467;tap:89933;tap:90883;tap:91799;d:92370;g:92844;g:93770;g:94694;tap:95870;g:96486;tap:97148;g:97828;tap:98935;b:98935;b:98935;h:98935;tap:102602;b:102602;tap:104469;h:104469;b:104469;h:104469;tap:107109;tap:109948;g:110484;d:111500;tap:112683;g:113372;tap:117239;tap:118110;d:119705;g:120595;d:121119;g:121921;g:123293;b:123293;h:123293;b:123293;h:123293;g:126022;d:126986;tap:128117;d:128753;b:128753;h:128753;tap:130784;b:130784;tap:132679;h:132679;tap:134432;b:134432;h:134432;tap:136213;tap:138091;tap:139006;g:139643;tap:141721;d:142349;tap:143502;tap:144938;g:145968;b:145968;tap:148032;h:148032;tap:149946;b:149946;h:149946;b:149946;tap:152621;d:153293;g:154205;d:154654;g:155171;d:155563;b:155563;tap:157207;d:157854;g:158326;d:158753;b:158753;tap:160836;tap:162463;tap:164532;tap:166264;tap:168041;b:168041;h:168041;tap:173514;tap:174782;tap:177114;tap:179013;tap:180344;g:180641;g:181534;d:182485;tap:183551;g:183773;d:184237;g:186023;d:186656;g:186969;b:186969;tap:188078;h:188078;tap:189965;b:189965;h:189965;b:189965;h:189965;g:191568;d:192473;b:192473;h:192473;b:192473;tap:194910;d:195178;tap:196415;b:196415;");
 
             if(position<sequences.size()) {
-                sequenceARealiser = sequences.get(position);
+                sequenceARealiser = traiterSequences( sequences.get(position));
                 couples = sequenceARealiser.split(";");
                 int nbTotalMvts = couples.length;
                 TextView nbTotal = swipeView.findViewById(R.id.nbTotal);
@@ -405,9 +408,9 @@ public class EcranAccueil extends AppCompatActivity {
                 TextView scoreAr=swipeView.findViewById(R.id.scoreArgent);
                 TextView scoreBr=swipeView.findViewById(R.id.scoreBronze);
 
-                int sOr=(int) (90*nbTotalMvts/100);
-                int sAr=(int) (80*nbTotalMvts/100);
-                int sBr=(int) (70*nbTotalMvts/100);
+                int sOr=Math.round((int) (90*nbTotalMvts/100));
+                int sAr=Math.round((int) (80*nbTotalMvts/100));
+                int sBr=Math.round ((int) (70*nbTotalMvts/100));
                 scoreOr.setText(String.valueOf(sOr));
                 scoreAr.setText(String.valueOf(sAr));
                 scoreBr.setText(String.valueOf(sBr));
@@ -469,6 +472,41 @@ public class EcranAccueil extends AppCompatActivity {
             bundle.putInt("position", position);
             swipeFragment.setArguments(bundle);
             return swipeFragment;
+        }
+
+        public String traiterSequences(String entree){
+
+            String[] couples=entree.split(";");
+            ArrayList<String> couplesTraites = new ArrayList<>();
+            int i=0;
+            while (i<couples.length-1){
+
+                if(couples[i+1].split(":")[1].equals(couples[i].split(":")[1])){
+                    couplesTraites.add(couples[i]);
+                    i++;
+                    String tempsActuel=couples[i].split(":")[1];
+
+                    while (couples[i].split(":")[1].equals(tempsActuel)) {
+                        if(i<couples.length-1) {
+                            i++;
+                        }
+                    }
+
+                }
+                else {
+                    couplesTraites.add(couples[i]);
+                    i++;
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            for (String s : couplesTraites)
+            {
+                sb.append(s);
+                sb.append(";");
+            }
+
+
+            return sb.toString();
         }
     }
 
