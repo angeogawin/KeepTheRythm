@@ -25,6 +25,14 @@
 
 
         </activity>
+        <activity android:name=".ReglesJeu"
+
+            />
+        <activity android:name=".APropos"
+
+            >
+
+        </activity>
 
         <activity android:name=".ConfettiTest">
 

@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.plattysoft.leonids.ParticleSystem;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -169,6 +170,14 @@ public class EcranAccueil extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             //    messageTextView.setText("Menu Item at position " + position + " clicked.");;
+                if(position==1){
+                    Intent e=new Intent(EcranAccueil.this,ReglesJeu.class);
+                    startActivity(e);
+                }
+                else if(position==2){
+                    Intent e=new Intent(EcranAccueil.this,APropos.class);
+                    startActivity(e);
+                }
                 mDrawer.closeDrawer(GravityCompat.START);
             }
         });
@@ -184,7 +193,7 @@ public class EcranAccueil extends AppCompatActivity {
 
         playerAccueil= MediaPlayer.create(this, listeMusiqueAccueil.get(num_musique));
        // float log1=(float)(Math.log(maxVolume-currVolume)/Math.log(maxVolume));
-        playerAccueil.setVolume(0.4f, 0.4f);
+        playerAccueil.setVolume(0.1f, 0.1f);
         playerAccueil.setLooping(true);
         playerAccueil.start();
 
@@ -226,7 +235,7 @@ public class EcranAccueil extends AppCompatActivity {
 //            }
 //        });
 
-
+//
     }
 
     @Override
@@ -351,32 +360,37 @@ public class EcranAccueil extends AppCompatActivity {
             liste_titre.add("New begining - Twisterium");
             liste_titre.add("Night life - Twisterium");
             liste_titre.add("Progress - Twisterium");
-            liste_titre.add("Lies on lies (update) (ft. Narva9) - Reiswerk");
-            liste_titre.add("Better - Sleeperspaceborn");
+            liste_titre.add("Alla What Parody - Audionautix");
+            liste_titre.add("We wish you a merry Xmas - Audionautix");
             liste_titre.add("Tick Tock - Reiswerk");
-            liste_titre.add("Between Worlds (Instrumental) (ft. (Smiling Cynic)) - Tobias Weber ");
+            liste_titre.add("Carol of the bells - Audionautix");
+            liste_titre.add("Between worlds instrumental - Tobias Weber");
             liste_titre.add("Rooted in soil - Tobias Weber");
-            liste_titre.add("I want to see you again (ft. Unreal dm) - Veezyn");
-            liste_titre.add("Platinium donation - Copperhead");
+            liste_titre.add("Rocker - Audionautix");
+            liste_titre.add("There you go - Audionautix");
             liste_titre.add("Two Pianos (ft. Admiral Bob (admiralbob77)) - Stefan Kartenberg");
             liste_titre.add("Life is Beautiful - Twisterium");
-            liste_titre.add("Supernatural(Instrumental) (ft. Snowflake) - Alex Beroza");
-            liste_titre.add("Blue (ft. Offlinebouncer) - One Project");
+            liste_titre.add("The Voyage - Audionautix");
+            liste_titre.add("Hip Hop - Audionautix");
             liste_titre.add("Pumping - Twisterium");
-            liste_titre.add("The Quiet Hours (ft. SackJo22) - Siobhan Dakay");
-            liste_titre.add("Floating Through Time (SAW mix) (ft. Jeris) - Stellarartwars");
-            liste_titre.add("Knock on My Door (ft. Carrol, unreal_dm, ElRon XChile, Admiral Bob, Snake Davis) - Texasradiofish");
-            liste_titre.add("Come Back (ft. brad sucks) - Unreal_dm");
+            liste_titre.add("Joy to the World - Audionautix");
+            liste_titre.add("Epic Series - Audionautix");
+            liste_titre.add("Bird in Hand - Audionautix");
+            liste_titre.add("Ectoplasm - Audionautix");
             liste_titre.add("Paint The Sky (ft. MissJudged) - Jeris");
-            liste_titre.add("TraLa (the Let's Never be Far mix) (ft. Jeris) - SackJo22");
-            liste_titre.add("Miracles (ft. Patronski, Brad Stanfield) - Snowflake");
-            liste_titre.add("Talk To Me (ft. Silke Schmiemann  Stefan Kartenberg) - Unreal_dm");
+            liste_titre.add("Alison - Audionautix");
+            liste_titre.add("Pile driver - Audionautix");
+            liste_titre.add("Go not Gently - Audionautix");
             liste_titre.add("Drops of H2O ( The Filtered Water Treatment ) (ft. Airtone) - J.Lang");
-            liste_titre.add("Fever (ft. 7OOP3D) - Snowflake");
+            liste_titre.add("Leavin the Lights - Audionautix");
             liste_titre.add("Moonlight Sonata (Shifting Sun Mix) (ft. Snowflake) - Speck");
-            liste_titre.add("What Cha Waitin 4 (simple club mix) (ft. J.Lang's latest find) - Duckett");
-            liste_titre.add("Remember the name - Daguilar");
-            liste_titre.add("End of the Game (ft. Maddy & Zep Hurme) - Scomber");
+            liste_titre.add("Triangle - Audionautix");
+            liste_titre.add("Big car Theft - Audionautix");
+            liste_titre.add("What da Funk - Audionautix");
+
+
+
+
 
             final TextView titre=swipeView.findViewById(R.id.titre_musique);
             titre.setText(liste_titre.get(position));
@@ -478,25 +492,20 @@ public class EcranAccueil extends AppCompatActivity {
 
             String[] couples=entree.split(";");
             ArrayList<String> couplesTraites = new ArrayList<>();
-            int i=0;
+            int i=1;
+            String dernierCouple="";
+            dernierCouple=couples[0];
             while (i<couples.length-1){
 
-                if(couples[i+1].split(":")[1].equals(couples[i].split(":")[1])){
-                    couplesTraites.add(couples[i]);
-                    i++;
-                    String tempsActuel=couples[i].split(":")[1];
 
-                    while (couples[i].split(":")[1].equals(tempsActuel)) {
-                        if(i<couples.length-1) {
-                            i++;
-                        }
-                    }
+                if(!dernierCouple.split(":")[1].equals(couples[i].split(":")[1])){
+                    couplesTraites.add(couples[i]);
+
 
                 }
-                else {
-                    couplesTraites.add(couples[i]);
-                    i++;
-                }
+                dernierCouple=couples[i];
+                i++;
+
             }
             StringBuilder sb = new StringBuilder();
             for (String s : couplesTraites)

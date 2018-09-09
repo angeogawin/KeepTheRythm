@@ -254,64 +254,64 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         nom_txt.add("new_begining.txt");
         nom_txt.add("night_life2.txt");
         nom_txt.add("progress.txt");
-        nom_txt.add("reiswerk_lies_on_lies_update.txt");
-        nom_txt.add("sleeperspaceborn_better.txt");
-        nom_txt.add("reiswerk_tick_tock.txt");
+        nom_txt.add("alla_what_parody.txt");
+        nom_txt.add("we_wish_you_a_merry_xmas.txt");
+        nom_txt.add("carol_of_the_bells.txt");
         nom_txt.add("tobias_weber_between_worlds_instrumental.txt");
         nom_txt.add("tobias_weber_rooted_in_soil.txt");
-        nom_txt.add("veezyn_i_want_to_see_you_again.txt");
-        nom_txt.add("copperhead_platinum_donation.txt");
+        nom_txt.add("rocker.txt");
+        nom_txt.add("there_you_go.txt");
         nom_txt.add("jeffspeed68_two_pianos.txt");
         nom_txt.add("life_is_beautiful.txt");
-        nom_txt.add("alexberoza_supernatural_instrumental.txt");
-        nom_txt.add("one_project_blue.txt");
+        nom_txt.add("the_voyage.txt");
+        nom_txt.add("hiphop.txt");
         nom_txt.add("pumping.txt");
-        nom_txt.add("siobhand_the_quiet_hours.txt");
-        nom_txt.add("stellarartwars_floating_through_time_saw_mix.txt");
-        nom_txt.add("texasradiofish_knock_on_my_door.txt");
-        nom_txt.add("unreal_dm_come_back.txt");
+        nom_txt.add("joy_to_the_world.txt");
+        nom_txt.add("epicseries.txt");
+        nom_txt.add("bird_in_hand.txt");
+        nom_txt.add("ectoplasm.txt");
         nom_txt.add("vj_memes_paint_the_sky.txt");
-        nom_txt.add("sackjo22_trala_the_let_s_never_be_far_mix.txt");
-        nom_txt.add("snowflake_miracles.txt");
-        nom_txt.add("unreal_dm_talk_to_me.txt");
+        nom_txt.add("alison");
+        nom_txt.add("piledriver.txt");
+        nom_txt.add("go_not_gently.txt");
         nom_txt.add("djlang59_drops_of_h2o_the_filtered_water_treatment.txt");
-        nom_txt.add("snowflake_fever.txt");
+        nom_txt.add("leavinthelights.txt");
         nom_txt.add("speck_moonlight_sonata_shifting_sun_mix.txt");
-        nom_txt.add("duckett_what_cha_waitin_simple_club_mix.txt");
-        nom_txt.add("daguilar_remember_the_name.txt");
-        nom_txt.add("scomber_end_of_the_game.txt");
+        nom_txt.add("triangle.txt");
+        nom_txt.add("bigcartheft.txt");
+        nom_txt.add("what_da_funk.txt");
         listeMusique = new ArrayList<>();
         // **** ajout des musiques
         listeMusique.add(R.raw.london_night);//niveau 1
         listeMusique.add(R.raw.new_begining);//niveau 2
         listeMusique.add(R.raw.night_life2);//niveau 3
         listeMusique.add(R.raw.progress);//niveau 4
-        listeMusique.add(R.raw.reiswerk_lies_on_lies_update);//niveau 5
-        listeMusique.add(R.raw.sleeperspaceborn_better);//niveau 6
-        listeMusique.add(R.raw.reiswerk_tick_tock);//niveau 7
+        listeMusique.add(R.raw.alla_what_parody);//niveau 5
+        listeMusique.add(R.raw.we_wish_you_a_merry_xmas);//niveau 6
+        listeMusique.add(R.raw.carol_of_the_bells);//niveau 7
         listeMusique.add(R.raw.tobias_weber_between_worlds_instrumental);//niveau 8
         listeMusique.add(R.raw.tobias_weber_rooted_in_soil);//niveau 9
-        listeMusique.add(R.raw.veezyn_i_want_to_see_you_again);//niveau 10
-        listeMusique.add(R.raw.copperhead_platinum_donation);//niveau 11
+        listeMusique.add(R.raw.rocker);//niveau 10
+        listeMusique.add(R.raw.there_you_go);//niveau 11
         listeMusique.add(R.raw.jeffspeed68_two_pianos);//niveau 12
         listeMusique.add(R.raw.life_is_beautiful);//niveau 13
-        listeMusique.add(R.raw.alexberoza_supernatural_instrumental);//niveau 14
-        listeMusique.add(R.raw.one_project_blue);//niveau 15
+        listeMusique.add(R.raw.the_voyage);//niveau 14
+        listeMusique.add(R.raw.hiphop);//niveau 15
         listeMusique.add(R.raw.pumping);//niveau 16
-        listeMusique.add(R.raw.siobhand_the_quiet_hours);//niveau 17
-        listeMusique.add(R.raw.stellarartwars_floating_through_time_saw_mix);//niveau 18
-        listeMusique.add(R.raw.texasradiofish_knock_on_my_door);//niveau 19
-        listeMusique.add(R.raw.unreal_dm_come_back);//niveau 20
+        listeMusique.add(R.raw.joy_to_the_world);//niveau 17
+        listeMusique.add(R.raw.epicseries);//niveau 18
+        listeMusique.add(R.raw.bird_in_hand);//niveau 19
+        listeMusique.add(R.raw.ectoplasm);//niveau 20
         listeMusique.add(R.raw.vj_memes_paint_the_sky);//niveau 21
-        listeMusique.add(R.raw.sackjo22_trala_the_let_s_never_be_far_mix);//niveau 22
-        listeMusique.add(R.raw.snowflake_miracles);//niveau 23
-        listeMusique.add(R.raw.unreal_dm_talk_to_me);//niveau 24
+        listeMusique.add(R.raw.alison);//niveau 22
+        listeMusique.add(R.raw.piledriver);//niveau 23
+        listeMusique.add(R.raw.go_not_gently);//niveau 24
         listeMusique.add(R.raw.djlang59_drops_of_h2o_the_filtered_water_treatment);//niveau 25
-        listeMusique.add(R.raw.snowflake_fever);//niveau 26
+        listeMusique.add(R.raw.leavinthelights);//niveau 26
         listeMusique.add(R.raw.speck_moonlight_sonata_shifting_sun_mix);//niveau 27
-        listeMusique.add(R.raw.duckett_what_cha_waitin_simple_club_mix);//niveau 28
-        listeMusique.add(R.raw.daguilar_remember_the_name);//niveau 29
-        listeMusique.add(R.raw.scomber_end_of_the_game);//niveau 30
+        listeMusique.add(R.raw.triangle);//niveau 28
+        listeMusique.add(R.raw.bigcartheft);//niveau 29
+        listeMusique.add(R.raw.what_da_funk);//niveau 30
 
         // **** fin ajout des musiques
         mPlayer = MediaPlayer.create(this, listeMusique.get(pos - 1));
@@ -395,7 +395,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 //                }
 
                 if (zoneJeu.getChildCount() > 0) {
-                    Toast.makeText(InGame.this, String.valueOf(indiceActuelSequence), Toast.LENGTH_SHORT).show();
+
                     if (timeOfDerniereAction >= Integer.valueOf(couples[indiceActuelSequence].split(":")[1])) {
                         elementActuelClickable = true;
                     } else {

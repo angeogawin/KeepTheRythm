@@ -3,6 +3,7 @@
     <string-array name="menusettings">
         <item>Supprimer les pubs</item>
         <item>Règles du jeu</item>
+        <item>A propos</item>
         <item>Conditions d\'utilisation</item>
         <item>Politique de confidentialité</item>
     </string-array>

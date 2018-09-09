@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.developpement.ogawi.keeptherythm.bdd.Score;
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
+import com.plattysoft.leonids.ParticleSystem;
 
 public class ResultatsPartie  extends AppCompatActivity {
     Button rejouer;
@@ -82,6 +83,11 @@ public class ResultatsPartie  extends AppCompatActivity {
                         .putString("trophy_niveau"+String.valueOf(niveau),"or")
                         .apply();
 
+                new ParticleSystem(ResultatsPartie.this, 70, R.drawable.cercle_plein_jaune, 10000)
+                        .setSpeedByComponentsRange(0f, 0.5f, 0f, 0.5f)
+//                        .setAcceleration(0.00005f, 45)
+                        .oneShot(findViewById(R.id.fragment_resultats), 70);
+
             }
            else if((int)(score*100/nbTotalMvts)>=80){
                 //trophee argent
@@ -107,6 +113,8 @@ public class ResultatsPartie  extends AppCompatActivity {
 
         }
 
+
+
         //Initialisation bdd
         final ScoreDAO scoreDAO=new ScoreDAO(getApplicationContext());
         final long id=scoreDAO.getIdMax();
@@ -125,6 +133,7 @@ public class ResultatsPartie  extends AppCompatActivity {
 
 
         }
+
 
 
 
