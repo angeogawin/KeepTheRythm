@@ -6,6 +6,7 @@
     <color name="white">#fff</color>
     <color name="orange">#ff9900</color>
     <color name="vert">#009e0f</color>
+    <color name="black">#000</color>
 
     <!-- 1st Gradient color -->
     <color name="colorPurple_A400">#D500F9</color>

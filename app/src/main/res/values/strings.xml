@@ -3,6 +3,8 @@
     <string-array name="menusettings">
         <item>Supprimer les pubs</item>
         <item>Règles du jeu</item>
+        <item>Partager l\'app</item>
+        <item>Noter l\'app</item>
         <item>A propos</item>
         <item>Conditions d\'utilisation</item>
         <item>Politique de confidentialité</item>

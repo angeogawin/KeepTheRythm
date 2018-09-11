@@ -75,7 +75,7 @@ public class ResultatsPartie  extends AppCompatActivity {
 
             //fonction pour debloquer si necessaire niveau suivant
 
-            if((int)(score*100/nbTotalMvts)>=90){
+            if(Math.round((int)(score*100/nbTotalMvts))>=90){
                 //trophee or
                 trophee.setImageDrawable(getResources().getDrawable(R.drawable.trophy_or));
                 sharedPreferences
@@ -89,7 +89,7 @@ public class ResultatsPartie  extends AppCompatActivity {
                         .oneShot(findViewById(R.id.fragment_resultats), 70);
 
             }
-           else if((int)(score*100/nbTotalMvts)>=80){
+           else if(Math.round((int)(score*100/nbTotalMvts))>=80){
                 //trophee argent
                 trophee.setImageDrawable(getResources().getDrawable(R.drawable.trophy_argent));
                 sharedPreferences
