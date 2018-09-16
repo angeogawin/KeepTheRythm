@@ -64,6 +64,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/nextPalierScore"
                     android:textColor="@color/white"
+                    android:textSize="25sp"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/nextTrophy"
                     android:layout_marginTop="5dp"/>
@@ -73,6 +74,7 @@
                  android:text="Score"
                  android:layout_toLeftOf="@id/score"
                  android:textColor="@color/white"
+                 android:textSize="25sp"
                  android:layout_centerVertical="true"
                  android:layout_marginRight="5dp"/>
 
@@ -85,7 +87,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="5dp"
                     android:gravity="center"
-                    android:textSize="20sp"
+                    android:textSize="25sp"
                     android:textColor="@color/vert"
 
 
@@ -104,13 +106,26 @@
 
                 android:max="100"
                 android:progress="0"/>
+
             <RelativeLayout
                 android:id="@+id/zonejeu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@id/gOverlay"
                 android:layout_below="@id/zoneScore"
-                ></RelativeLayout>
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                <View
+                    android:id="@+id/barrelimitegauche"
+                    android:layout_width="1dp"
+                    android:layout_height="fill_parent"
+
+                    android:background="#b3dee7"
+                    /></LinearLayout>
+            </RelativeLayout>
 
 
 

@@ -2,6 +2,7 @@ package com.developpement.ogawi.keeptherythm;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,6 +15,10 @@ import android.widget.TextView;
 import com.developpement.ogawi.keeptherythm.bdd.Score;
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
 import com.plattysoft.leonids.ParticleSystem;
+
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
 
 public class ResultatsPartie  extends AppCompatActivity {
     Button rejouer;
@@ -53,6 +58,7 @@ public class ResultatsPartie  extends AppCompatActivity {
         rejouer=findViewById(R.id.rejouer);
         accepter=findViewById(R.id.accepter);
 
+
         sharedPreferences = getBaseContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
 
         if((int)(score*100/nbTotalMvts)>=70){
@@ -83,10 +89,24 @@ public class ResultatsPartie  extends AppCompatActivity {
                         .putString("trophy_niveau"+String.valueOf(niveau),"or")
                         .apply();
 
-                new ParticleSystem(ResultatsPartie.this, 70, R.drawable.cercle_plein_jaune, 10000)
-                        .setSpeedByComponentsRange(0f, 0.5f, 0f, 0.5f)
-//                        .setAcceleration(0.00005f, 45)
-                        .oneShot(findViewById(R.id.fragment_resultats), 70);
+                KonfettiView viewKonfetti=findViewById(R.id.viewKonfetti);
+                viewKonfetti.build()
+                        .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                        .setDirection(0.0, 359.0)
+                        .setSpeed(1f, 5f)
+                        .setFadeOutEnabled(true)
+                        .setTimeToLive(2000L)
+                        .addShapes(Shape.RECT, Shape.CIRCLE)
+                        .addSizes(new Size(7,5f))
+                        .setPosition(-50f, viewKonfetti.getWidth() + 700f, -50f, -50f)
+                        .stream(150, 3000L);
+
+                if(score==nbTotalMvts){
+                    TextView text100pourcent=findViewById(R.id.text100pourcent);
+                    ImageView clap=findViewById(R.id.clap);
+                    text100pourcent.setVisibility(View.VISIBLE);
+                    clap.setVisibility(View.VISIBLE);
+                }
 
             }
            else if(Math.round((int)(score*100/nbTotalMvts))>=80){

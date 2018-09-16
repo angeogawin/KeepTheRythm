@@ -8,8 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.gesture.Gesture;
 import android.gesture.Prediction;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
@@ -161,7 +164,9 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     ArrayList<String> sequences;
 
     ImageView nextTrophy;
+    View barregauche;
     TextView nextPalierScore;
+    ArrayList<Integer> listeIndicesActuels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,11 +179,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         pos = i.getExtras().getInt("niveau");
         zoneJeu = findViewById(R.id.zonejeu);
         listeImagesAnimationsActives = new ArrayList<>();
+        listeIndicesActuels=new ArrayList<>();
         // rondCentral=(ImageView) findViewById(R.id.rondCentral);
         progress = findViewById(R.id.progress);
         nextTrophy=findViewById(R.id.nextTrophy);
 
         nextPalierScore=findViewById(R.id.nextPalierScore);
+
 
         animationEstLancee = false;
         sequences = new ArrayList<>();
@@ -240,6 +247,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 animationEstLancee = true;
                 go.setVisibility(View.INVISIBLE);
                 // rondCentral.setVisibility(View.VISIBLE);
+                barregauche=findViewById(R.id.barrelimitegauche);
+
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)barregauche.getLayoutParams();
+                params.setMargins(70*widthZoneJeu/100, 0, 0, 0); //substitute parameters for left, top, right, bottom
+                barregauche.setLayoutParams(params);
                 lancerAnimation(sequence);
                /* Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -322,7 +334,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         // **** fin ajout des musiques
         mPlayer = MediaPlayer.create(this, listeMusique.get(pos - 1));
 
-        indiceActuelSequence = 0;
+
+        indiceActuelSequence = -1;
         indicesequence=0;
 
         score = 0;
@@ -399,15 +412,20 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 //                } else {
 //                    elementActuelClickable = false;
 //                }
+                if (listeIndicesActuels.size() > 0) {
+                    zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
 
-                if (zoneJeu.getChildCount() > 0 && indiceActuelSequence<couples.length) {
 
-                    if (timeOfDerniereAction>= Integer.valueOf(couples[indiceActuelSequence].split(":")[1])) {
+                }
+
+
+                    if (listeIndicesActuels.size()>0) {
                         elementActuelClickable = true;
                     } else {
                         elementActuelClickable = false;
                     }
                     if (elementActuelClickable) {
+
 
                         //Toast.makeText(InGame.this, String.valueOf(elementActuelClickable), Toast.LENGTH_SHORT).show();
 
@@ -416,14 +434,18 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                         //     zoneJeu.removeViewAt(0);
 //                   Drawable d=((ImageView)(zoneJeu.getChildAt(0))).getDrawable();
 //                   ((ImageView)(zoneJeu.getChildAt(0))).setImageDrawable(trouverSymbole2( d));
+                        dernierSymbole = (traiterSequences(sequences.get(pos - 1)).split(";")[listeIndicesActuels.get(0)]).split(":")[0];
+                        Toast.makeText(InGame.this, dernierSymbole, Toast.LENGTH_SHORT).show();
                         if (dernierSymbole.equals(derniereAction.getValeur())) {
 
                             //  Toast.makeText(InGame.this, "Amaz", Toast.LENGTH_SHORT).show();
 
 
-                            if (indiceActuelSequence <= couples.length - 1) {
+                            if (listeIndicesActuels.get(0)<= couples.length - 1) {
+
 
                                 if (verifierBonRythmeJoueur()) {
+
                                     ImageView img = new ImageView(InGame.this);
 
                                     // give the drawble resource for the ImageView
@@ -437,16 +459,16 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                     toast.setGravity(Gravity.TOP, 0, -80);
                                     toast.show();
 
-
+                                    actualiserScore();
                                     progress.setProgress(score * 100 / couples.length);
                                     //actualiser score en conséquence
-                                    actualiserScore();
+
                                 }
                                 // dernierSymbole = sequence.get(indiceActuelSequence);
 
                                 //Toast.makeText(InGame.this, dernierSymbole, Toast.LENGTH_SHORT).show();
 
-                            } else if (indiceActuelSequence > couples.length - 1) {
+                            } else if (listeIndicesActuels.get(0) > couples.length - 1) {
                                 //    Toast.makeText(InGame.this, "Jeu terminé", Toast.LENGTH_SHORT).show();
                                 //  zoneJeu.removeAllViews();
                                 //  mPlayer.stop();
@@ -475,7 +497,9 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                         }
                         //  (zoneJeu.getChildAt()).clearAnimation();
-                    }
+
+
+
 
 
 //                else{
@@ -490,7 +514,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                     // dernierSymbole = actualiserSymbole(flecheactuelle, sequence, indiceActuelSequence);
 
+                        if (listeIndicesActuels.size() > 0) {
 
+                            listeIndicesActuels.remove(0);
+
+                        }
                 } else {
                     //   Toast.makeText(InGame.this, "Jeu terminé", Toast.LENGTH_SHORT).show();
                 }
@@ -516,6 +544,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
         widthZoneJeu = zoneJeu.getWidth();
         heightZoneJeu = zoneJeu.getHeight();
+
         zoneJeu.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -523,11 +552,12 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 heightZoneJeu = zoneJeu.getHeight(); //height is ready
                 widthZoneJeu = zoneJeu.getWidth();
 
+
             }
         });
 
         mImageView = new ImageView(getApplicationContext());
-        mImageView.setImageDrawable(getDrawable(R.drawable.fleche_gauche4_vert));
+       // mImageView.setImageDrawable(getDrawable(R.drawable.fleche_gauche4_vert));
         //  mImageView.setVisibility(View.GONE);
         //   zoneJeu.addView(mImageView);
 
@@ -536,7 +566,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     public boolean verifierBonRythmeJoueur() {
 
         boolean aLeRythme = false;
-        int tempsCorrectPourActionEnRyhtme = Integer.valueOf(couples[indiceActuelSequence].split(":")[1]);
+        int tempsCorrectPourActionEnRyhtme = Integer.valueOf(couples[listeIndicesActuels.get(0)].split(":")[1]);
 
         if (Math.abs(SystemClock.elapsedRealtime() - mChronometer.getBase() - tempsCorrectPourActionEnRyhtme) < 1000) {
             //1000 ms=1s
@@ -560,15 +590,24 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         mPlayer.pause();
         media_length = mPlayer.getCurrentPosition();
 
+
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0)) {
+
             mPlayer.stop();
-            finish();
+            mPlayer.release();
+
             Intent i = new Intent(this, EcranAccueil.class);
             startActivity(i);
+            finish();
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+
+
+
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -630,7 +669,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             new ParticleSystem(InGame.this, 20, R.drawable.notemusique, 30000)
                     .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
 //                        .setAcceleration(0.00005f, 45)
-                    .oneShot(findViewById(R.id.gOverlay), 10);
+                    .oneShot(findViewById(R.id.gOverlay), 5);
 
             // .emit(x,y,5,1000);
 
@@ -674,6 +713,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     //  symboleUtilisateur.addView(i);
                     //   i.startAnimation(fadeOut);
                     //   Toast.makeText(InGame.this, "left", Toast.LENGTH_SHORT).show();
+                    new ParticleSystem(InGame.this, 20, R.drawable.fleche_gauche3_vert, 30000)
+                            .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
+
+//                        .setAcceleration(0.00005f, 45)
+                            .oneShot(findViewById(R.id.gOverlay), 5);
                 } else if (event2.getX() - event1.getX() < 0) {
                     derniereAction.setVariable("d");
                     //   i.setImageDrawable(getDrawable(R.drawable.fleche_droite4_vert));
@@ -681,6 +725,10 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     //   symboleUtilisateur.addView(i);
                     //    i.startAnimation(fadeOut);
                     // Toast.makeText(InGame.this, "right", Toast.LENGTH_SHORT).show();
+                    new ParticleSystem(InGame.this, 20, R.drawable.fleche_droite3_vert, 30000)
+                            .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
+//                        .setAcceleration(0.00005f, 45)
+                            .oneShot(findViewById(R.id.gOverlay), 5);
                 }
             } else if (Math.abs(event2.getX() - event1.getX()) < Math.abs(event2.getY() - event1.getY())) {
 
@@ -693,6 +741,10 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     //   symboleUtilisateur.addView(i);
                     //    i.startAnimation(fadeOut);
                     //    Toast.makeText(InGame.this, "up", Toast.LENGTH_SHORT).show();
+                    new ParticleSystem(InGame.this, 20, R.drawable.fleche_haut3_vert, 30000)
+                            .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
+//                        .setAcceleration(0.00005f, 45)
+                            .oneShot(findViewById(R.id.gOverlay), 5);
 
                 } else if (event2.getY() - event1.getY() < 0) {
 
@@ -702,6 +754,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     //    symboleUtilisateur.addView(i);
                     //  i.startAnimation(fadeOut);
                     //   Toast.makeText(InGame.this, "down", Toast.LENGTH_SHORT).show();
+                    new ParticleSystem(InGame.this, 20, R.drawable.fleche_bas3_vert, 30000)
+                            .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
+
+//                        .setAcceleration(0.00005f, 45)
+                            .oneShot(findViewById(R.id.gOverlay), 5);
 
                 }
             }
@@ -865,6 +922,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
     public void lancerAnimation(ArrayList<String> sequence) {
+        indiceActuelSequence=0;
         v.setOnTouchListener(touchListener);
 //        mChronometer.setBase(SystemClock.elapsedRealtime());
 //        mChronometer.start();
@@ -872,7 +930,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 //        mPlayer = MediaPlayer.create(this, listeMusique.get(pos - 1));
 //        mPlayer.start();
 
-        zoneJeu.removeAllViews();
+        //zoneJeu.removeAllViews();
         zoneJeu.clearAnimation();
         // sequenceARealiser = ReadTxt();
         sequenceARealiser = traiterSequences( sequences.get(pos - 1));
@@ -898,18 +956,36 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         int heightZoneJeu = zoneJeu.getHeight();
 
         ArrayList<AnimationSet> listeAnimations = new ArrayList<>();
+        int tempsDemarrageMusique=(int)((0.7*5000)-Integer.valueOf(couples[0].split(":")[1]));
 
         for (int j = 0; j < couples.length; j++) {
             indicesequence = j;
             String symbole = couples[j].split(":")[0];
             // Toast.makeText(InGame.this, symbole, Toast.LENGTH_LONG).show();
-            ImageView i = new ImageView(getApplicationContext());
+            final ImageView i = new ImageView(getApplicationContext());
 
 
             if (j == 0) {
-                i.setImageDrawable(trouverSymbole(symbole, "rouge"));
+                i.setImageDrawable(trouverSymbole(symbole, "vert"));
             } else {
                 i.setImageDrawable(trouverSymbole(symbole, "vert"));
+            }
+
+            if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.tap))){
+                i.setY(10*heightZoneJeu/100);
+            }
+
+            else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_gauche4_vert))){
+                i.setY(25*heightZoneJeu/100);
+            }
+            else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_droite4_vert))){
+                i.setY(40*heightZoneJeu/100);
+            }
+            else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_bas4_vert))){
+                i.setY(55*heightZoneJeu/100);
+            }
+            else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_haut4_vert))){
+                i.setY(70*heightZoneJeu/100);
             }
             // Toast.makeText(this, String.valueOf(width), Toast.LENGTH_SHORT).show();
 
@@ -964,33 +1040,113 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             listeAnimations.add(animation);
 
             zoneJeu.addView(i, j);
+            i.setVisibility(View.INVISIBLE);
 
 
             // i.startAnimation(animation);
-            TranslateAnimation animate = new TranslateAnimation(0,zoneJeu.getWidth(),0,0);
-            int tempsDemarrageMusique=3000;
+//            TranslateAnimation animate = new TranslateAnimation(0,zoneJeu.getWidth(),0,0);
 
-            if(j==0){
-                animate.setStartOffset(0);
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        mChronometer.setBase(SystemClock.elapsedRealtime());
-                        mChronometer.start();
-                        mPlayer.reset();
-                        mPlayer = MediaPlayer.create(getApplicationContext(), listeMusique.get(pos - 1));
-                        mPlayer.start();
-                    }
-                }, tempsDemarrageMusique);
-            }
-            else{
-                animate.setStartOffset(offset-Integer.valueOf(couples[0].split(":")[1]));
+            ValueAnimator va = ValueAnimator.ofFloat(0f, zoneJeu.getWidth());
+            int mDuration = 5000; //in millis
+            va.setDuration(mDuration);
+
+            MyValueAnimatorListener listener = new MyValueAnimatorListener();
+
+            listener.setIndice(j);
+            listener.setDrawable(i.getDrawable());
+            va.addUpdateListener(listener);
+
+            if(tempsDemarrageMusique>=0){
+
+                if(j==0){
+                    va.setStartDelay(0);
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            mChronometer.setBase(SystemClock.elapsedRealtime());
+                            mChronometer.start();
+                            mPlayer.reset();
+                            mPlayer = MediaPlayer.create(getApplicationContext(), listeMusique.get(pos - 1));
+                            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                public void onCompletion(MediaPlayer mp) {
+                                    Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        public void run() {
+                                            // Actions to do after 10 seconds
+                                            Intent j = new Intent(getApplicationContext(), ResultatsPartie.class);
+                                            j.putExtra("niveau", pos);
+                                            j.putExtra("score", score);
+                                            j.putExtra("nbTotalMvts", couples.length);
+                                            j.putExtra("manques", couples.length - score);
+                                            startActivity(j);
+                                        }
+                                    }, 2000);
+
+                                }
+                            });
+                            mPlayer.start();
+                        }
+                    }, tempsDemarrageMusique);
+                }
+                else{
+                    va.setStartDelay(Integer.valueOf(couples[j].split(":")[1])-Integer.valueOf(couples[0].split(":")[1]));
+                }
+
+
+
             }
 
-            animate.setDuration(5000);
-            animate.setFillAfter(true);
-            i.startAnimation(animate);
-            //slideToLeft(i);
+            else if(tempsDemarrageMusique<0){
+
+                if(j==0){
+                    va.setStartDelay(-tempsDemarrageMusique);
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            mChronometer.setBase(SystemClock.elapsedRealtime());
+                            mChronometer.start();
+                            mPlayer.reset();
+                            mPlayer = MediaPlayer.create(getApplicationContext(), listeMusique.get(pos - 1));
+                            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                public void onCompletion(MediaPlayer mp) {
+                                    Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        public void run() {
+                                            // Actions to do after 10 seconds
+                                            Intent j = new Intent(getApplicationContext(), ResultatsPartie.class);
+                                            j.putExtra("niveau", pos);
+                                            j.putExtra("score", score);
+                                            j.putExtra("nbTotalMvts", couples.length);
+                                            j.putExtra("manques", couples.length - score);
+                                            startActivity(j);
+                                        }
+                                    }, 2000);
+
+                                }
+                            });
+                            mPlayer.start();
+                        }
+                    }, 0);
+                }
+
+                else{
+                    va.setStartDelay(-tempsDemarrageMusique+(Integer.valueOf(couples[j].split(":")[1])-Integer.valueOf(couples[0].split(":")[1])));
+                }
+
+            }
+            va.start();
+//            else{
+//                animate.setStartOffset(offset-Integer.valueOf(couples[0].split(":")[1]));
+//            }
+//
+//            animate.setDuration(5000);
+//            animate.setFillAfter(true);
+//            i.startAnimation(animate);
+
+
+
 
 
 
@@ -1008,12 +1164,6 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
 
-    }
-    public void slideToLeft(View view){
-        TranslateAnimation animate = new TranslateAnimation(0,view.getWidth(),0,0);
-        animate.setDuration(500);
-        animate.setFillAfter(true);
-        view.startAnimation(animate);
 
     }
 
@@ -1043,52 +1193,26 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             } else if (symbole.equals("tap")) {
                 retour = getDrawable(R.drawable.tap);
 
-            } else if (symbole.equals("touch")) {
-                retour = getDrawable(R.drawable.touch);
-
-            }
-
-        } else if (couleur.equals("rouge")) {
-            if (symbole.equals("g")) {
-                retour = getDrawable(R.drawable.fleche_gauche4_rouge);
+            } //else if (symbole.equals("touch")) {
+//                retour = getDrawable(R.drawable.touch);
+//
+//            }
 
 
-            } else if (symbole.equals("d")) {
-                retour = getDrawable(R.drawable.fleche_droite4_rouge);
-
-            } else if (symbole.equals("h")) {
-                retour = getDrawable(R.drawable.fleche_haut4_rouge);
-
-            } else if (symbole.equals("b")) {
-                retour = getDrawable(R.drawable.fleche_bas4_rouge);
-
-            } else if (symbole.equals("cr")) {
-                retour = getDrawable(R.drawable.cr2);
-
-            } else if (symbole.equals("cl")) {
-                retour = getDrawable(R.drawable.cl);
-
-            } else if (symbole.equals("tap")) {
-                retour = getDrawable(R.drawable.touch);
-
-            } else if (symbole.equals("touch")) {
-                retour = getDrawable(R.drawable.touch);
-
-            }
-        }
+       }
 
         return retour;
     }
 
     public Drawable trouverSymbole2(Drawable d) {
         Drawable retour;
-        retour = getDrawable(R.drawable.fleche_gauche4_vert);
+        retour = getDrawable(R.drawable.fleche_bas4_vert);
 
-        if (d.getConstantState().equals(getDrawable((R.drawable.fleche_gauche4_vert)).getConstantState())) {
+        if (areDrawablesIdentical(d,getDrawable(R.drawable.fleche_gauche4_vert))) {
             retour = getDrawable(R.drawable.fleche_gauche4_rouge);
 
 
-        } else if (d.getConstantState().equals(getDrawable((R.drawable.fleche_droite4_vert)).getConstantState())) {
+        } else if (d.getConstantState().equals(getDrawable(R.drawable.fleche_droite4_vert).getConstantState())) {
             retour = getDrawable(R.drawable.fleche_droite4_rouge);
 
         } else if (d.getConstantState().equals(getDrawable((R.drawable.fleche_haut4_vert)).getConstantState())) {
@@ -1103,18 +1227,48 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         } else if (d.getConstantState().equals(getDrawable((R.drawable.cl)).getConstantState())) {
             retour = getDrawable(R.drawable.cl);
 
-        } else if (d.getConstantState().equals(getDrawable((R.drawable.tap)).getConstantState())) {
+        } else if (areDrawablesIdentical(d,getDrawable(R.drawable.tap))) {
             retour = getDrawable(R.drawable.touch);
 
-        } else if (d.getConstantState().equals(getDrawable((R.drawable.touch)).getConstantState())) {
-            retour = getDrawable(R.drawable.touch);
+        } else if (d.getConstantState().equals(getDrawable(R.drawable.touch).getConstantState())) {
+          //  retour = getDrawable(R.drawable.touch);
 
         }
 
 
         return retour;
     }
+    public static boolean areDrawablesIdentical(Drawable drawableA, Drawable drawableB) {
+        Drawable.ConstantState stateA = drawableA.getConstantState();
+        Drawable.ConstantState stateB = drawableB.getConstantState();
+        // If the constant state is identical, they are using the same drawable resource.
+        // However, the opposite is not necessarily true.
+        return (stateA != null && stateB != null && stateA.equals(stateB))
+                || getBitmap(drawableA).sameAs(getBitmap(drawableB));
+    }
 
+    public static Bitmap getBitmap(Drawable drawable) {
+        Bitmap result;
+        if (drawable instanceof BitmapDrawable) {
+            result = ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            int width = drawable.getIntrinsicWidth();
+            int height = drawable.getIntrinsicHeight();
+            // Some drawables have no intrinsic width - e.g. solid colours.
+            if (width <= 0) {
+                width = 1;
+            }
+            if (height <= 0) {
+                height = 1;
+            }
+
+            result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(result);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        }
+        return result;
+    }
     public String ReadTxt() {
         //reading text from file
         //g:6302;d:6612;g:6928;d:7134;g:7364;d:8440;g:8804;d:9099;tap:9793;tap:10275;tap:10592;d:10741;g:11022;d:11374;g:11523;d:11832;b:11832;b:11832;h:11832;d:13751;g:14190;d:14520;tap:16631;tap:17174;tap:17707;tap:19197;tap:20495;d:21696;g:22114;d:22489;g:22846;b:22846;h:22846;b:22846;h:22846;
@@ -1174,7 +1328,68 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         return sb.toString();
     }
 
+    public class MyValueAnimatorListener implements ValueAnimator.AnimatorUpdateListener{
+        int indiceVue;
+        Drawable d;
+        boolean dejaActualise=false;
+        boolean dejaSupprime=false;
+        boolean vueRendueVisible=false;
 
+        public void setDrawable(Drawable d){
+            this.d=d;
+        }
+        public void setIndice(int indice) {
+            this.indiceVue = indice;
+        }
+        public void onAnimationUpdate(ValueAnimator animation) {
+            if(!vueRendueVisible){
+                zoneJeu.getChildAt(indiceVue).setVisibility(View.VISIBLE);
+                vueRendueVisible=true;
+            }
+
+            zoneJeu.getChildAt(indiceVue).setTranslationX((float)animation.getAnimatedValue());
+            if((float)animation.getAnimatedValue()>=0.92*zoneJeu.getWidth()){
+                if(!dejaSupprime) {
+                    if (listeIndicesActuels.size() > 0 ) {
+                        listeIndicesActuels.remove(Integer.valueOf(indiceVue));
+                        dejaSupprime = true;
+                    }
+                    zoneJeu.getChildAt(indiceVue).setVisibility(View.GONE);
+                    animation.removeAllUpdateListeners();
+                }
+
+
+               // indiceActuelSequence++;
+               // animation.cancel();
+            }
+
+            else if((float)animation.getAnimatedValue()>=0.65*zoneJeu.getWidth()){
+                if(!dejaActualise) {
+
+
+
+
+                           Drawable d = ((ImageView) (zoneJeu.getChildAt(indiceVue))).getDrawable();
+                           ((ImageView) (zoneJeu.getChildAt(indiceVue))).setImageDrawable(trouverSymbole2(d));
+                           //dernierSymbole = (traiterSequences(sequences.get(pos - 1)).split(";")[indiceVue]).split(":")[0];
+
+                           listeIndicesActuels.add(indiceVue);
+
+                           dejaActualise=true;
+                       }
+
+
+
+
+               // animation.removeAllUpdateListeners();
+            }
+
+
+
+
+        }
+
+    }
     public class MyAnimationListener1 implements Animation.AnimationListener {
         ImageView view;
         int indiceVue;
@@ -1232,18 +1447,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                 v.setOnTouchListener(null);
 
 
-                                Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    public void run() {
-                                        // Actions to do after 10 seconds
-                                        Intent j = new Intent(getApplicationContext(), ResultatsPartie.class);
-                                        j.putExtra("niveau", pos);
-                                        j.putExtra("score", score);
-                                        j.putExtra("nbTotalMvts", couples.length);
-                                        j.putExtra("manques", couples.length - score);
-                                        startActivity(j);
-                                    }
-                                }, 4000);
+
 
 
                             }

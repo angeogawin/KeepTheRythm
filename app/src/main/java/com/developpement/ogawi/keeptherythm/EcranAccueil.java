@@ -122,25 +122,24 @@ public class EcranAccueil extends AppCompatActivity {
 
                 i.putExtra("niveau",position+1);
                 sharedPreferences = getApplicationContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
-//                if(sharedPreferences.contains("niveau_max_jouable")){
-//                   if(position+1>sharedPreferences.getInt("niveau_max_jouable",0)) {
-//                       if (btnJouer.isClickable()) {
-//                           btnJouer.setClickable(false);
-//                           btnJouer.startAnimation(myAnimDisparait);
-//                           messageVerrou.setVisibility(View.VISIBLE);
-//                       }
-//                   }
-//                   else{
-//                       if(!btnJouer.isClickable()){
-//                           btnJouer.setClickable(true);
-//                           btnJouer.startAnimation(myAnimAparait);
-//                           messageVerrou.setVisibility(View.INVISIBLE);
-//                       }
-//
-//                   }
-//                }
+                if(sharedPreferences.contains("niveau_max_jouable")) {
+                    if (position + 1 > sharedPreferences.getInt("niveau_max_jouable", 0)) {
+                        if (btnJouer.isClickable()) {
+                            btnJouer.setClickable(false);
+                            btnJouer.startAnimation(myAnimDisparait);
+                            messageVerrou.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        if (!btnJouer.isClickable()) {
+                            btnJouer.setClickable(true);
+                            btnJouer.startAnimation(myAnimAparait);
+                            messageVerrou.setVisibility(View.INVISIBLE);
+                        }
+
+                    }
 
 
+                }
             }
         });
 
@@ -209,7 +208,7 @@ public class EcranAccueil extends AppCompatActivity {
 
         playerAccueil= MediaPlayer.create(this, listeMusiqueAccueil.get(num_musique));
        // float log1=(float)(Math.log(maxVolume-currVolume)/Math.log(maxVolume));
-        playerAccueil.setVolume(0.1f, 0.1f);
+        playerAccueil.setVolume(0.2f, 0.2f);
         playerAccueil.setLooping(true);
         playerAccueil.start();
 
@@ -218,6 +217,7 @@ public class EcranAccueil extends AppCompatActivity {
             public void onClick(View v) {
                 playerAccueil.stop();
                 startActivity(i);
+                finish();
 
             }
         });
@@ -233,25 +233,7 @@ public class EcranAccueil extends AppCompatActivity {
 
         // setting exit fade animation duration to 2 seconds
         animationDrawable.setExitFadeDuration(2000);
-        final  View vi=findViewById(R.id.emiter_top_left);
 
-//        vi.post(new Runnable() {
-//            @Override
-//            public void run() {
-//              /*  new ParticleSystem(ModeSelectionActivity.this, 100, R.drawable.ic_gem_green, 30000)
-//                        .setSpeedRange(0.2f, 0.5f)
-//                        .oneShot(findViewById(R.id.center_anchor), 100);*/
-//
-//                new ParticleSystem(EcranAccueil.this, 8, R.drawable.notemusique, 20000)
-//                        .setSpeedByComponentsRange(0f, -0.1f, 0f, 0.1f)
-//                        .setAcceleration(0.00005f, 45)
-//                        .emit(findViewById(R.id.emiter_top_left), 4);
-//
-//
-//            }
-//        });
-
-//
     }
 
     @Override

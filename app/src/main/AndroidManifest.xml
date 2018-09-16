@@ -16,6 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".InGame"
+
             >
 
 
@@ -34,9 +35,5 @@
 
         </activity>
 
-        <activity android:name=".ConfettiTest">
-
-
-        </activity>
     </application>
 </manifest>

@@ -6,7 +6,14 @@
     android:id="@+id/fragment_resultats"
     android:background="@drawable/drawable_green_gradient"
     >
-<RelativeLayout
+
+    <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/viewKonfetti"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+       android:layout_centerHorizontal="true"/>
+
+    <RelativeLayout
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -25,6 +32,7 @@
         android:layout_height="wrap_content"
         android:textAllCaps="false"
         android:text="Niveau"
+
         android:textColor="#000"
         android:textSize="19sp"
         android:layout_marginLeft="10dp"
@@ -115,6 +123,30 @@
        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         />
+        <TextView
+            android:id="@+id/text100pourcent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:visibility="invisible"
+            android:textColor="#000"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@id/trophy"
+            android:layout_marginTop="20dp"
+            android:text="100 % du niveau atteint"/>
+        <ImageView
+            android:id="@+id/clap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/clap"
+            android:layout_alignBottom="@id/text100pourcent"
+            android:layout_toRightOf="@id/text100pourcent"
+            android:layout_marginLeft="5dp"
+            android:visibility="invisible"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     <Button
         android:id="@+id/accepter"
         android:layout_width="wrap_content"
