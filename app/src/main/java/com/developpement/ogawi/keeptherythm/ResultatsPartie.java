@@ -168,6 +168,7 @@ public class ResultatsPartie  extends AppCompatActivity {
                finish();
 
 
+
             }
         });
 
@@ -178,6 +179,7 @@ public class ResultatsPartie  extends AppCompatActivity {
                 //  zoneJeu = (RelativeLayout)findViewById(R.id.bandeaupourfleche);
 
                 startActivity(new Intent(ResultatsPartie.this,EcranAccueil.class));
+                finish();
 
 
             }
