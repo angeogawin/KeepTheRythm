@@ -1,8 +1,10 @@
 package com.developpement.ogawi.keeptherythm;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -12,9 +14,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.appolica.flubber.Flubber;
 import com.developpement.ogawi.keeptherythm.bdd.Score;
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
 import com.plattysoft.leonids.ParticleSystem;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
@@ -31,6 +39,7 @@ public class ResultatsPartie  extends AppCompatActivity {
     TextView niveauValue;
     TextView scoreValue;
     TextView manquesValue;
+    TextView nbTotal;
     ImageView trophee;
 
     SharedPreferences sharedPreferences;
@@ -50,40 +59,53 @@ public class ResultatsPartie  extends AppCompatActivity {
         niveauValue=findViewById(R.id.niveauValue);
         scoreValue=findViewById(R.id.scoreValue);
         manquesValue=findViewById(R.id.manquesValue);
+        nbTotal=findViewById(R.id.nbTotalResultats);
         trophee=findViewById(R.id.trophy);
 
         niveauValue.setText(String.valueOf(niveau));
-        scoreValue.setText(String.valueOf(score)+" / "+String.valueOf(nbTotalMvts));
+        nbTotal.setText(" / "+String.valueOf(nbTotalMvts));
+        ValueAnimator animator = ValueAnimator.ofInt(0, score);
+        animator.setDuration(3000);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                scoreValue.setText(animation.getAnimatedValue().toString());
+            }
+        });
+        animator.start();
+     //   scoreValue.setText(String.valueOf(score)+" / "+String.valueOf(nbTotalMvts));
         manquesValue.setText(String.valueOf(manques));
         rejouer=findViewById(R.id.rejouer);
         accepter=findViewById(R.id.accepter);
-
+        int sOr=Math.round( (90*nbTotalMvts/100));
+        int sAr=Math.round( (80*nbTotalMvts/100));
+        int sBr=Math.round ( (70*nbTotalMvts/100));
 
         sharedPreferences = getBaseContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
 
-        if((int)(score*100/nbTotalMvts)>=70){
+        if(score>=sBr){
             //on actualise le niveau maximum atteint
             if(sharedPreferences.contains("niveau_max_atteint")){
                 if(niveau>sharedPreferences.getInt("niveau_max_atteint",0)) {
                     sharedPreferences
                             .edit()
-                            .putInt("niveau_max_atteint",niveau+1)
+                            .putInt("niveau_max_atteint",niveau)
                             .apply();
 
                 }
+
             }
             else{
                 sharedPreferences
                         .edit()
-                        .putInt("niveau_max_atteint",niveau+1)
+                        .putInt("niveau_max_atteint",niveau)
                         .apply();
             }
 
             //fonction pour debloquer si necessaire niveau suivant
 
-            if(Math.round((int)(score*100/nbTotalMvts))>=90){
+            if(score>=sOr){
                 //trophee or
-                trophee.setImageDrawable(getResources().getDrawable(R.drawable.trophy_or));
+                trophee.setImageDrawable(getResources().getDrawable(R.drawable.cup_gold));
                 sharedPreferences
                         .edit()
                         .putString("trophy_niveau"+String.valueOf(niveau),"or")
@@ -109,9 +131,9 @@ public class ResultatsPartie  extends AppCompatActivity {
                 }
 
             }
-           else if(Math.round((int)(score*100/nbTotalMvts))>=80){
+           else if(score>=sAr){
                 //trophee argent
-                trophee.setImageDrawable(getResources().getDrawable(R.drawable.trophy_argent));
+                trophee.setImageDrawable(getResources().getDrawable(R.drawable.cup_silver));
                 sharedPreferences
                         .edit()
                         .putString("trophy_niveau"+String.valueOf(niveau),"argent")
@@ -122,7 +144,7 @@ public class ResultatsPartie  extends AppCompatActivity {
             else {
                 //trophee bronze
 
-                trophee.setImageDrawable(getResources().getDrawable(R.drawable.trophy_bronze));
+                trophee.setImageDrawable(getResources().getDrawable(R.drawable.cup_bronze));
                 sharedPreferences
                         .edit()
                         .putString("trophy_niveau"+String.valueOf(niveau),"bronze")
@@ -130,10 +152,49 @@ public class ResultatsPartie  extends AppCompatActivity {
 
 
             }
+            Flubber.with()
+                    .animation(Flubber.AnimationPreset.ZOOM_IN) // Slide up animation
+                    .repeatCount(0)                              // Repeat once
+                    .duration(1000)                              // Last for 1000 milliseconds(1 second)
+                    .createFor(trophee)                             // Apply it to the view
+                    .start();
+        }
+        else{
+            String encouragement1="Allez, retente ta chance...";
+            Drawable emoji1=getDrawable(R.drawable.emoji_muscle);
+            String encouragement2="On repassera pour le rythme...";
+            Drawable emoji2=getDrawable(R.drawable.emoji_langue);
+            String encouragement3="Bien tenté, y'a du progrès à faire...";
+            Drawable emoji3=getDrawable(R.drawable.emoji_langue);
+            String encouragement4="La prochaine fois sera la bonne...";
+            Drawable emoji4=getDrawable(R.drawable.emoji_muscle);
+            ArrayList<String> encouragements=new ArrayList<>();
+            ArrayList<Drawable> emojis=new ArrayList<>();
+            emojis.add(emoji1);
+            emojis.add(emoji2);
+            emojis.add(emoji3);
+            emojis.add(emoji4);
+
+            encouragements.add(encouragement1);
+            encouragements.add(encouragement2);
+            encouragements.add(encouragement3);
+            encouragements.add(encouragement4);
+            Random alea = new Random();
+            int num_musique = alea.nextInt(4) ;
+            TextView textencouragement=findViewById(R.id.textencouragement);
+            ImageView i=findViewById(R.id.emojiEncouragement);
+            textencouragement.setText(encouragements.get(num_musique));
+            i.setImageDrawable(emojis.get(num_musique));
 
         }
 
+        if(aJoueTousLesNiveauxDeverouille(sharedPreferences.getInt("niveau_max_jouable",0))){
+            TextView textNiveauDebloque=findViewById(R.id.textNiveauDebloque);
+            textNiveauDebloque.setVisibility(View.VISIBLE);
+            ImageView img=findViewById(R.id.cadenas);
+            img.setVisibility(View.VISIBLE);
 
+        }
 
         //Initialisation bdd
         final ScoreDAO scoreDAO=new ScoreDAO(getApplicationContext());
@@ -148,6 +209,14 @@ public class ResultatsPartie  extends AppCompatActivity {
 
             if(Integer.valueOf(scoreDAO.obtenirScoreNiveau(String.valueOf(niveau)))<score){
                 //on modifie un score existant en actualisant avec le score maxi atteint
+                TextView msgNouveauMeilleurScore=findViewById(R.id.textScoreBattu);
+                msgNouveauMeilleurScore.setVisibility(View.VISIBLE);
+                Flubber.with()
+                        .animation(Flubber.AnimationPreset.ZOOM_IN) // Slide up animation
+                        .repeatCount(0)                              // Repeat once
+                        .duration(1000)                              // Last for 1000 milliseconds(1 second)
+                        .createFor(msgNouveauMeilleurScore)                             // Apply it to the view
+                        .start();
                 scoreDAO.modifier(s);
             }
 
@@ -188,4 +257,17 @@ public class ResultatsPartie  extends AppCompatActivity {
 
 
     }
+    public boolean aJoueTousLesNiveauxDeverouille(int niveauMax){
+
+        boolean retour=true;
+
+        for(int i=1;i<=niveauMax;i++){
+            if(!sharedPreferences.contains("trophy_niveau"+String.valueOf(i))){
+                retour=false;
+                return  retour;
+            }
+        }
+        return retour;
+    }
+
 }

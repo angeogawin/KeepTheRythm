@@ -3,9 +3,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_resultats"
-    android:background="@drawable/drawable_green_gradient"
-    >
+    android:background="@drawable/drawable_green_gradient">
 
     <nl.dionsegijn.konfetti.KonfettiView
         android:id="@+id/viewKonfetti"
@@ -13,15 +13,50 @@
         android:layout_height="match_parent"
        android:layout_centerHorizontal="true"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textNiveauDebloque"
+        android:textColor="#e78200"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        android:text="+ Nouveaux niveaux débloqués"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="3dp"
+        android:layout_above="@id/textScoreBattu"
+        />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:id="@+id/cadenas"
+        android:visibility="invisible"
+        android:layout_toRightOf="@id/textNiveauDebloque"
+        android:layout_alignBottom="@id/textNiveauDebloque"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cadenas2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textScoreBattu"
+        android:textColor="#e78200"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        android:text="+ Nouveau meilleur score"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-110dp"
+       android:layout_above="@id/framentLayout"
+        />
     <RelativeLayout
-    android:orientation="vertical"
+
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/fragment_accueil_shape"
-    android:layout_marginLeft="50dp"
-    android:layout_marginRight="50dp"
-    android:layout_marginTop="110dp"
-    android:layout_marginBottom="110dp"
+
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="110dp"
+        android:layout_marginBottom="110dp"
+        android:id="@+id/framentLayout"
 
     >
 
@@ -44,25 +79,54 @@
         android:layout_height="wrap_content"
         android:textAllCaps="false"
         android:text=""
-        android:textColor="@color/vert"
+        android:textColor="#a55fc1"
         android:textSize="19sp"
         android:layout_toRightOf="@id/niveauText"
         android:layout_marginLeft="15dp"
         android:layout_alignBottom="@id/niveauText"
         />
 
+        <TextView
+            android:id="@+id/manquesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Manqués  "
+            android:layout_marginLeft="10dp"
+            android:textColor="#000"
+            android:layout_below="@id/niveauText"
+
+            android:textSize="18sp"
+
+
+            android:layout_marginTop="10dp"
+
+            />
+        <TextView
+            android:id="@+id/manquesValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#a55fc1"
+
+
+            android:layout_toRightOf="@id/manquesText"
+            android:textSize="18sp"
+            android:layout_alignBottom="@id/manquesText"
+
+            android:layout_marginTop="10dp"
+
+            />
 
     <TextView
         android:id="@+id/scoreText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Score : "
+        android:text="Score  "
         android:textColor="#000"
         android:layout_marginLeft="10dp"
 
-
+        android:layout_below="@id/manquesText"
         android:textSize="18sp"
-        android:layout_below="@id/niveauText"
+
 
         android:layout_marginTop="10dp"
 
@@ -74,43 +138,27 @@
         android:text=""
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@id/scoreText"
-        android:textColor="@color/vert"
-        android:textSize="18sp"
+        android:textColor="#a55fc1"
+        android:textSize="25sp"
 
         android:layout_alignBottom="@id/scoreText"
         android:layout_marginTop="10dp"
 
         />
+        <TextView
+            android:id="@+id/nbTotalResultats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
 
-    <TextView
-        android:id="@+id/manquesText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Manqués : "
-        android:layout_marginLeft="10dp"
-        android:textColor="#000"
+            android:layout_toRightOf="@id/scoreValue"
+            android:textColor="#a55fc1"
+            android:textSize="25sp"
 
+            android:layout_alignBottom="@id/scoreText"
+            android:layout_marginTop="10dp"
 
-        android:textSize="18sp"
-        android:layout_below="@id/scoreText"
-
-        android:layout_marginTop="10dp"
-
-        />
-    <TextView
-        android:id="@+id/manquesValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/vert"
-
-
-        android:layout_toRightOf="@id/manquesText"
-        android:textSize="18sp"
-       android:layout_alignBottom="@id/manquesText"
-
-        android:layout_marginTop="10dp"
-
-        />
+            />
 
 
 
@@ -123,6 +171,27 @@
        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         />
+        <TextView
+            android:id="@+id/textencouragement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:singleLine="false"
+            android:textColor="@color/vert"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_below="@id/trophy"
+            android:layout_marginTop="10dp"
+            android:text=""/>
+        <ImageView
+            android:id="@+id/emojiEncouragement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+          android:layout_below="@id/textencouragement"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+
+           />
         <TextView
             android:id="@+id/text100pourcent"
             android:layout_width="wrap_content"

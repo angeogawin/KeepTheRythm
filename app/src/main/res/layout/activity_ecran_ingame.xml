@@ -22,7 +22,9 @@
             android:layout_width="match_parent"
             android:minHeight="?android:attr/actionBarSize"
             android:background="#b3dee7"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" >
+
+      </android.support.v7.widget.Toolbar>
 
         <!-- This LinearLayout will be displayed below the Toolbar and contain our "main" views -->
 
@@ -68,7 +70,31 @@
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/nextTrophy"
                     android:layout_marginTop="5dp"/>
+                <TextView
+                    android:id="@+id/textBestScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Meilleur score"
+                    android:layout_toLeftOf="@id/bestScoreIngame"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:layout_alignBaseline="@id/score"
+
+                    android:layout_marginRight="5dp"/>
+                <TextView
+                    android:id="@+id/bestScoreIngame"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_toLeftOf="@id/textScore"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:layout_alignBaseline="@id/score"
+                    android:layout_marginBottom="2dp"
+
+                    android:layout_marginRight="10dp"/>
              <TextView
+                 android:id="@+id/textScore"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
                  android:text="Score"
@@ -138,6 +164,20 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textPerfect"
+                android:textSize="13sp"
+                android:textColor="#a55fc1"
+                android:layout_alignBottom="@id/go"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:text="Parfait!"
+                android:visibility="invisible"
+
+                />
+
 
            <!-- <ImageView
                 android:id="@+id/rondCentral"
@@ -160,6 +200,7 @@
                 android:layout_below="@id/go"
                 android:id="@+id/viewOverlay"
                 android:layout_marginTop="5dp"> </View>
+
             <android.gesture.GestureOverlayView
                 android:id="@+id/gOverlay"
                 android:layout_width="match_parent"
@@ -173,6 +214,7 @@
             android:background="#b3dee7"
 
             >
+
 
             </android.gesture.GestureOverlayView>
 

@@ -56,6 +56,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
@@ -98,6 +99,9 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 
+
+import com.appolica.flubber.Flubber;
+import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.plattysoft.leonids.ParticleSystem;
 
@@ -108,49 +112,23 @@ import static java.util.logging.Logger.global;
 public class InGame extends AppCompatActivity {//  implements OnGesturePerformedListener{
     Intent i;
     static final int READ_BLOCK_SIZE = 100;
-    static final int NUM_ITEMS = 50;
-    //   ImageFragmentPagerAdapter imageFragmentPagerAdapter;
-    ViewPager viewPager;
     private Toolbar mTopToolbar;
-    ActionBarDrawerToggle mDrawerToggle;
-    DrawerLayout mDrawer;
-    TextView messageTextView;
-    ListView mDrawerListView;
-    Boolean isDrawerOpen;
-    float x1, x2;
-    float y1, y2;
     static ArrayList<String> sequence;
     static int indiceActuelSequence;
-
-
-    static ImageView flecheactuelle;
-    static int dernierePositionConnue = 24;//on part de 0 donc à 25,positionActuelle=24
-    boolean leftToRight = false;
-    boolean rightToLeft = false;
     String dernierSymbole;
     ArrayList<Integer> listeTminToClick;//temps minimum pour chaque animation que le joueur doit attendre avant de cliquer , pour un bon timing
-    int tmin;
-
-    //private JazzyViewPager vpage;
 
     static StringModified derniereAction;//derniere action effectuée par joueur tap,cr,cl...
     long timeOfDerniereAction;
     int score;
+
     //View v;
     GestureOverlayView v;
     private GestureDetector mDetector;
     TextView scoreT;
-    int widthView;
-    int heightView;
-    private GestureLibrary gLibrary;
-    RelativeLayout symboleT;
-    RelativeLayout symboleUtilisateur;
     Chronometer mChronometer;
     Boolean elementActuelClickable;
     MediaPlayer mPlayer;
-
-
-    ArrayList<Integer> listeMusique;
 
     int indicesequence;
     int widthZoneJeu;
@@ -166,7 +144,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     String[] couples;
     ProgressBar progress;
     ArrayList<String> nom_txt;
-    int pos;
+    int pos;//commence à 1
 
     int media_length;
     boolean animationEstLancee;
@@ -178,13 +156,19 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     TextView nextPalierScore;
     ArrayList<Integer> listeIndicesActuels;
 
+
     ProgressDialog mProgressDialog;
+    TextView bestScore;
+    TextView textBestScore;
 
-
+    ScoreDAO scoreDAO;
+    TextView textPerfect;
+    Animation animBounce;
+    Toast toast;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        animBounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_ecran_ingame);
@@ -193,11 +177,25 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         zoneJeu = findViewById(R.id.zonejeu);
         listeImagesAnimationsActives = new ArrayList<>();
         listeIndicesActuels=new ArrayList<>();
+
         // rondCentral=(ImageView) findViewById(R.id.rondCentral);
         progress = findViewById(R.id.progress);
         nextTrophy=findViewById(R.id.nextTrophy);
-
+        toast = new Toast(InGame.this);
         nextPalierScore=findViewById(R.id.nextPalierScore);
+        textPerfect=findViewById(R.id.textPerfect);
+        bestScore=findViewById(R.id.bestScoreIngame);
+        textBestScore=findViewById(R.id.textBestScore);
+
+        bestScore.setVisibility(View.INVISIBLE);
+        textBestScore.setVisibility(View.INVISIBLE);
+        scoreDAO=new ScoreDAO(getApplicationContext());
+        if(!scoreDAO.obtenirScoreNiveau(String.valueOf(pos)).equals("")){
+            bestScore.setText(scoreDAO.obtenirScoreNiveau(String.valueOf(pos)));
+            bestScore.setVisibility(View.VISIBLE);
+            textBestScore.setVisibility(View.VISIBLE);
+
+        }
 
 
         animationEstLancee = false;
@@ -243,9 +241,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
         go.setOnClickListener(new View.OnClickListener() {
 
+
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 //  zoneJeu = (RelativeLayout)findViewById(R.id.bandeaupourfleche);
+
                 ViewTreeObserver vto = zoneJeu.getViewTreeObserver();
                 vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -266,8 +266,27 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)barregauche.getLayoutParams();
                 params.setMargins(70*widthZoneJeu/100, 0, 0, 0); //substitute parameters for left, top, right, bottom
                 barregauche.setLayoutParams(params);
+                mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    public void onCompletion(MediaPlayer mp) {
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                // Actions to do after 10 seconds
+                                Intent j = new Intent(getApplicationContext(), ResultatsPartie.class);
+                                j.putExtra("niveau", pos);
+                                j.putExtra("score", score);
+                                j.putExtra("nbTotalMvts", 2*couples.length);
+                                j.putExtra("manques", 2*couples.length - score);
+                                startActivity(j);
+                                mPlayer.release();
+                                toast.cancel();
+                            }
+                        }, 1000);
+
+                    }
+                });
                 lancerAnimation(sequence);
-                Handler handler = new Handler();
+               /* Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         // Actions to do after 10 seconds
@@ -275,7 +294,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                         mChronometer.start();
                         mPlayer.start();
                     }
-                }, 100);
+                }, 100);*/
 
             }
         });
@@ -347,38 +366,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         listeUrl.add("https://audionautix.com/Music/Whatdafunk.mp3");
 
 
-        /*listeMusique = new ArrayList<>();
-        // **** ajout des musiques
-        listeMusique.add(R.raw.mindmapthat_music_through_love);//niveau 1
-        listeMusique.add(R.raw.cdk_like_music_cdk_mix);//niveau 2
-        listeMusique.add(R.raw.alexberoza_good_day);//niveau 3
-        listeMusique.add(R.raw.abrighterheart);//niveau 4
-        listeMusique.add(R.raw.alla_what_parody);//niveau 5
-        listeMusique.add(R.raw.we_wish_you_a_merry_xmas);//niveau 6
-        listeMusique.add(R.raw.carol_of_the_bells);//niveau 7
-        listeMusique.add(R.raw.tobias_weber_between_worlds_instrumental);//niveau 8
-        listeMusique.add(R.raw.pool);//niveau 9
-        listeMusique.add(R.raw.rocker);//niveau 10
-        listeMusique.add(R.raw.there_you_go);//niveau 11
-        listeMusique.add(R.raw.jeffspeed68_two_pianos);//niveau 12
-        listeMusique.add(R.raw.adagioinc);//niveau 13
-        listeMusique.add(R.raw.the_voyage);//niveau 14
-        listeMusique.add(R.raw.hiphop);//niveau 15
-        listeMusique.add(R.raw.hansatom_persephone);//niveau 16
-        listeMusique.add(R.raw.joy_to_the_world);//niveau 17
-        listeMusique.add(R.raw.epicseries);//niveau 18
-        listeMusique.add(R.raw.bird_in_hand);//niveau 19
-        listeMusique.add(R.raw.ectoplasm);//niveau 20
-        listeMusique.add(R.raw.vj_memes_paint_the_sky);//niveau 21
-        listeMusique.add(R.raw.alison);//niveau 22
-        listeMusique.add(R.raw.piledriver);//niveau 23
-        listeMusique.add(R.raw.go_not_gently);//niveau 24
-        listeMusique.add(R.raw.djlang59_drops_of_h2o_the_filtered_water_treatment);//niveau 25
-        listeMusique.add(R.raw.leavinthelights);//niveau 26
-        listeMusique.add(R.raw.speck_moonlight_sonata_shifting_sun_mix);//niveau 27
-        listeMusique.add(R.raw.triangle);//niveau 28
-        listeMusique.add(R.raw.bigcartheft);//niveau 29
-        listeMusique.add(R.raw.what_da_funk);//niveau 30*/
+
 
         //chargement musique
         File mFolder = new File(getFilesDir() + "/Music");
@@ -387,9 +375,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
        if(file.exists()){
            //on recupère le fichier depuis le repertoire
            go.setVisibility(View.VISIBLE);
+
            mPlayer = MediaPlayer.create(this, Uri.parse(filePath));
 
        }
+
        else {
                 //on télécharge
 // instantiate it within the onCreate method
@@ -463,28 +453,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        // Make the hamburger button work
-//        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, R.string.app_name, R.string.app_name) {
-//            @Override
-//            public void onDrawerClosed(View drawerView) {
-//            }
-//
-//            @Override
-//            public void onDrawerOpened(View drawerView) {
-//            }
-//        };
-//        mDrawer.addDrawerListener(mDrawerToggle);
-//        mDrawerToggle.syncState();
-//
-//        // Change the TextView message when ListView item is clicked
-//        mDrawerListView = (ListView) findViewById(R.id.left_drawer);
-//        mDrawerListView.setOnItemClickListener(new ListView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                //    messageTextView.setText("Menu Item at position " + position + " clicked.");;
-//                mDrawer.closeDrawer(GravityCompat.START);
-//            }
-//        });
+
 
 
         derniereAction.setValueChangeListener(new StringModified.onValueChangeListener() {
@@ -522,13 +491,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                         //Toast.makeText(InGame.this, String.valueOf(elementActuelClickable), Toast.LENGTH_SHORT).show();
 
-                       // (zoneJeu.getChildAt(indiceActuelSequence)).clearAnimation();
-                     //   ((ImageView) (zoneJeu.getChildAt(indiceActuelSequence))).setVisibility(View.GONE);
-                        //     zoneJeu.removeViewAt(0);
-//                   Drawable d=((ImageView)(zoneJeu.getChildAt(0))).getDrawable();
-//                   ((ImageView)(zoneJeu.getChildAt(0))).setImageDrawable(trouverSymbole2( d));
                         dernierSymbole = (traiterSequences(sequences.get(pos - 1)).split(";")[listeIndicesActuels.get(0)]).split(":")[0];
-                        Toast.makeText(InGame.this, dernierSymbole, Toast.LENGTH_SHORT).show();
+
                         if (dernierSymbole.equals(derniereAction.getValeur())) {
 
                             //  Toast.makeText(InGame.this, "Amaz", Toast.LENGTH_SHORT).show();
@@ -536,15 +500,16 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                             if (listeIndicesActuels.get(0)<= couples.length - 1) {
 
-
-                                if (verifierBonRythmeJoueur()) {
+                                int precision=0;//1 correspond à perfect, 2 à normal et 0 à aucun rythme
+                                precision=verifierBonRythmeJoueur();
+                                if (precision!=0) {
 
                                     ImageView img = new ImageView(InGame.this);
 
                                     // give the drawble resource for the ImageView
                                     img.setImageResource(R.drawable.emoji_muscle);
                                     layout.addView(img);
-                                    Toast toast = new Toast(InGame.this); //context is object of Context write "this" if you are an Activity
+                                     toast = new Toast(InGame.this); //context is object of Context write "this" if you are an Activity
                                     // Set The layout as Toast View
                                     toast.setView(layout);
 
@@ -552,8 +517,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                     toast.setGravity(Gravity.TOP, 0, -80);
                                     toast.show();
 
-                                    actualiserScore();
-                                    progress.setProgress(score * 100 / couples.length);
+                                    actualiserScore(precision);
+                                    progress.setProgress(score * 100 / (2*couples.length));
                                     //actualiser score en conséquence
 
                                 }
@@ -567,6 +532,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                 //  mPlayer.stop();
                             }
                         } else {
+
                             ImageView img = new ImageView(InGame.this);
 
                             // give the drawble resource for the ImageView
@@ -575,7 +541,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                             // add both the Views TextView and ImageView in layout
                             layout.addView(img);
                             // add both the Views TextView and ImageView in layout
-                            Toast toast = new Toast(InGame.this); //context is object of Context write "this" if you are an Activity
+                             toast = new Toast(InGame.this); //context is object of Context write "this" if you are an Activity
                             // Set The layout as Toast View
                             toast.setView(layout);
 
@@ -584,28 +550,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                             toast.show();
                             //   Toast.makeText(InGame.this, "Erreur mouvement", Toast.LENGTH_SHORT).show();
 
-                            //fin jeu
-                            //zoneJeu.removeAllViews();
-                            //mPlayer.stop();
+
 
                         }
-                        //  (zoneJeu.getChildAt()).clearAnimation();
 
 
-
-
-
-//                else{
-//
-//                   Drawable d=((ImageView)(zoneJeu.getChildAt(0))).getDrawable();
-//                   ((ImageView)(zoneJeu.getChildAt(0))).setImageDrawable(trouverSymbole2( d));
-//                    Toast.makeText(InGame.this, "Erreur timing", Toast.LENGTH_SHORT).show();
-//                    //fin jeu
-//
-//                    mPlayer.stop();
-//                }
-
-                    // dernierSymbole = actualiserSymbole(flecheactuelle, sequence, indiceActuelSequence);
 
                         if (listeIndicesActuels.size() > 0) {
 
@@ -621,8 +570,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
         mDetector = new GestureDetector(this, new MyGestureListener());
 
-        // Add a touch listener to the view
-        // The touch listener passes all its events on to the gesture detector
+        // Add a touch1 listener to the view
+        // The touch1 listener passes all its events on to the gesture detector
 
         v.setOnTouchListener(touchListener);
         v.post(new Runnable() {
@@ -650,22 +599,28 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         });
 
         mImageView = new ImageView(getApplicationContext());
-       // mImageView.setImageDrawable(getDrawable(R.drawable.fleche_gauche4_vert));
-        //  mImageView.setVisibility(View.GONE);
-        //   zoneJeu.addView(mImageView);
+
 
     }
 
-    public boolean verifierBonRythmeJoueur() {
+    public int verifierBonRythmeJoueur() {
 
-        boolean aLeRythme = false;
+       int precision=0;
+
         int tempsCorrectPourActionEnRyhtme = Integer.valueOf(couples[listeIndicesActuels.get(0)].split(":")[1]);
+       // Toast.makeText(InGame.this, String.valueOf(SystemClock.elapsedRealtime() - mChronometer.getBase() - tempsCorrectPourActionEnRyhtme), Toast.LENGTH_LONG).show();
+        long diff=SystemClock.elapsedRealtime() - mChronometer.getBase() - tempsCorrectPourActionEnRyhtme;
 
-        if (Math.abs(SystemClock.elapsedRealtime() - mChronometer.getBase() - tempsCorrectPourActionEnRyhtme) < 1000) {
-            //1000 ms=1s
-            aLeRythme = true;
-        }
-        return aLeRythme;
+            if (Math.abs(diff) < 300 ) {
+                precision = 1;
+                //normal
+            } else if (Math.abs(diff)< 500) {
+                //1000 ms=1s
+                //perfect
+                precision = 2;
+            }
+
+        return precision;
     }
 
     @Override
@@ -680,10 +635,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     @Override
     protected void onPause() {
         super.onPause();
-        mPlayer.pause();
-        media_length = mPlayer.getCurrentPosition();
+        if(mPlayer!=null) {
+            mPlayer.pause();
+            media_length = mPlayer.getCurrentPosition();
 
-
+        }
     }
 
     @Override
@@ -697,6 +653,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             startActivity(i);
             finish();
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            toast.cancel();
 
 
 
@@ -705,8 +662,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         return super.onKeyDown(keyCode, event);
     }
 
-    // This touch listener passes everything on to the gesture detector.
-    // That saves us the trouble of interpreting the raw touch events
+    // This touch1 listener passes everything on to the gesture detector.
+    // That saves us the trouble of interpreting the raw touch1 events
     // ourselves.
     View.OnTouchListener touchListener = new View.OnTouchListener() {
         @Override
@@ -862,6 +819,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             } else {
                 //Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
                 go.setVisibility(View.VISIBLE);
+
                 File mFolder = new File(getFilesDir() + "/Music");
                 String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".mp3";
                 mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
@@ -899,10 +857,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             // .emit(x,y,5,1000);
 
             derniereAction.setVariable("tap");
-            // i.setImageDrawable(getDrawable(R.drawable.tap));
-            //symboleUtilisateur.removeAllViews();
-            // symboleUtilisateur.addView(i);
-            //  i.startAnimation(fadeOut);
+
             //  Toast.makeText(InGame.this, "tap", Toast.LENGTH_SHORT).show();
             return true;
         }
@@ -910,12 +865,9 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         @Override
         public void onLongPress(MotionEvent e) {
 
-            derniereAction.setVariable("touch");
-            //  i.setImageDrawable(getDrawable(R.drawable.touch));
-            //  symboleUtilisateur.removeAllViews();
-            // symboleUtilisateur.addView(i);
-            //  i.startAnimation(fadeOut);
-            //  Toast.makeText(InGame.this, "touch", Toast.LENGTH_SHORT).show();
+            derniereAction.setVariable("touch1");
+
+            //  Toast.makeText(InGame.this, "touch1", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -933,10 +885,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                 if (event2.getX() - event1.getX() > 0) {
                     derniereAction.setVariable("g");
-                    //  i.setImageDrawable(getDrawable(R.drawable.fleche_gauche4_vert));
-                    //   symboleUtilisateur.removeAllViews();
-                    //  symboleUtilisateur.addView(i);
-                    //   i.startAnimation(fadeOut);
+
                     //   Toast.makeText(InGame.this, "left", Toast.LENGTH_SHORT).show();
                     new ParticleSystem(InGame.this, 20, R.drawable.fleche_gauche3_vert, 30000)
                             .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
@@ -945,10 +894,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                             .oneShot(findViewById(R.id.gOverlay), 5);
                 } else if (event2.getX() - event1.getX() < 0) {
                     derniereAction.setVariable("d");
-                    //   i.setImageDrawable(getDrawable(R.drawable.fleche_droite4_vert));
-                    // symboleUtilisateur.removeAllViews();
-                    //   symboleUtilisateur.addView(i);
-                    //    i.startAnimation(fadeOut);
+
                     // Toast.makeText(InGame.this, "right", Toast.LENGTH_SHORT).show();
                     new ParticleSystem(InGame.this, 20, R.drawable.fleche_droite3_vert, 30000)
                             .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
@@ -961,10 +907,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 if (event2.getY() - event1.getY() > 0) {
 
                     derniereAction.setVariable("h");
-                    //     i.setImageDrawable(getDrawable(R.drawable.fleche_haut4_vert));
-                    //   symboleUtilisateur.removeAllViews();
-                    //   symboleUtilisateur.addView(i);
-                    //    i.startAnimation(fadeOut);
+
                     //    Toast.makeText(InGame.this, "up", Toast.LENGTH_SHORT).show();
                     new ParticleSystem(InGame.this, 20, R.drawable.fleche_haut3_vert, 30000)
                             .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
@@ -974,10 +917,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 } else if (event2.getY() - event1.getY() < 0) {
 
                     derniereAction.setVariable("b");
-                    //    i.setImageDrawable(getDrawable(R.drawable.fleche_bas4_vert));
-                    //    symboleUtilisateur.removeAllViews();
-                    //    symboleUtilisateur.addView(i);
-                    //  i.startAnimation(fadeOut);
+
                     //   Toast.makeText(InGame.this, "down", Toast.LENGTH_SHORT).show();
                     new ParticleSystem(InGame.this, 20, R.drawable.fleche_bas3_vert, 30000)
                             .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
@@ -1006,44 +946,86 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_pauseplay) {
-//            Toast.makeText(InGame.this, "Action clicked", Toast.LENGTH_LONG).show();
-//            return true;
-//        }
-//        } else if (id == R.id.action_stop) {
-//            if (mDrawer.isDrawerOpen(GravityCompat.START)) {
-//                mDrawer.closeDrawer(GravityCompat.START);
-//            } else {
-//                mDrawer.openDrawer(GravityCompat.START);
-//            }
-//
-//            return true;
-//        }
+
         return super.onOptionsItemSelected(item);
     }
 
 
-    public void identifierDerniereAction() {
 
-        //actualise string derniereAction;
-    }
+   public  class MyAnimatorListener implements Animation.AnimationListener {
 
-    public void actualiserScore() {
+
+
+
+
+
+
+       @Override
+       public void onAnimationStart(Animation animation) {
+
+       }
+
+       @Override
+       public void onAnimationEnd(Animation animation) {
+           textPerfect.setVisibility(View.INVISIBLE);
+       }
+
+       @Override
+       public void onAnimationRepeat(Animation animation) {
+
+       }
+   }
+
+    public void actualiserScore(int precision) {
         //actualise int score
+        if(precision==1){
+            //perfect
+            score+=2;
+            if(textPerfect.getVisibility()==View.INVISIBLE) {
+                textPerfect.setVisibility(View.VISIBLE);
+            }
+            MyAnimatorListener listener1=new MyAnimatorListener();
+            animBounce.setAnimationListener(listener1);
+            textPerfect.startAnimation(animBounce);
 
-        score += 1;
+                /*Flubber.with()
+                        .animation(Flubber.AnimationPreset.SLIDE_UP) // Slide up animation
+                        .repeatCount(0)
+                        // Repeat once
+
+                        .duration(500)
+                        // Last for 1000 milliseconds(1 second)
+                        .createFor(textPerfect)
+
+
+                        // Apply it to the view
+                        .start();*/
+
+
+           /* Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+
+                        textPerfect.setVisibility(View.INVISIBLE);
+
+                }
+            }, 1000);*/
+        }
+        else{
+            score += 1;
+        }
+
 
         scoreT.setText(String.valueOf(score));
 
-         if(score>=(int)(0.8*couples.length)){
+         if(score>=Math.round((int)(0.8*2*couples.length))){
             nextTrophy.setImageDrawable(getDrawable( R.drawable.trophy_or));
-            nextPalierScore.setText(String.valueOf(Math.round((int)(0.9*couples.length))));
+            nextPalierScore.setText(String.valueOf(Math.round((int)(0.9*2*couples.length))));
 
         }
-         else if(score>=(int)(0.7*couples.length)){
+         else if(score>=Math.round((int)(0.7*2*couples.length))){
              nextTrophy.setImageDrawable(getDrawable( R.drawable.trophy_argent));
-             nextPalierScore.setText(String.valueOf(Math.round((int)(0.8*couples.length))));
+             nextPalierScore.setText(String.valueOf(Math.round((int)(0.8*2*couples.length))));
 
          }
 
@@ -1054,7 +1036,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
     public ArrayList<String> genererSequenceAleatoire(int niveau) {
         ArrayList<String> sequence = new ArrayList<>();
-        //g: gauche d:droite, h:haut , b:bas tap: toucher bref, touch:toucher long, cl:circleleft,cr:circle right
+        //g: gauche d:droite, h:haut , b:bas tap: toucher bref, touch1:toucher long, cl:circleleft,cr:circle right
 
         if (niveau <= 5) {
             int longueur = 25;
@@ -1073,7 +1055,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         } else if (niveau <= 10) {
             int longueur = 35;
             for (int i = 0; i < longueur; i++) {
-                String[] chars = {"g", "d", "tap", "touch", "h", "b"};
+                String[] chars = {"g", "d", "tap", "touch1", "h", "b"};
                 double aleatoire = (Math.random());
                 if (aleatoire < 0.15) {
                     sequence.add(chars[0]);
@@ -1093,7 +1075,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         } else if (niveau <= 15) {
             int longueur = 55;
             for (int i = 0; i < longueur; i++) {
-                String[] chars = {"g", "d", "tap", "touch", "h", "b", "cr", "cl"};
+                String[] chars = {"g", "d", "tap", "touch1", "h", "b", "cr", "cl"};
                 double aleatoire = (Math.random());
                 if (aleatoire < 0.12) {
                     sequence.add(chars[0]);
@@ -1122,45 +1104,19 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         return sequence;
     }
 
-    public String actualiserSymbole(ImageView image, ArrayList<String> sequence, int indiceActuel) {
-        String directionFleche = sequence.get(indiceActuel);
-        if (sequence.get(indiceActuel).equals("g")) {
-            image.setImageDrawable(getDrawable(R.drawable.fleche_gauche2));
-        } else if (sequence.get(indiceActuel).equals("d")) {
-            image.setImageDrawable(getDrawable(R.drawable.fleche_droite2));
-        } else if (sequence.get(indiceActuel).equals("h")) {
-            image.setImageDrawable(getDrawable(R.drawable.fleche_haut2));
-        } else if (sequence.get(indiceActuel).equals("b")) {
-            image.setImageDrawable(getDrawable(R.drawable.fleche_bas2));
-        } else if (sequence.get(indiceActuel).equals("cr")) {
-            image.setImageDrawable(getDrawable(R.drawable.cr2));
-        } else if (sequence.get(indiceActuel).equals("cl")) {
-            image.setImageDrawable(getDrawable(R.drawable.cl));
-        } else if (sequence.get(indiceActuel).equals("tap")) {
-            image.setImageDrawable(getDrawable(R.drawable.tap));
-        } else if (sequence.get(indiceActuel).equals("touch")) {
-            image.setImageDrawable(getDrawable(R.drawable.touch));
-        }
 
-        return directionFleche;
-    }
 
 
     public void lancerAnimation(ArrayList<String> sequence) {
         indiceActuelSequence=0;
         v.setOnTouchListener(touchListener);
-//        mChronometer.setBase(SystemClock.elapsedRealtime());
-//        mChronometer.start();
-//        mPlayer.reset();
-//        mPlayer = MediaPlayer.create(this, listeMusique.get(pos - 1));
-//        mPlayer.start();
 
-        //zoneJeu.removeAllViews();
         zoneJeu.clearAnimation();
-        // sequenceARealiser = ReadTxt();
+
+
         sequenceARealiser = traiterSequences( sequences.get(pos - 1));
         couples = sequenceARealiser.split(";");
-        nextPalierScore.setText(String.valueOf (Math.round((int)(0.7*couples.length))));
+        nextPalierScore.setText(String.valueOf (Math.round((int)(0.7*2*couples.length))));
         nextTrophy.setImageDrawable(getDrawable(R.drawable.trophy_bronze));
         //   Toast.makeText(InGame.this, s, Toast.LENGTH_LONG).show();
         listeTminToClick = new ArrayList<>();
@@ -1173,15 +1129,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-
 
         int widthZoneJeu = zoneJeu.getWidth();
         int heightZoneJeu = zoneJeu.getHeight();
 
-        ArrayList<AnimationSet> listeAnimations = new ArrayList<>();
+
         int tempsDemarrageMusique=(int)((0.7*5000)-Integer.valueOf(couples[0].split(":")[1]));
+
 
         for (int j = 0; j < couples.length; j++) {
             indicesequence = j;
@@ -1217,64 +1171,17 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             // Génération des trajectoires des images
 
             //Determination du point de départ
-            int xDepart;
-            int yDepart;
 
-
-            Random n = new Random();
-            xDepart = n.nextInt(widthZoneJeu - 500) + 250;//n.nextInt(max-min)+min
-            n = new Random();
-            yDepart = n.nextInt(heightZoneJeu - 500) + 250;
-          //  i.setX(xDepart);
-            //i.setY(yDepart);
-            offset = Integer.valueOf(couples[j].split(":")[1]);
-
-            int dureeAnimation = 1000;//1s par defaut
-            if (j < couples.length - 1) {
-                //  if (Integer.valueOf(couples[j + 1].split(":")[1]) - offset < 1000) {
-                //on adapte la durée des animations lorsque le ryhtme s'accelere
-                dureeAnimation = Integer.valueOf(couples[j + 1].split(":")[1]) - offset;
-                //  }
-            }
-            Animation fadeIn = new AlphaAnimation(0, 1);
-            fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
-            fadeIn.setDuration( (dureeAnimation / 2));
-            fadeIn.setStartOffset(offset);
-            // fadeIn.setFillAfter(true);
-
-            Animation fadeOut = new AlphaAnimation(1, 0);
-            fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
-            fadeOut.setStartOffset(offset +  (dureeAnimation / 2));
-            fadeOut.setDuration( (dureeAnimation / 2));
-            // fadeOut.setFillAfter(true);
-
-            final AnimationSet animation = new AnimationSet(false); //change to false
-            animation.addAnimation(fadeIn);
-            animation.addAnimation(fadeOut);
-            animation.setFillAfter(true);
-
-            //  animation.setDuration(dureeAnimation);
-            //  i.setAnimation(animation);
-            //this.setAnimation(animation);
-            MyAnimationListener1 listener1 = new MyAnimationListener1();
-            listener1.addAction(symbole);
-            listener1.setImage(i);
-            listener1.setIndice(j);
-            animation.setAnimationListener(listener1);
-
-            listeAnimations.add(animation);
 
             zoneJeu.addView(i, j);
             i.setVisibility(View.INVISIBLE);
 
 
-            // i.startAnimation(animation);
-//            TranslateAnimation animate = new TranslateAnimation(0,zoneJeu.getWidth(),0,0);
+
 
             ValueAnimator va = ValueAnimator.ofFloat(0f, zoneJeu.getWidth());
             int mDuration = 5000; //in millis
             va.setDuration(mDuration);
-
             MyValueAnimatorListener listener = new MyValueAnimatorListener();
 
             listener.setIndice(j);
@@ -1291,25 +1198,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                         public void run() {
                             mChronometer.setBase(SystemClock.elapsedRealtime());
                             mChronometer.start();
-                          //  mPlayer.reset();
-                          //  mPlayer = MediaPlayer.create(getApplicationContext(), listeMusique.get(pos - 1));
-                            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                public void onCompletion(MediaPlayer mp) {
-                                    Handler handler = new Handler();
-                                    handler.postDelayed(new Runnable() {
-                                        public void run() {
-                                            // Actions to do after 10 seconds
-                                            Intent j = new Intent(getApplicationContext(), ResultatsPartie.class);
-                                            j.putExtra("niveau", pos);
-                                            j.putExtra("score", score);
-                                            j.putExtra("nbTotalMvts", couples.length);
-                                            j.putExtra("manques", couples.length - score);
-                                            startActivity(j);
-                                        }
-                                    }, 2000);
 
-                                }
-                            });
                             mPlayer.start();
                         }
                     }, tempsDemarrageMusique);
@@ -1325,6 +1214,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             else if(tempsDemarrageMusique<0){
 
                 if(j==0){
+
                     va.setStartDelay(-tempsDemarrageMusique);
 
                     Handler handler = new Handler();
@@ -1332,25 +1222,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                         public void run() {
                             mChronometer.setBase(SystemClock.elapsedRealtime());
                             mChronometer.start();
-                         //   mPlayer.reset();
-                         //   mPlayer = MediaPlayer.create(getApplicationContext(), listeMusique.get(pos - 1));
-                            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                public void onCompletion(MediaPlayer mp) {
-                                    Handler handler = new Handler();
-                                    handler.postDelayed(new Runnable() {
-                                        public void run() {
-                                            // Actions to do after 10 seconds
-                                            Intent j = new Intent(getApplicationContext(), ResultatsPartie.class);
-                                            j.putExtra("niveau", pos);
-                                            j.putExtra("score", score);
-                                            j.putExtra("nbTotalMvts", couples.length);
-                                            j.putExtra("manques", couples.length - score);
-                                            startActivity(j);
-                                        }
-                                    }, 2000);
 
-                                }
-                            });
+
                             mPlayer.start();
                         }
                     }, 0);
@@ -1361,29 +1234,14 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 }
 
             }
+
             va.start();
-//            else{
-//                animate.setStartOffset(offset-Integer.valueOf(couples[0].split(":")[1]));
-//            }
-//
-//            animate.setDuration(5000);
-//            animate.setFillAfter(true);
-//            i.startAnimation(animate);
 
 
 
 
 
 
-        }
-        // Toast.makeText(getApplicationContext(), String.valueOf(zoneJeu.getChildCount()), Toast.LENGTH_SHORT).show();
-        ArrayList<AnimationSet> anim2 = new ArrayList<>();
-        anim2 = listeAnimations;
-        List<Animator> mAnimatorList = new ArrayList<>();
-        RelativeLayout zoneJeuCopie = new RelativeLayout(getApplicationContext());
-        zoneJeuCopie = zoneJeu;
-        for (int q = 0; q < zoneJeuCopie.getChildCount(); q++) {
-         //   zoneJeu.getChildAt(q).startAnimation(anim2.get(q));
 
         }
 
@@ -1418,10 +1276,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             } else if (symbole.equals("tap")) {
                 retour = getDrawable(R.drawable.tap);
 
-            } //else if (symbole.equals("touch")) {
-//                retour = getDrawable(R.drawable.touch);
-//
-//            }
+            }
 
 
        }
@@ -1453,10 +1308,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             retour = getDrawable(R.drawable.cl);
 
         } else if (areDrawablesIdentical(d,getDrawable(R.drawable.tap))) {
-            retour = getDrawable(R.drawable.touch);
-
-        } else if (d.getConstantState().equals(getDrawable(R.drawable.touch).getConstantState())) {
-          //  retour = getDrawable(R.drawable.touch);
+            retour = getDrawable(R.drawable.touch1);
 
         }
 
@@ -1588,7 +1440,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                // animation.cancel();
             }
 
-            else if((float)animation.getAnimatedValue()>=0.65*zoneJeu.getWidth()){
+            else if((float)animation.getAnimatedValue()>=0.66*zoneJeu.getWidth()){
                 if(!dejaActualise) {
 
 
@@ -1615,87 +1467,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         }
 
     }
-    public class MyAnimationListener1 implements Animation.AnimationListener {
-        ImageView view;
-        int indiceVue;
-        String symbole;
 
-        public void setImage(ImageView view) {
-            this.view = view;
-        }
-
-        public void addAction(String symbole) {
-
-
-            this.symbole = symbole;
-        }
-
-        public void setIndice(int indice) {
-            this.indiceVue = indice;
-        }
-
-        public void onAnimationEnd(Animation animation) {
-
-
-// Do whatever you want
-            if (zoneJeu.getChildCount() > 1 && zoneJeu.getChildAt(0).getClass()==ImageView.class) {
-                zoneJeu.removeViewAt(0);
-            }
-            listeImagesAnimationsActives.remove(symbole);
-            indiceActuelSequence++;
-            if (indiceActuelSequence < couples.length) {
-                dernierSymbole = (ReadTxt().split(";")[indiceActuelSequence]).split(":")[0];
-            }
-
-           // if (animation.hasEnded()) {
-
-//                new Handler(Looper.getMainLooper()).post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        // remove fragment from here
-
-                        if (zoneJeu.getChildCount() > 1 && zoneJeu.getChildAt(0).getClass() == ImageView.class) {
-                            //zoneJeu.removeViewAt(0);
-                            indiceActuelSequence++;
-
-                            //if(zoneJeu.getChildAt(0).getClass()==ImageView.class){
-
-
-                            if (indiceActuelSequence < couples.length) {
-                                Drawable d = ((ImageView) (zoneJeu.getChildAt(indiceActuelSequence))).getDrawable();
-                                ((ImageView) (zoneJeu.getChildAt(indiceActuelSequence))).setImageDrawable(trouverSymbole2(d));
-                                dernierSymbole = (traiterSequences( sequences.get(pos - 1)).split(";")[indiceActuelSequence]).split(":")[0];
-                            } else {
-                                dernierSymbole = "";
-                                listeImagesAnimationsActives.clear();
-
-                                v.setOnTouchListener(null);
-
-
-
-
-
-                            }
-                        }
-           //         }
-                    //  }
-           //     });
-         //   }
-
-        }
-        public void onAnimationRepeat(Animation animation) {
-        }
-
-        public void onAnimationStart(Animation animation) {
-            listeImagesAnimationsActives.add(symbole);
-            zoneJeu.getChildAt(indiceVue).setVisibility(View.VISIBLE);
-
-            zoneJeu.invalidate();
-
-
-
-        }
-    }
 }
 /*
 public class InGame extends AppCompatActivity {//implements OnGesturePerformedListener{
@@ -1869,8 +1641,8 @@ public class InGame extends AppCompatActivity {//implements OnGesturePerformedLi
 
         mDetector = new GestureDetector(this, new MyGestureListener());
 
-        // Add a touch listener to the view
-        // The touch listener passes all its events on to the gesture detector
+        // Add a touch1 listener to the view
+        // The touch1 listener passes all its events on to the gesture detector
         v.setOnTouchListener(touchListener);
         v.post(new Runnable() {
             @Override
@@ -1894,8 +1666,8 @@ public class InGame extends AppCompatActivity {//implements OnGesturePerformedLi
         return super.onKeyDown(keyCode, event);
     }
 
-    // This touch listener passes everything on to the gesture detector.
-    // That saves us the trouble of interpreting the raw touch events
+    // This touch1 listener passes everything on to the gesture detector.
+    // That saves us the trouble of interpreting the raw touch1 events
     // ourselves.
     View.OnTouchListener touchListener = new View.OnTouchListener() {
         @Override
@@ -1972,14 +1744,14 @@ public class InGame extends AppCompatActivity {//implements OnGesturePerformedLi
                 public void onAnimationStart(Animation animation) {
                 }
             });
-            derniereAction.setVariable("touch");
+            derniereAction.setVariable("touch1");
             timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
-            coupleMvtTemps+="touch:" + String.valueOf(timeOfDerniereAction)+";";
-            i.setImageDrawable(getDrawable(R.drawable.touch));
+            coupleMvtTemps+="touch1:" + String.valueOf(timeOfDerniereAction)+";";
+            i.setImageDrawable(getDrawable(R.drawable.touch1));
           //  symboleUtilisateur.removeAllViews();
           //  symboleUtilisateur.addView(i);
             i.startAnimation(fadeOut);
-            //  Toast.makeText(InGame.this, "touch", Toast.LENGTH_SHORT).show();
+            //  Toast.makeText(InGame.this, "touch1", Toast.LENGTH_SHORT).show();
         }
 
         @Override

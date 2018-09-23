@@ -20,6 +20,13 @@ android {
 }
 
 dependencies {
+    def htextview_version = "0.1.6"
+
+    implementation "com.hanks:htextview-base:$htextview_version"        // base library
+
+    implementation 'com.appolica:flubber:1.0.1'
+    implementation "com.hanks:htextview-typer:$htextview_version"       // optional
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.1.1'
     testImplementation 'junit:junit:4.12'
@@ -30,4 +37,8 @@ dependencies {
     implementation 'nl.dionsegijn:konfetti:1.1.0'
     implementation 'com.github.lzyzsd:circleprogress:1.2.1'
 
+}
+configurations {
+    cleanedAnnotations
+    compile.exclude group: 'org.jetbrains' , module:'annotations'
 }

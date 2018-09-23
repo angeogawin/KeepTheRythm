@@ -91,15 +91,16 @@ public class EcranAccueil extends AppCompatActivity {
 
         sharedPreferences
                 .edit()
-                .putInt("niveau_max_jouable",5)
+                .putInt("niveau_max_jouable",3)
                 .apply();
         if(sharedPreferences.contains("niveau_max_atteint")){
-            viewPager.setCurrentItem(sharedPreferences.getInt("niveau_max_atteint",0)-1);
-            if(sharedPreferences.getInt("niveau_max_atteint",0)>=5){
+            viewPager.setCurrentItem(sharedPreferences.getInt("niveau_max_atteint",0)-2);
+            if(sharedPreferences.getInt("niveau_max_atteint",0)>=sharedPreferences.getInt("niveau_max_jouable",0) && aJoueTousLesNiveauxDeverouille(sharedPreferences.getInt("niveau_max_atteint",0)-1)){
+
 
                 sharedPreferences
                         .edit()
-                        .putInt("niveau_max_jouable",sharedPreferences.getInt("niveau_max_atteint",0)+1)
+                        .putInt("niveau_max_jouable",sharedPreferences.getInt("niveau_max_atteint",0)+2)
                         .apply();
             }
 
@@ -121,7 +122,7 @@ public class EcranAccueil extends AppCompatActivity {
                 // Check if this is the page you want.
 
                 i.putExtra("niveau",position+1);
-               /* sharedPreferences = getApplicationContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
+                sharedPreferences = getApplicationContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
                 if(sharedPreferences.contains("niveau_max_jouable")) {
                     if (position + 1 > sharedPreferences.getInt("niveau_max_jouable", 0)) {
                         if (btnJouer.isClickable()) {
@@ -139,7 +140,7 @@ public class EcranAccueil extends AppCompatActivity {
                     }
 
 
-                }*/
+                }
             }
         });
 
@@ -181,7 +182,7 @@ public class EcranAccueil extends AppCompatActivity {
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
                     sendIntent.putExtra(Intent.EXTRA_TEXT,
-                            "Hey check out my app at: https://play.google.com/store/apps/details?id=com.google.android.apps.plus");
+                            "https://play.google.com/store/apps/details?id=com.google.android.apps.plus");
                     sendIntent.setType("text/plain");
                     startActivity(sendIntent);
                 }
@@ -234,6 +235,19 @@ public class EcranAccueil extends AppCompatActivity {
         // setting exit fade animation duration to 2 seconds
         animationDrawable.setExitFadeDuration(2000);
 
+    }
+
+    public boolean aJoueTousLesNiveauxDeverouille(int niveauMax){
+
+        boolean retour=true;
+
+        for(int i=1;i<=niveauMax;i++){
+            if(!sharedPreferences.contains("trophy_niveau"+String.valueOf(i))){
+                retour=false;
+                return  retour;
+            }
+        }
+        return retour;
     }
 
     @Override
@@ -357,16 +371,16 @@ public class EcranAccueil extends AppCompatActivity {
             liste_titre.add("Music Through Love - Kara Square");
             liste_titre.add("Like Music (cdk Mix) - Analog By Nature");
             liste_titre.add("Good Day - Alex Beroza");
-            liste_titre.add("A Brighter Heart - Audinautix");
+            liste_titre.add("A Brighter Heart - Audionautix");
             liste_titre.add("Alla What Parody - Audionautix");
             liste_titre.add("We wish you a merry Xmas - Audionautix");
             liste_titre.add("Carol of the bells - Audionautix");
             liste_titre.add("Between worlds instrumental - Tobias Weber");
-            liste_titre.add("Pool - Audinautix");
+            liste_titre.add("Pool - Audionautix");
             liste_titre.add("Rocker - Audionautix");
             liste_titre.add("There you go - Audionautix");
             liste_titre.add("Two Pianos (ft. Admiral Bob (admiralbob77)) - Stefan Kartenberg");
-            liste_titre.add("Adagio -Audinautix");
+            liste_titre.add("Adagio -Audionautix");
             liste_titre.add("The Voyage - Audionautix");
             liste_titre.add("Hip Hop - Audionautix");
             liste_titre.add("Persephone - Hans Atom");
@@ -431,15 +445,15 @@ public class EcranAccueil extends AppCompatActivity {
                 couples = sequenceARealiser.split(";");
                 int nbTotalMvts = couples.length;
                 TextView nbTotal = swipeView.findViewById(R.id.nbTotal);
-                nbTotal.setText(" / " + String.valueOf(nbTotalMvts));
+                nbTotal.setText(" / " + String.valueOf(2*nbTotalMvts));
 
                 TextView scoreOr=swipeView.findViewById(R.id.scoreOr);
                 TextView scoreAr=swipeView.findViewById(R.id.scoreArgent);
                 TextView scoreBr=swipeView.findViewById(R.id.scoreBronze);
 
-                int sOr=Math.round( (90*nbTotalMvts/100));
-                int sAr=Math.round( (80*nbTotalMvts/100));
-                int sBr=Math.round ( (70*nbTotalMvts/100));
+                int sOr=Math.round( (90*2*nbTotalMvts/100));
+                int sAr=Math.round( (80*2*nbTotalMvts/100));
+                int sBr=Math.round ( (70*2*nbTotalMvts/100));
                 scoreOr.setText(String.valueOf(sOr));
                 scoreAr.setText(String.valueOf(sAr));
                 scoreBr.setText(String.valueOf(sBr));
