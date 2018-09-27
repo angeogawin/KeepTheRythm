@@ -155,6 +155,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     View barregauche;
     TextView nextPalierScore;
     ArrayList<Integer> listeIndicesActuels;
+    ArrayList<Boolean> listePerfect;
 
 
     ProgressDialog mProgressDialog;
@@ -177,6 +178,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         zoneJeu = findViewById(R.id.zonejeu);
         listeImagesAnimationsActives = new ArrayList<>();
         listeIndicesActuels=new ArrayList<>();
+        listePerfect=new ArrayList<>();
 
         // rondCentral=(ImageView) findViewById(R.id.rondCentral);
         progress = findViewById(R.id.progress);
@@ -611,13 +613,21 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
        // Toast.makeText(InGame.this, String.valueOf(SystemClock.elapsedRealtime() - mChronometer.getBase() - tempsCorrectPourActionEnRyhtme), Toast.LENGTH_LONG).show();
         long diff=SystemClock.elapsedRealtime() - mChronometer.getBase() - tempsCorrectPourActionEnRyhtme;
 
-            if (Math.abs(diff) < 300 ) {
+            /*if (Math.abs(diff) < 300 ) {
                 precision = 1;
                 //normal
             } else if (Math.abs(diff)< 500) {
                 //1000 ms=1s
                 //perfect
                 precision = 2;
+            }*/
+            if(listePerfect.get(listeIndicesActuels.get(0))==true){
+                //perfect
+                precision=1;
+            }
+            else{
+                //normal
+                precision=2;
             }
 
         return precision;
@@ -978,15 +988,25 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
     public void actualiserScore(int precision) {
         //actualise int score
+        MyAnimatorListener listener1=new MyAnimatorListener();
+        animBounce.setAnimationListener(listener1);
         if(precision==1){
             //perfect
             score+=2;
-            if(textPerfect.getVisibility()==View.INVISIBLE) {
+          //  if(textPerfect.getVisibility()==View.INVISIBLE) {
+                textPerfect.setText("Parfait!");
+                textPerfect.setTextColor(getResources().getColor(R.color.colorPurple_A400));
                 textPerfect.setVisibility(View.VISIBLE);
-            }
-            MyAnimatorListener listener1=new MyAnimatorListener();
-            animBounce.setAnimationListener(listener1);
+          //  }
+
             textPerfect.startAnimation(animBounce);
+            zoneJeu.getChildAt(listeIndicesActuels.get(0)).setBackground(getDrawable(R.drawable.emoji_muscle));
+           /* Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
+                }
+            }, 200);*/
 
                 /*Flubber.with()
                         .animation(Flubber.AnimationPreset.SLIDE_UP) // Slide up animation
@@ -1011,8 +1031,23 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 }
             }, 1000);*/
         }
-        else{
+        else if(precision==2){
             score += 1;
+         //   if(textPerfect.getVisibility()==View.INVISIBLE) {
+                textPerfect.setText("Cool!");
+                textPerfect.setTextColor(getResources().getColor(R.color.colorAccent));
+                textPerfect.setVisibility(View.VISIBLE);
+
+        //    }
+
+            textPerfect.startAnimation(animBounce);
+           /* zoneJeu.getChildAt(listeIndicesActuels.get(0)).setBackground(getDrawable(R.drawable.emoji_langue));
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
+                }
+            }, 0);*/
         }
 
 
@@ -1138,6 +1173,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
         for (int j = 0; j < couples.length; j++) {
+            listePerfect.add(j,false);
             indicesequence = j;
             String symbole = couples[j].split(":")[0];
             // Toast.makeText(InGame.this, symbole, Toast.LENGTH_LONG).show();
@@ -1150,17 +1186,17 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 i.setImageDrawable(trouverSymbole(symbole, "vert"));
             }
 
-            if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.tap))){
+            if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_bas4_vert))){
                 i.setY(10*heightZoneJeu/100);
             }
 
             else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_gauche4_vert))){
                 i.setY(25*heightZoneJeu/100);
             }
-            else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_droite4_vert))){
+            else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.tap))){
                 i.setY(40*heightZoneJeu/100);
             }
-            else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_bas4_vert))){
+            else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_droite4_vert))){
                 i.setY(55*heightZoneJeu/100);
             }
             else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_haut4_vert))){
@@ -1411,6 +1447,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         boolean dejaActualise=false;
         boolean dejaSupprime=false;
         boolean vueRendueVisible=false;
+        boolean dejaPasseNormal=false;
 
         public void setDrawable(Drawable d){
             this.d=d;
@@ -1430,6 +1467,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     if (listeIndicesActuels.size() > 0 ) {
                         listeIndicesActuels.remove(Integer.valueOf(indiceVue));
                         dejaSupprime = true;
+
                     }
                     zoneJeu.getChildAt(indiceVue).setVisibility(View.GONE);
                     animation.removeAllUpdateListeners();
@@ -1438,6 +1476,14 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                // indiceActuelSequence++;
                // animation.cancel();
+            }
+
+            else if((float)animation.getAnimatedValue()>=0.80*zoneJeu.getWidth()){
+                if(!dejaPasseNormal){
+
+                    listePerfect.set(indiceVue,false);
+                    dejaPasseNormal=true;
+                }
             }
 
             else if((float)animation.getAnimatedValue()>=0.66*zoneJeu.getWidth()){
@@ -1451,6 +1497,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                            //dernierSymbole = (traiterSequences(sequences.get(pos - 1)).split(";")[indiceVue]).split(":")[0];
 
                            listeIndicesActuels.add(indiceVue);
+                           listePerfect.set(indiceVue,true);
 
                            dejaActualise=true;
                        }

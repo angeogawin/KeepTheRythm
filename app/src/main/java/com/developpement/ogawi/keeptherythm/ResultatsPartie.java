@@ -106,6 +106,7 @@ public class ResultatsPartie  extends AppCompatActivity {
             if(score>=sOr){
                 //trophee or
                 trophee.setImageDrawable(getResources().getDrawable(R.drawable.cup_gold));
+
                 sharedPreferences
                         .edit()
                         .putString("trophy_niveau"+String.valueOf(niveau),"or")
@@ -134,10 +135,20 @@ public class ResultatsPartie  extends AppCompatActivity {
            else if(score>=sAr){
                 //trophee argent
                 trophee.setImageDrawable(getResources().getDrawable(R.drawable.cup_silver));
-                sharedPreferences
-                        .edit()
-                        .putString("trophy_niveau"+String.valueOf(niveau),"argent")
-                        .apply();
+                if(sharedPreferences.contains("trophy_niveau"+String.valueOf(niveau))){
+                    if(sharedPreferences.getString("trophy_niveau"+String.valueOf(niveau),"").equals("bronze")){
+                        sharedPreferences
+                                .edit()
+                                .putString("trophy_niveau"+String.valueOf(niveau),"argent")
+                                .apply();
+                    }
+                }
+                else {
+                    sharedPreferences
+                            .edit()
+                            .putString("trophy_niveau" + String.valueOf(niveau), "argent")
+                            .apply();
+                }
             }
 
 
@@ -145,10 +156,13 @@ public class ResultatsPartie  extends AppCompatActivity {
                 //trophee bronze
 
                 trophee.setImageDrawable(getResources().getDrawable(R.drawable.cup_bronze));
-                sharedPreferences
-                        .edit()
-                        .putString("trophy_niveau"+String.valueOf(niveau),"bronze")
-                        .apply();
+                if(!sharedPreferences.contains("trophy_niveau"+String.valueOf(niveau))){
+                    sharedPreferences
+                            .edit()
+                            .putString("trophy_niveau" + String.valueOf(niveau), "bronze")
+                            .apply();
+                }
+
 
 
             }
