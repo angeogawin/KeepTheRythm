@@ -138,19 +138,51 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@id/gOverlay"
-                android:layout_below="@id/zoneScore"
+                android:layout_below="@id/progress"
                 >
-                <LinearLayout
+                <View
+                    android:id="@+id/barreHorizontale1"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_height="1dp"
+
+                    android:elevation="-2dp"
+                    android:visibility="invisible"
+                    android:background="@color/cyan"
+                    />
+                <View
+                    android:id="@+id/barreHorizontale2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:elevation="-2dp"
+                    android:visibility="invisible"
+                    android:background="@color/cyan"
+                    />
+                <View
+                    android:id="@+id/barreHorizontale3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:elevation="-2dp"
+                    android:visibility="invisible"
+                    android:background="@color/cyan"
+                    />
+                <View
+                    android:id="@+id/barreHorizontale4"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:elevation="-2dp"
+                    android:visibility="invisible"
+                    android:background="@color/cyan"
+                    />
+
                 <View
                     android:id="@+id/barrelimitegauche"
                     android:layout_width="1dp"
                     android:layout_height="fill_parent"
+                    android:elevation="-2dp"
+                    android:visibility="invisible"
+                    android:background="@color/vert"
+                    />
 
-                    android:background="#b3dee7"
-                    /></LinearLayout>
             </RelativeLayout>
 
 
@@ -197,9 +229,9 @@
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/go"
+                android:layout_below="@id/zonejeu"
                 android:id="@+id/viewOverlay"
-                android:layout_marginTop="5dp"> </View>
+                android:layout_marginTop="0dp"> </View>
 
             <android.gesture.GestureOverlayView
                 android:id="@+id/gOverlay"
@@ -208,7 +240,8 @@
                  android:gestureColor="#0000"
                 android:gestureStrokeType="single"
                 android:layout_below="@id/go"
-                android:layout_marginTop="5dp"
+                android:visibility="invisible"
+                android:layout_marginTop="0dp"
 
 
             android:background="#b3dee7"

@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
 import com.github.lzyzsd.circleprogress.DonutProgress;
@@ -88,14 +89,17 @@ public class EcranAccueil extends AppCompatActivity {
 
 
         sharedPreferences = getApplicationContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
+        if(!sharedPreferences.contains("niveau_max_jouable")){
+            sharedPreferences
+                    .edit()
+                    .putInt("niveau_max_jouable",3)
+                    .apply();
+        }
 
-        sharedPreferences
-                .edit()
-                .putInt("niveau_max_jouable",3)
-                .apply();
         if(sharedPreferences.contains("niveau_max_atteint")){
-            viewPager.setCurrentItem(sharedPreferences.getInt("niveau_max_atteint",0)-2);
-            if(sharedPreferences.getInt("niveau_max_atteint",0)>=sharedPreferences.getInt("niveau_max_jouable",0) && aJoueTousLesNiveauxDeverouille(sharedPreferences.getInt("niveau_max_atteint",0)-1)){
+            viewPager.setCurrentItem(sharedPreferences.getInt("niveau_max_atteint",0)-1);
+            Toast.makeText(EcranAccueil.this, String.valueOf(aJoueTousLesNiveauxDeverouille(sharedPreferences.getInt("niveau_max_atteint",0))), Toast.LENGTH_SHORT).show();
+            if(sharedPreferences.getInt("niveau_max_atteint",0)>=sharedPreferences.getInt("niveau_max_jouable",0) && aJoueTousLesNiveauxDeverouille(sharedPreferences.getInt("niveau_max_atteint",0))){
 
 
                 sharedPreferences

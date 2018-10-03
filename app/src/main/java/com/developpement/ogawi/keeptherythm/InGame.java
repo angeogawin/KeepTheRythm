@@ -48,6 +48,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
@@ -123,7 +124,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     int score;
 
     //View v;
-    GestureOverlayView v;
+    GestureOverlayView vOverlay;
     private GestureDetector mDetector;
     TextView scoreT;
     Chronometer mChronometer;
@@ -153,6 +154,10 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
     ImageView nextTrophy;
     View barregauche;
+    View barreHorizontal1;
+    View barreHorizontal2;
+    View barreHorizontal3;
+    View barreHorizontal4;
     TextView nextPalierScore;
     ArrayList<Integer> listeIndicesActuels;
     ArrayList<Boolean> listePerfect;
@@ -179,7 +184,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         listeImagesAnimationsActives = new ArrayList<>();
         listeIndicesActuels=new ArrayList<>();
         listePerfect=new ArrayList<>();
-
+        vOverlay = (GestureOverlayView) findViewById(R.id.gOverlay);
         // rondCentral=(ImageView) findViewById(R.id.rondCentral);
         progress = findViewById(R.id.progress);
         nextTrophy=findViewById(R.id.nextTrophy);
@@ -264,10 +269,30 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 go.setVisibility(View.INVISIBLE);
                 // rondCentral.setVisibility(View.VISIBLE);
                 barregauche=findViewById(R.id.barrelimitegauche);
-
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)barregauche.getLayoutParams();
+                barreHorizontal1=findViewById(R.id.barreHorizontale1);
+                barreHorizontal2=findViewById(R.id.barreHorizontale2);
+                barreHorizontal3=findViewById(R.id.barreHorizontale3);
+                barreHorizontal4=findViewById(R.id.barreHorizontale4);
+               RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)barregauche.getLayoutParams();
                 params.setMargins(70*widthZoneJeu/100, 0, 0, 0); //substitute parameters for left, top, right, bottom
+                RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams)barreHorizontal1.getLayoutParams();
+                params1.setMargins(0, 20*heightZoneJeu/100, 0, 0);
+                RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams)barreHorizontal2.getLayoutParams();
+                params2.setMargins(0, 35*heightZoneJeu/100, 0, 0);
+                RelativeLayout.LayoutParams params3 = (RelativeLayout.LayoutParams)barreHorizontal3.getLayoutParams();
+                params3.setMargins(0, 50*heightZoneJeu/100, 0, 0);
+                RelativeLayout.LayoutParams params4 = (RelativeLayout.LayoutParams)barreHorizontal4.getLayoutParams();
+                params4.setMargins(0, 65*heightZoneJeu/100, 0, 0);
                 barregauche.setLayoutParams(params);
+                barreHorizontal1.setLayoutParams(params1);
+                barreHorizontal2.setLayoutParams(params2);
+                barreHorizontal3.setLayoutParams(params3);
+                barregauche.getLayoutParams().width=10*widthZoneJeu/100;
+                barregauche.setVisibility(View.VISIBLE);
+                barreHorizontal1.setVisibility(View.VISIBLE);
+                barreHorizontal2.setVisibility(View.VISIBLE);
+                barreHorizontal3.setVisibility(View.VISIBLE);
+                barreHorizontal4.setVisibility(View.VISIBLE);
                 mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     public void onCompletion(MediaPlayer mp) {
                         Handler handler = new Handler();
@@ -297,6 +322,29 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                         mPlayer.start();
                     }
                 }, 100);*/
+// previously invisible view
+
+
+// Check if the runtime version is at least Lollipop
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    // get the center for the clipping circle
+                    int cx =vOverlay.getWidth() / 2;
+                    int cy = vOverlay.getHeight() / 2;
+
+                    // get the final radius for the clipping circle
+                    float finalRadius = (float) Math.hypot(cx, cy);
+
+                    // create the animator for this view (the start radius is zero)
+                    Animator anim =
+                            ViewAnimationUtils.createCircularReveal(vOverlay, cx, cy, 0, finalRadius);
+
+                    // make the view visible and start the animation
+                    vOverlay.setVisibility(View.VISIBLE);
+                    anim.start();
+                } else {
+                    // set the view to visible without a circular reveal animation below Lollipop
+                    vOverlay.setVisibility(View.VISIBLE);
+                }
 
             }
         });
@@ -429,7 +477,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         timeOfDerniereAction = 0;
         //symboleT=(RelativeLayout) findViewById(R.id.symbole);
         //  symboleUtilisateur=(RelativeLayout) findViewById( R.id.symboleMis);
-        v = (GestureOverlayView) findViewById(R.id.gOverlay);
+
         scoreT = (TextView) findViewById(R.id.score);
         scoreT.setText(String.valueOf(score));
         elementActuelClickable = false;//vaut true s'il ya des mouvements affichés surl'ecran
@@ -575,8 +623,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         // Add a touch1 listener to the view
         // The touch1 listener passes all its events on to the gesture detector
 
-        v.setOnTouchListener(touchListener);
-        v.post(new Runnable() {
+        vOverlay.setOnTouchListener(touchListener);
+        vOverlay.post(new Runnable() {
             @Override
             public void run() {
                 //zoneJeu= findViewById(R.id.bandeaupourfleche);
@@ -1144,7 +1192,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
     public void lancerAnimation(ArrayList<String> sequence) {
         indiceActuelSequence=0;
-        v.setOnTouchListener(touchListener);
+        vOverlay.setOnTouchListener(touchListener);
 
         zoneJeu.clearAnimation();
 
@@ -1191,16 +1239,16 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             }
 
             else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_gauche4_vert))){
-                i.setY(25*heightZoneJeu/100);
+                i.setY(21*heightZoneJeu/100);
             }
             else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.tap))){
                 i.setY(40*heightZoneJeu/100);
             }
             else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_droite4_vert))){
-                i.setY(55*heightZoneJeu/100);
+                i.setY(51*heightZoneJeu/100);
             }
             else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_haut4_vert))){
-                i.setY(70*heightZoneJeu/100);
+                i.setY(67*heightZoneJeu/100);
             }
             // Toast.makeText(this, String.valueOf(width), Toast.LENGTH_SHORT).show();
 
@@ -1210,6 +1258,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
             zoneJeu.addView(i, j);
+
             i.setVisibility(View.INVISIBLE);
 
 

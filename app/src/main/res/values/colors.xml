@@ -26,5 +26,6 @@
     <!-- 4th Gradient color -->
     <color name="colorRed_A400">#FF1744</color>
     <color name="colorRed_900">#B71C1C</color>
+    <color name="cyan">#b3dee7</color>
     <!-- ./ 4th Gradient color -->
 </resources>
