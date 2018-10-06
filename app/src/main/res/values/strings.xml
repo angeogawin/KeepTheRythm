@@ -8,6 +8,7 @@
         <item>A propos</item>
         <item>Conditions d\'utilisation</item>
         <item>Politique de confidentialité</item>
+
     </string-array>
     <string-array name="menustop">
         <item>Stopper la partie</item>

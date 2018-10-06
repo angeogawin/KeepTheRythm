@@ -125,6 +125,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
     //View v;
     GestureOverlayView vOverlay;
+
     private GestureDetector mDetector;
     TextView scoreT;
     Chronometer mChronometer;
@@ -171,6 +172,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     TextView textPerfect;
     Animation animBounce;
     Toast toast;
+    Boolean actualiserTrophy;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,6 +195,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         textPerfect=findViewById(R.id.textPerfect);
         bestScore=findViewById(R.id.bestScoreIngame);
         textBestScore=findViewById(R.id.textBestScore);
+        actualiserTrophy=false;
 
         bestScore.setVisibility(View.INVISIBLE);
         textBestScore.setVisibility(View.INVISIBLE);
@@ -524,11 +527,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 //                } else {
 //                    elementActuelClickable = false;
 //                }
-                if (listeIndicesActuels.size() > 0) {
+               /* if (listeIndicesActuels.size() > 0) {
                     zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
 
 
-                }
+                }*/
 
 
                     if (listeIndicesActuels.size()>0) {
@@ -572,6 +575,14 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                     //actualiser score en conséquence
 
                                 }
+                                else{
+                                    if (listeIndicesActuels.size() > 0) {
+
+                                          zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
+
+
+                                    }
+                                }
                                 // dernierSymbole = sequence.get(indiceActuelSequence);
 
                                 //Toast.makeText(InGame.this, dernierSymbole, Toast.LENGTH_SHORT).show();
@@ -599,7 +610,12 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                             toast.setGravity(Gravity.TOP, 0, -80);
                             toast.show();
                             //   Toast.makeText(InGame.this, "Erreur mouvement", Toast.LENGTH_SHORT).show();
+                            if (listeIndicesActuels.size() > 0) {
 
+                                zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
+
+
+                            }
 
 
                         }
@@ -624,6 +640,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         // The touch1 listener passes all its events on to the gesture detector
 
         vOverlay.setOnTouchListener(touchListener);
+
         vOverlay.post(new Runnable() {
             @Override
             public void run() {
@@ -893,7 +910,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         ImageView i = new ImageView(getApplicationContext());
         //   View viewOverLay=findViewById(R.id.viewOverlay);
         //  GestureOverlayView v=findViewById(R.id.gOverlay);
-        RelativeLayout band = findViewById(R.id.bandeaupourfleche);
+
 
         @Override
         public boolean onDown(MotionEvent event) {
@@ -930,6 +947,20 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
+            new ParticleSystem(InGame.this, 20, R.drawable.notemusique, 30000)
+                    .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
+//                        .setAcceleration(0.00005f, 45)
+                    .oneShot(findViewById(R.id.gOverlay), 5);
+
+            // .emit(x,y,5,1000);
+
+            derniereAction.setVariable("tap");
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    derniereAction.setVariable("tap");
+                }
+            }, 200);
 
             return true;
         }
@@ -1036,6 +1067,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
     public void actualiserScore(int precision) {
         //actualise int score
+
         MyAnimatorListener listener1=new MyAnimatorListener();
         animBounce.setAnimationListener(listener1);
         if(precision==1){
@@ -1048,7 +1080,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
           //  }
 
             textPerfect.startAnimation(animBounce);
-            zoneJeu.getChildAt(listeIndicesActuels.get(0)).setBackground(getDrawable(R.drawable.emoji_muscle));
+          //  zoneJeu.getChildAt(listeIndicesActuels.get(0)).setBackground(getDrawable(R.drawable.emoji_muscle));
+            if (listeIndicesActuels.size() > 0) {
+                ((ImageView)zoneJeu.getChildAt(listeIndicesActuels.get(0))).setImageDrawable(getDrawable(R.drawable.plusdeux));
+              //  zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
+
+
+            }
            /* Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
@@ -1089,6 +1127,12 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         //    }
 
             textPerfect.startAnimation(animBounce);
+            if (listeIndicesActuels.size() > 0) {
+                ((ImageView)zoneJeu.getChildAt(listeIndicesActuels.get(0))).setImageDrawable(getDrawable(R.drawable.plusun));
+                //  zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
+
+
+            }
            /* zoneJeu.getChildAt(listeIndicesActuels.get(0)).setBackground(getDrawable(R.drawable.emoji_langue));
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -1101,15 +1145,31 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
         scoreT.setText(String.valueOf(score));
 
-         if(score>=Math.round((int)(0.8*2*couples.length))){
-            nextTrophy.setImageDrawable(getDrawable( R.drawable.trophy_or));
-            nextPalierScore.setText(String.valueOf(Math.round((int)(0.9*2*couples.length))));
-
+         if(score>=Math.round((int)(0.8*2*couples.length))  ){
+             if(actualiserTrophy==true) {
+                 nextTrophy.setImageDrawable(getDrawable(R.drawable.trophy_or));
+                 actualiserTrophy = false;
+                 nextPalierScore.setText(String.valueOf(Math.round((int) (0.9 * 2 * couples.length))));
+                 Flubber.with()
+                         .animation(Flubber.AnimationPreset.WOBBLE) // Slide up animation
+                         .repeatCount(1)                              // Repeat once
+                         .duration(1000)                              // Last for 1000 milliseconds(1 second)
+                         .createFor(nextTrophy)                             // Apply it to the view
+                         .start();
+             }
         }
-         else if(score>=Math.round((int)(0.7*2*couples.length))){
-             nextTrophy.setImageDrawable(getDrawable( R.drawable.trophy_argent));
-             nextPalierScore.setText(String.valueOf(Math.round((int)(0.8*2*couples.length))));
-
+         else if(score>=Math.round((int)(0.7*2*couples.length)) ){
+             if(actualiserTrophy==false) {
+                 nextTrophy.setImageDrawable(getDrawable(R.drawable.trophy_argent));
+                 nextPalierScore.setText(String.valueOf(Math.round((int) (0.8 * 2 * couples.length))));
+                 actualiserTrophy = true;
+                 Flubber.with()
+                         .animation(Flubber.AnimationPreset.WOBBLE) // Slide up animation
+                         .repeatCount(1)                              // Repeat once
+                         .duration(1000)                              // Last for 1000 milliseconds(1 second)
+                         .createFor(nextTrophy)                             // Apply it to the view
+                         .start();
+             }
          }
 
 
@@ -1230,6 +1290,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
             if (j == 0) {
                 i.setImageDrawable(trouverSymbole(symbole, "vert"));
+
             } else {
                 i.setImageDrawable(trouverSymbole(symbole, "vert"));
             }

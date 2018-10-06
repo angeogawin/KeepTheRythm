@@ -2,9 +2,12 @@ package com.developpement.ogawi.keeptherythm;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.gesture.GestureOverlayView;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -14,9 +17,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -27,12 +32,17 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.appolica.flubber.Flubber;
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.plattysoft.leonids.ParticleSystem;
+import com.warkiz.widget.IndicatorSeekBar;
+import com.warkiz.widget.OnSeekChangeListener;
+import com.warkiz.widget.SeekParams;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -61,6 +71,10 @@ public class EcranAccueil extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
 
+    IndicatorSeekBar tuner;
+    private AudioManager mgr;
+    GestureOverlayView detecteurGeste;
+    private GestureDetector mDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,9 +88,16 @@ public class EcranAccueil extends AppCompatActivity {
         final TextView messageVerrou=findViewById(R.id.messageVerrouille);
         final Animation myAnimDisparait = AnimationUtils.loadAnimation(this, R.anim.disappear);
         final Animation myAnimAparait = AnimationUtils.loadAnimation(this, R.anim.appear);
-
-
+        tuner=findViewById(R.id.tuner);
+        detecteurGeste=findViewById(R.id.detecteurGeste);
+        mDetector = new GestureDetector(this, new EcranAccueil.MyGestureListener());
+        detecteurGeste.setOnTouchListener(touchListener);
         donutProgress=findViewById(R.id.donut_progress);
+
+
+
+        mgr=(AudioManager) getSystemService(getApplicationContext().AUDIO_SERVICE);
+        initBar(tuner,AudioManager.STREAM_MUSIC);
         donutProgress.setProgress(Math.round((int)(obtenirAvancement()*100/NUM_ITEMS)));
         btnJouer=(Button) findViewById(R.id.btnJouer);
         i=new Intent(getApplicationContext(),InGame.class);
@@ -98,7 +119,7 @@ public class EcranAccueil extends AppCompatActivity {
 
         if(sharedPreferences.contains("niveau_max_atteint")){
             viewPager.setCurrentItem(sharedPreferences.getInt("niveau_max_atteint",0)-1);
-            Toast.makeText(EcranAccueil.this, String.valueOf(aJoueTousLesNiveauxDeverouille(sharedPreferences.getInt("niveau_max_atteint",0))), Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(EcranAccueil.this, String.valueOf(aJoueTousLesNiveauxDeverouille(sharedPreferences.getInt("niveau_max_atteint",0))), Toast.LENGTH_SHORT).show();
             if(sharedPreferences.getInt("niveau_max_atteint",0)>=sharedPreferences.getInt("niveau_max_jouable",0) && aJoueTousLesNiveauxDeverouille(sharedPreferences.getInt("niveau_max_atteint",0))){
 
 
@@ -240,6 +261,38 @@ public class EcranAccueil extends AppCompatActivity {
         animationDrawable.setExitFadeDuration(2000);
 
     }
+    View.OnTouchListener touchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            // pass the events to the gesture detector
+            // a return value of true means the detector is handling it
+            // a return value of false means the detector didn't
+            // recognize the event
+
+            return mDetector.onTouchEvent(event);
+
+
+        }
+    };
+    private void initBar(IndicatorSeekBar bar,final int stream){
+        bar.setMax(mgr.getStreamMaxVolume(stream));
+        bar.setProgress(mgr.getStreamMaxVolume(stream));
+        bar.setOnSeekChangeListener(new OnSeekChangeListener() {
+            @Override
+            public void onSeeking(SeekParams seekParams) {
+                mgr.setStreamVolume(stream,seekParams.progress,AudioManager.FLAG_PLAY_SOUND);
+            }
+
+            @Override
+            public void onStartTrackingTouch(IndicatorSeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
+            }
+        });
+
+    }
 
     public boolean aJoueTousLesNiveauxDeverouille(int niveauMax){
 
@@ -329,7 +382,13 @@ public class EcranAccueil extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent e)
+    {
+        mDetector.onTouchEvent(e);
 
+        return super.dispatchTouchEvent(e);
+    }
 
 
     public static class ImageFragmentPagerAdapter extends FragmentPagerAdapter {
@@ -366,6 +425,13 @@ public class EcranAccueil extends AppCompatActivity {
             final Bundle bundle = getArguments();
             final int position = bundle.getInt("position");
            TextView numeroNiveau=swipeView.findViewById(R.id.numeroNiveau);
+            Flubber.with()
+                    .animation(Flubber.AnimationPreset.MORPH) // Slide up animation
+
+                    .repeatCount(1)                              // Repeat once
+                    .duration(1000)                              // Last for 1000 milliseconds(1 second)
+                    .createFor(numeroNiveau)                             // Apply it to the view
+                    .start();
             numeroNiveau.setText(String.valueOf(position+1));
 
             //Initialisation bdd
@@ -549,6 +615,53 @@ public class EcranAccueil extends AppCompatActivity {
 
 
             return sb.toString();
+        }
+    }
+    class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+
+        @Override
+        public boolean onDown(MotionEvent event) {
+
+
+            // don't return false here or else none of the other
+            // gestures will work
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+
+
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+
+
+
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            tuner.setVisibility(View.VISIBLE);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                 tuner.setVisibility(View.INVISIBLE);
+                }
+            }, 4000);
+            return true;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent event1, MotionEvent event2,
+                               float velocityX, float velocityY) {
+
+
+
+            return true;
         }
     }
 
