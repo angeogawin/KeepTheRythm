@@ -18,7 +18,11 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
     android:background="@drawable/drawable_gradient_animation">
-
+    <com.jetradarmobile.snowfall.SnowfallView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:snowflakeImage="@drawable/notemus1"
+        app:snowflakesNum="50"/>
 
     <!-- Holds the Toolbar and a nested LinearLayout-->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

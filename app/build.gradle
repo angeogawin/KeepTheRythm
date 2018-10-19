@@ -37,6 +37,8 @@ dependencies {
     implementation 'nl.dionsegijn:konfetti:1.1.0'
     implementation 'com.github.lzyzsd:circleprogress:1.2.1'
     implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.0'
+    implementation 'com.github.jetradarmobile:android-snowfall:1.2.0'
+    implementation 'com.skyfishjy.ripplebackground:library:1.0.1'
 }
 configurations {
     cleanedAnnotations

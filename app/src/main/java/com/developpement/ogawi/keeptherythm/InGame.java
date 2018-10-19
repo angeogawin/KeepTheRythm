@@ -39,6 +39,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -58,6 +59,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.CycleInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
@@ -105,6 +107,7 @@ import com.appolica.flubber.Flubber;
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.plattysoft.leonids.ParticleSystem;
+import com.skyfishjy.library.RippleBackground;
 
 import static java.util.logging.Logger.global;
 //import com.jfeinstein.jazzyviewpager.JazzyViewPager;
@@ -173,9 +176,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     Animation animBounce;
     Toast toast;
     Boolean actualiserTrophy;
+    RippleBackground rippleBackground;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         animBounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -207,7 +212,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
         }
 
-
+       rippleBackground=(RippleBackground)findViewById(R.id.content);
         animationEstLancee = false;
         sequences = new ArrayList<>();
 
@@ -698,6 +703,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         return precision;
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -710,7 +717,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     @Override
     protected void onPause() {
         super.onPause();
-        if(mPlayer!=null) {
+        if(mPlayer!=null && mPlayer.isPlaying()) {
             mPlayer.pause();
             media_length = mPlayer.getCurrentPosition();
 
@@ -924,10 +931,20 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
 
-            new ParticleSystem(InGame.this, 20, R.drawable.notemusique, 30000)
+         /*   new ParticleSystem(InGame.this, 20, R.drawable.notemusique, 30000)
                     .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
 //                        .setAcceleration(0.00005f, 45)
-                    .oneShot(findViewById(R.id.gOverlay), 5);
+                    .oneShot(findViewById(R.id.gOverlay), 5);*/
+            rippleBackground=(RippleBackground)findViewById(R.id.content);
+            rippleBackground.clearAnimation();
+            rippleBackground.startRippleAnimation();
+          //  rippleBackground.stopRippleAnimation();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                   rippleBackground.stopRippleAnimation();
+                }
+            }, 800);
 
             // .emit(x,y,5,1000);
 
@@ -947,16 +964,25 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            new ParticleSystem(InGame.this, 20, R.drawable.notemusique, 30000)
+           /* new ParticleSystem(InGame.this, 20, R.drawable.notemusique, 30000)
                     .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
 //                        .setAcceleration(0.00005f, 45)
-                    .oneShot(findViewById(R.id.gOverlay), 5);
+                    .oneShot(findViewById(R.id.gOverlay), 5);*/
 
             // .emit(x,y,5,1000);
-
-            derniereAction.setVariable("tap");
+            rippleBackground=(RippleBackground)findViewById(R.id.content);
+            rippleBackground.clearAnimation();
+            rippleBackground.startRippleAnimation();
+            //  rippleBackground.stopRippleAnimation();
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
+                public void run() {
+                    rippleBackground.stopRippleAnimation();
+                }
+            }, 800);
+            derniereAction.setVariable("tap");
+            Handler handler1 = new Handler();
+            handler1.postDelayed(new Runnable() {
                 public void run() {
                     derniereAction.setVariable("tap");
                 }
@@ -976,19 +1002,21 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     derniereAction.setVariable("g");
 
                     //   Toast.makeText(InGame.this, "left", Toast.LENGTH_SHORT).show();
-                    new ParticleSystem(InGame.this, 20, R.drawable.fleche_gauche3_vert, 30000)
-                            .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
+                    new ParticleSystem(InGame.this, 1, R.drawable.fleche_gauche4_vert, 1000,R.id.gOverlay)
+                            .setSpeedByComponentsRange(0.5f, 0.5f, 0f, 0.0f)
 
 //                        .setAcceleration(0.00005f, 45)
-                            .oneShot(findViewById(R.id.gOverlay), 5);
+                            .oneShot(findViewById(R.id.gOverlay), 1);
                 } else if (event2.getX() - event1.getX() < 0) {
                     derniereAction.setVariable("d");
 
                     // Toast.makeText(InGame.this, "right", Toast.LENGTH_SHORT).show();
-                    new ParticleSystem(InGame.this, 20, R.drawable.fleche_droite3_vert, 30000)
-                            .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
+                    new ParticleSystem(InGame.this, 1, R.drawable.fleche_droite5_sombre, 1000,R.id.gOverlay)
+                            .setSpeedByComponentsRange(-0.5f, -0.5f, 0f, 0.0f)
+
 //                        .setAcceleration(0.00005f, 45)
-                            .oneShot(findViewById(R.id.gOverlay), 5);
+                            .oneShot(findViewById(R.id.gOverlay), 1);
+
                 }
             } else if (Math.abs(event2.getX() - event1.getX()) < Math.abs(event2.getY() - event1.getY())) {
 
@@ -998,21 +1026,21 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     derniereAction.setVariable("h");
 
                     //    Toast.makeText(InGame.this, "up", Toast.LENGTH_SHORT).show();
-                    new ParticleSystem(InGame.this, 20, R.drawable.fleche_haut3_vert, 30000)
-                            .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
+                    new ParticleSystem(InGame.this, 1, R.drawable.fleche_haut4_vert, 1000,R.id.gOverlay)
+                            .setSpeedByComponentsRange(-0.0f, 0.0f, 0.5f, 0.5f)
 //                        .setAcceleration(0.00005f, 45)
-                            .oneShot(findViewById(R.id.gOverlay), 5);
+                            .oneShot(findViewById(R.id.gOverlay), 1);
 
                 } else if (event2.getY() - event1.getY() < 0) {
 
                     derniereAction.setVariable("b");
 
                     //   Toast.makeText(InGame.this, "down", Toast.LENGTH_SHORT).show();
-                    new ParticleSystem(InGame.this, 20, R.drawable.fleche_bas3_vert, 30000)
-                            .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
+                    new ParticleSystem(InGame.this, 1, R.drawable.fleche_bas4_vert, 1000,R.id.gOverlay)
+                            .setSpeedByComponentsRange(-0.0f, 0.0f, -0.5f, -0.5f)
 
 //                        .setAcceleration(0.00005f, 45)
-                            .oneShot(findViewById(R.id.gOverlay), 5);
+                            .oneShot(findViewById(R.id.gOverlay), 1);
 
                 }
             }

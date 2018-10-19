@@ -107,8 +107,8 @@ public class EcranAccueil extends AppCompatActivity {
         imageFragmentPagerAdapter = new ImageFragmentPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setAdapter(imageFragmentPagerAdapter);
-
-
+        DepthTransformation depthTransformation = new DepthTransformation();
+       viewPager.setPageTransformer(true, depthTransformation);
         sharedPreferences = getApplicationContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
         if(!sharedPreferences.contains("niveau_max_jouable")){
             sharedPreferences
@@ -276,7 +276,7 @@ public class EcranAccueil extends AppCompatActivity {
     };
     private void initBar(IndicatorSeekBar bar,final int stream){
         bar.setMax(mgr.getStreamMaxVolume(stream));
-        bar.setProgress(mgr.getStreamMaxVolume(stream));
+        bar.setProgress(mgr.getStreamMaxVolume(stream)/3);
         bar.setOnSeekChangeListener(new OnSeekChangeListener() {
             @Override
             public void onSeeking(SeekParams seekParams) {
@@ -390,7 +390,38 @@ public class EcranAccueil extends AppCompatActivity {
         return super.dispatchTouchEvent(e);
     }
 
+    public class DepthTransformation implements ViewPager.PageTransformer{
+        @Override
+        public void transformPage(View page, float position) {
 
+            if (position < -1){    // [-Infinity,-1)
+                // This page is way off-screen to the left.
+                page.setAlpha(0);
+
+            }
+            else if (position <= 0){    // [-1,0]
+                page.setAlpha(1);
+                page.setTranslationX(0);
+                page.setScaleX(1);
+                page.setScaleY(1);
+
+            }
+            else if (position <= 1){    // (0,1]
+                page.setTranslationX(-position*page.getWidth());
+                page.setAlpha(1-Math.abs(position));
+                page.setScaleX(1-Math.abs(position));
+                page.setScaleY(1-Math.abs(position));
+
+            }
+            else {    // (1,+Infinity]
+                // This page is way off-screen to the right.
+                page.setAlpha(0);
+
+            }
+
+
+        }
+    }
     public static class ImageFragmentPagerAdapter extends FragmentPagerAdapter {
 
         public ImageFragmentPagerAdapter(FragmentManager fm) {
@@ -468,6 +499,7 @@ public class EcranAccueil extends AppCompatActivity {
             liste_titre.add("Triangle - Audionautix");
             liste_titre.add("Big car Theft - Audionautix");
             liste_titre.add("What da Funk - Audionautix");
+
 
 
 
