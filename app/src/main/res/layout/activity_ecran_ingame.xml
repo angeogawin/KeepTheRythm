@@ -16,29 +16,11 @@
         android:orientation="vertical">
 
         <!-- This Toolbar will be used as our action bar using setSupportActionBar() -->
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/ingame_toolbar"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:minHeight="?android:attr/actionBarSize"
-            android:background="#b3dee7"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" >
 
-      </android.support.v7.widget.Toolbar>
 
         <!-- This LinearLayout will be displayed below the Toolbar and contain our "main" views -->
 
-      <!--  <RelativeLayout
-            android:id="@+id/symbole"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
 
-
-
-           >
-
-        </RelativeLayout>-->
         <RelativeLayout
             android:id="@+id/bandeaupourfleche"
             android:layout_width="match_parent"
@@ -47,7 +29,7 @@
            >
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:id="@+id/zoneScore"
                 android:background="#6f6f6f">
 
@@ -57,6 +39,7 @@
                     android:id="@+id/nextTrophy"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="5dp"
+
                     android:layout_centerVertical="true"
 
 
@@ -123,22 +106,34 @@
 
 
             </RelativeLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+
+                android:background="@drawable/progress_bar_background"
+                android:layout_below="@id/zoneScore"
+                android:id="@+id/frameProgress"
+                >
             <ProgressBar
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="4dp"
-                android:layout_below="@id/zoneScore"
-                android:id="@+id/progress"
+                android:layout_height="6dp"
+                android:layout_marginStart="30dp"
 
+                android:layout_marginEnd="30dp"
+                android:id="@+id/progress1"
+                android:progressDrawable="@drawable/curved_progress_bar"
                 android:max="100"
                 android:progress="0"/>
+            </FrameLayout>
+
 
             <RelativeLayout
                 android:id="@+id/zonejeu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@id/gOverlay"
-                android:layout_below="@id/progress"
+                android:layout_below="@id/frameProgress"
                 android:background="#FFE5B4"
                 >
                 <View
@@ -197,19 +192,7 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textPerfect"
-                android:textSize="13sp"
-                android:textColor="#a55fc1"
-                android:layout_alignBottom="@id/go"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:text="Parfait!"
-                android:visibility="invisible"
 
-                />
 
 
 
@@ -228,6 +211,7 @@
             android:background="#b3dee7"
 
             >
+
                 <com.skyfishjy.library.RippleBackground
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -240,6 +224,20 @@
                     app:rb_duration="800"
                     android:layout_below="@id/go"
                     app:rb_scale="6">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textPerfect"
+                        android:textSize="13sp"
+                        android:textColor="#a55fc1"
+
+                        android:layout_marginTop="10dp"
+                        android:layout_centerHorizontal="true"
+                        android:text="Parfait!"
+                        android:visibility="invisible"
+
+                        />
                 </com.skyfishjy.library.RippleBackground>
             </android.gesture.GestureOverlayView>
 

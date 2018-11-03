@@ -74,8 +74,14 @@ WeWishYouAMerryXmas,Whatdafunk, EpicSeries,Piledriver,LeavinTheLights,BigCarThef
 \n\n-Music Through Love by Kara Square (c) copyright 2012 Licensed under a Creative Commons Attribution (3.0) license. http://dig.ccmixter.org/files/mindmapthat/39205 Ft: Admiral Bob
 
 \n\n-Good Day by Alex (c) copyright 2012 Licensed under a Creative Commons Attribution (3.0) license. http://dig.ccmixter.org/files/AlexBeroza/36122 Ft: DonnieOzone
-
-"
+\n\n-nightRain by airtone (c) copyright 2017 Licensed under a Creative Commons Attribution license. http://dig.ccmixter.org/files/airtone/55887
+\n\n\n Les librairies suivantes ont été utilisées:
+\n\n-Flubber(Apache license):https://github.com/Appolica/Flubber
+\n\n-Konfetti(ISC Licence):https://github.com/DanielMartinus/Konfetti
+\n\n-CircleProgress :https://github.com/lzyzsd/CircleProgress
+\n\n-Snowfall(Apache License):https://github.com/JetradarMobile/android-snowfall
+\n\n-RippleBackground(MIT License) :https://github.com/skyfishjy/android-ripple-background
+\n\n-Leonids(Apache License):https://github.com/plattysoft/Leonids"
         android:textColor="@color/white"
         android:textSize="15sp"
         android:layout_marginTop="10dp"

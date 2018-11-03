@@ -127,10 +127,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="15sp"
-        android:text="A chaque mouvement correctement effectué, on gagne un point supplémentaire.Pour qu'un mouvement réalisé soit comptabilisé comme correct, il faut que le geste intervienne au moment où le marqueur est rouge.Pas avant.Il faut aussi que l'ordre des mouvements effectués soit correct"
+        android:text="A chaque mouvement correctement effectué, on gagne un ou 2 points supplémentaires selon que le geste est effectué au dernier moment, où dès que le symbole passe dans la zone verte.Pour qu'un mouvement réalisé soit comptabilisé comme correct, il faut que le geste intervienne au moment où le marqueur est rouge.Pas avant.Il faut aussi que l'ordre des mouvements effectués soit correct."
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:textColor="@color/white"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/image_plusdeux"
+        android:layout_marginTop="10dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="false"
+        android:scaleType="fitXY"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/image_plusun"
+        android:layout_marginTop="10dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="false"
+        android:scaleType="fitXY"/>
 
 
 

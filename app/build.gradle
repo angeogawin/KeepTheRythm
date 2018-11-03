@@ -20,12 +20,11 @@ android {
 }
 
 dependencies {
-    def htextview_version = "0.1.6"
 
-    implementation "com.hanks:htextview-base:$htextview_version"        // base library
+
 
     implementation 'com.appolica:flubber:1.0.1'
-    implementation "com.hanks:htextview-typer:$htextview_version"       // optional
+
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.1.1'
@@ -33,12 +32,14 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    implementation 'com.plattysoft.leonids:LeonidsLib:1.3.2'
+
     implementation 'nl.dionsegijn:konfetti:1.1.0'
     implementation 'com.github.lzyzsd:circleprogress:1.2.1'
-    implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.0'
+
     implementation 'com.github.jetradarmobile:android-snowfall:1.2.0'
     implementation 'com.skyfishjy.ripplebackground:library:1.0.1'
+    implementation 'com.plattysoft.leonids:LeonidsLib:1.3.2'
+
 }
 configurations {
     cleanedAnnotations

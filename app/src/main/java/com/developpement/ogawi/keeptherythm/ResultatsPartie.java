@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -43,6 +44,8 @@ public class ResultatsPartie  extends AppCompatActivity {
     ImageView trophee;
 
     SharedPreferences sharedPreferences;
+    MediaPlayer playerResults;
+    int media_length;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +53,12 @@ public class ResultatsPartie  extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.fragment_resultats_partie);
+
+        playerResults= MediaPlayer.create(this, R.raw.airtone_nightrain);
+        // float log1=(float)(Math.log(maxVolume-currVolume)/Math.log(maxVolume));
+      //  playerResults.setVolume(0.8f, 0.8f);
+        playerResults.setLooping(true);
+        playerResults.start();
         i=getIntent();
         niveau=i.getExtras().getInt("niveau");
         score=i.getExtras().getInt("score");
@@ -282,6 +291,22 @@ public class ResultatsPartie  extends AppCompatActivity {
             }
         }
         return retour;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        playerResults.seekTo(media_length);
+        playerResults.start();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        playerResults.pause();
+        media_length=playerResults.getCurrentPosition();
+
     }
 
 }

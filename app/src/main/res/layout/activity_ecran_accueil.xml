@@ -53,7 +53,7 @@
                 android:layout_height="1dp" />
 
 
-            <Button
+        <!--    <Button
                 android:id="@+id/btnClassement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -66,16 +66,17 @@
                 android:textAllCaps="false"
                 android:textSize="14sp"
 
-                />
+                />-->
             <TextView
                 android:id="@+id/progressionText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Progression"
                 android:textAllCaps="false"
+                android:layout_toStartOf="@id/donut_progress"
                 android:textColor="@color/white"
-
-
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="20dp"
                 android:layout_centerHorizontal="true"/>
 
             <com.github.lzyzsd.circleprogress.DonutProgress
@@ -90,7 +91,7 @@
                 app:donut_finished_color="@color/vert"
                 app:donut_text_size="13sp"
                 app:donut_text_color="@color/vert"
-                android:layout_below="@id/progressionText"
+
                />
 
             <android.support.v4.view.ViewPager
@@ -124,17 +125,7 @@
             android:text="Terminer les précédents niveaux"
             android:visibility="invisible"
             />
-            <com.warkiz.widget.IndicatorSeekBar
-                android:id="@+id/tuner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/btnClassement"
-                android:visibility="invisible"
-                app:isb_show_tick_texts="false"
 
-                android:layout_marginTop="30dp"
-
-           />
 
         </RelativeLayout>
     </LinearLayout>

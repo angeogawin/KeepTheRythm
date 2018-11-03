@@ -28,5 +28,7 @@
     <color name="colorRed_900">#B71C1C</color>
     <color name="cyan">#b3dee7</color>
     <color name="flechedroite">#2c3e50</color>
+    <color name="bleu1">#6C938D</color>
+    <color name="gray">#909090</color>
     <!-- ./ 4th Gradient color -->
 </resources>

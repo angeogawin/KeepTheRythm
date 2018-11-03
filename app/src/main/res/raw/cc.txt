@@ -28,3 +28,14 @@ WeWishYouAMerryXmas,Whatdafunk, EpicSeries,Piledriver,LeavinTheLights,BigCarThef
 -Good Day by Alex (c) copyright 2012 Licensed under a Creative Commons Attribution (3.0) license. http://dig.ccmixter.org/files/AlexBeroza/36122 Ft: DonnieOzone
 
 -Drunk_With_You by Stefan Kartenberg (c) copyright 2014 Licensed under a Creative Commons Attribution (3.0) license. http://dig.ccmixter.org/files/JeffSpeed68/45272 Ft: Thespinwires
+
+-nightRain by airtone (c) copyright 2017 Licensed under a Creative Commons Attribution license. http://dig.ccmixter.org/files/airtone/55887 
+
+
+Les librairies suivantes ont été utilisées:
+-Flubber(Apache license):https://github.com/Appolica/Flubber
+-Konfetti(ISC Licence):https://github.com/DanielMartinus/Konfetti
+-CircleProgress :https://github.com/lzyzsd/CircleProgress
+-Snowfall(Apache License):https://github.com/JetradarMobile/android-snowfall
+-RippleBackground(MIT License) :https://github.com/skyfishjy/android-ripple-background
+-Leonids(Apache License):https://github.com/plattysoft/Leonids
