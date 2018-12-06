@@ -118,9 +118,9 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="6dp"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="10dp"
 
-                android:layout_marginEnd="30dp"
+                android:layout_marginEnd="10dp"
                 android:id="@+id/progress1"
                 android:progressDrawable="@drawable/curved_progress_bar"
                 android:max="100"
@@ -134,8 +134,13 @@
                 android:layout_height="match_parent"
                 android:layout_above="@id/gOverlay"
                 android:layout_below="@id/frameProgress"
-                android:background="#FFE5B4"
+                android:background="@drawable/drawable_gradient_animation"
                 >
+                <com.jetradarmobile.snowfall.SnowfallView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:snowflakeImage="@drawable/notemus1"
+                    app:snowflakesNum="50"/>
                 <View
                     android:id="@+id/barreHorizontale1"
                     android:layout_width="match_parent"
@@ -176,7 +181,7 @@
                     android:layout_height="fill_parent"
                     android:elevation="-1dp"
                     android:visibility="invisible"
-                    android:background="@color/vert"
+                    android:background="#6f6f6f"
                     />
 
             </RelativeLayout>
@@ -212,6 +217,7 @@
 
             >
 
+
                 <com.skyfishjy.library.RippleBackground
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -221,7 +227,7 @@
                     app:rb_color="#0099CC"
                     app:rb_radius="30dp"
                     app:rb_rippleAmount="1"
-                    app:rb_duration="800"
+                    app:rb_duration="500"
                     android:layout_below="@id/go"
                     app:rb_scale="6">
 
@@ -239,21 +245,27 @@
 
                         />
                 </com.skyfishjy.library.RippleBackground>
+
+                <com.gauravk.audiovisualizer.visualizer.BarVisualizer
+                    xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/barvisualizer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    custom:avDensity="0.8"
+                    custom:avType="fill"
+
+                    custom:avColor="@color/av_dark_blue"
+                    custom:avSpeed="normal"/>
+
             </android.gesture.GestureOverlayView>
 
-                <!--<RelativeLayout
-                    android:id="@+id/symboleMis"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center">
 
-                </RelativeLayout>-->
 
 
 
 
         </RelativeLayout>
+
     </LinearLayout>
 
 

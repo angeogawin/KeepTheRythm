@@ -5,13 +5,13 @@
     <corners
         android:radius="10dip"/>
     <solid
-        android:color="#FFF" />
+        android:color="@color/flechedroite" />
     <stroke
         android:width="2dip"
         android:color="#b3dee7" />
-    <padding
+    <!--<padding
         android:left="5dip"
         android:right="5dip"
         android:top="5dip"
-        android:bottom="5dip" />
+        android:bottom="5dip" />-->
 </shape>

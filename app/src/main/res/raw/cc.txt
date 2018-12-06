@@ -39,3 +39,4 @@ Les librairies suivantes ont été utilisées:
 -Snowfall(Apache License):https://github.com/JetradarMobile/android-snowfall
 -RippleBackground(MIT License) :https://github.com/skyfishjy/android-ripple-background
 -Leonids(Apache License):https://github.com/plattysoft/Leonids
+-BarVisualizer:https://github.com/gauravk95/audio-visualizer-android

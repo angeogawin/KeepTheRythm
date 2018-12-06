@@ -14,10 +14,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appolica.flubber.Flubber;
 import com.developpement.ogawi.keeptherythm.bdd.Score;
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.plattysoft.leonids.ParticleSystem;
 
 import org.w3c.dom.Text;
@@ -46,6 +50,9 @@ public class ResultatsPartie  extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     MediaPlayer playerResults;
     int media_length;
+
+
+    private InterstitialAd mInterstitialAd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,13 +88,21 @@ public class ResultatsPartie  extends AppCompatActivity {
             }
         });
         animator.start();
+
+
+
+
      //   scoreValue.setText(String.valueOf(score)+" / "+String.valueOf(nbTotalMvts));
         manquesValue.setText(String.valueOf(manques));
         rejouer=findViewById(R.id.rejouer);
         accepter=findViewById(R.id.accepter);
-        int sOr=Math.round( (90*nbTotalMvts/100));
+
+        // Creating and load a  new InterstitialAd .
+        mInterstitialAd = createNewIntAd();
+        loadIntAdd();
+        int sOr=Math.round( (95*nbTotalMvts/100));
         int sAr=Math.round( (80*nbTotalMvts/100));
-        int sBr=Math.round ( (70*nbTotalMvts/100));
+        int sBr=Math.round ( (75*nbTotalMvts/100));
 
         sharedPreferences = getBaseContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
 
@@ -109,6 +124,7 @@ public class ResultatsPartie  extends AppCompatActivity {
                         .putInt("niveau_max_atteint",niveau)
                         .apply();
             }
+
 
             //fonction pour debloquer si necessaire niveau suivant
 
@@ -254,7 +270,9 @@ public class ResultatsPartie  extends AppCompatActivity {
 
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-               Intent i=new Intent(getApplicationContext(),InGame.class);
+
+
+                Intent i=new Intent(getApplicationContext(),InGame.class);
                i.putExtra("niveau",niveau);
                startActivity(i);
                finish();
@@ -269,9 +287,9 @@ public class ResultatsPartie  extends AppCompatActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 //  zoneJeu = (RelativeLayout)findViewById(R.id.bandeaupourfleche);
-
-                startActivity(new Intent(ResultatsPartie.this,EcranAccueil.class));
-                finish();
+                showIntAdd();
+               /* startActivity(new Intent(ResultatsPartie.this,EcranAccueil.class));
+                finish();*/
 
 
             }
@@ -307,6 +325,55 @@ public class ResultatsPartie  extends AppCompatActivity {
         playerResults.pause();
         media_length=playerResults.getCurrentPosition();
 
+    }
+
+    private InterstitialAd createNewIntAd() {
+        InterstitialAd intAd = new InterstitialAd(this);
+        // set the adUnitId (defined in values/strings.xml)
+        intAd.setAdUnitId(getString(R.string.ad_id_interstitial));
+        intAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                accepter.setEnabled(true);
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                accepter.setEnabled(true);
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Proceed to the next level.
+                quitterPub();
+            }
+        });
+        return intAd;
+    }
+
+    private void showIntAdd() {
+
+// Show the ad if it's ready. Otherwise, toast and reload the ad.
+        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            quitterPub();
+        }
+    }
+    private void loadIntAdd() {
+        // Disable the  level two button and load the ad.
+        accepter.setEnabled(false);
+        AdRequest adRequest = new AdRequest.Builder()
+              //  .addTestDevice("29B51012AB141B85B95D278930B1EAAB")
+                .build();
+        mInterstitialAd.loadAd(adRequest);
+    }
+
+
+    private void quitterPub() {
+
+        startActivity(new Intent(ResultatsPartie.this,EcranAccueil.class));
+        finish();
     }
 
 }

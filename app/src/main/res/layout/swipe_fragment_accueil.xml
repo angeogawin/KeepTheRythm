@@ -9,10 +9,10 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/fragment_accueil_shape"
-    android:layout_marginLeft="50dp"
-    android:layout_marginRight="50dp"
-    android:layout_marginTop="110dp"
-    android:layout_marginBottom="110dp"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginTop="80dp"
+    android:layout_marginBottom="90dp"
 
     >
 
@@ -29,21 +29,33 @@
         android:layout_height="wrap_content"
         android:textAllCaps="false"
         android:text="Niveau"
-        android:textColor="#000"
+        android:textColor="@color/white"
         android:textSize="19sp"
 
         android:layout_centerHorizontal="true"/>
+    <TextView
+        android:id="@+id/numeroNiveau"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="6"
+        android:layout_below="@id/niveau"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:layout_centerHorizontal="true"
+
+       />
     <TextView
         android:id="@+id/titre_musique"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
 
-
-        android:textColor="@color/vert"
-        android:textSize="18sp"
-        android:layout_below="@id/niveau"
         android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+
+
         android:layout_marginTop="10dp"
 
         android:ellipsize="marquee"
@@ -54,27 +66,27 @@
         android:focusableInTouchMode="true"
         android:duplicateParentState="true"/>
 
-
     <TextView
-        android:id="@+id/numeroNiveau"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="6"
-        android:textColor="@color/vert"
-        android:textSize="80sp"
+        android:id="@+id/hashtags"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:layout_below="@id/titre_musique"
+        android:layout_marginLeft="15dp"
+        android:textColor="@color/cyan"
+        android:layout_marginTop="20dp"/>
+
     <TextView
         android:id="@+id/text2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Or : "
         android:textStyle="italic"
-       android:layout_below="@id/numeroNiveau"
-        android:layout_marginBottom="2dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
         android:layout_marginLeft="15dp"
         android:textColor="#ffa000"
-        android:textSize="12sp"/>
+        android:textSize="14sp"/>
     <TextView
         android:id="@+id/scoreOr"
         android:layout_width="wrap_content"
@@ -83,18 +95,18 @@
         android:layout_alignBottom="@id/text2"
         android:layout_toRightOf="@id/text2"
         android:textColor="#ffa000"
-        android:textSize="12sp"/>
+        android:textSize="14sp"/>
     <TextView
         android:id="@+id/text3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Argent : "
-        android:layout_below="@id/text2"
-        android:layout_marginBottom="2dp"
+        android:layout_toRightOf="@id/scoreOr"
+        android:layout_alignBottom="@id/text2"
         android:textStyle="italic"
         android:layout_marginLeft="15dp"
         android:textColor="#bdc3c7"
-        android:textSize="12sp"/>
+        android:textSize="14sp"/>
     <TextView
         android:id="@+id/scoreArgent"
         android:layout_width="wrap_content"
@@ -103,18 +115,18 @@
 
         android:layout_toRightOf="@id/text3"
         android:textColor="#bdc3c7"
-        android:textSize="12sp"/>
+        android:textSize="14sp"/>
     <TextView
         android:id="@+id/text4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="italic"
         android:text="Bronze : "
-        android:layout_below="@id/text3"
-        android:layout_marginBottom="2dp"
+        android:layout_toRightOf="@id/scoreArgent"
+        android:layout_alignBottom="@id/text2"
         android:layout_marginLeft="15dp"
         android:textColor="#d35400"
-        android:textSize="12sp"/>
+        android:textSize="14sp"/>
     <TextView
         android:id="@+id/scoreBronze"
         android:layout_width="wrap_content"
@@ -123,30 +135,31 @@
 
         android:layout_toRightOf="@id/text4"
         android:textColor="#d35400"
-        android:textSize="12sp"/>
+        android:textSize="14sp"/>
     <TextView
         android:id="@+id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Meilleur score - "
+        android:text="Meilleur score : "
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="15dp"
-        android:textColor="#000"
+
+        android:textColor="@color/white"
         android:textSize="15sp"/>
     <TextView
         android:id="@+id/bestscore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/text1"
-        android:textColor="#000"
+        android:textColor="@color/white"
         android:layout_alignBottom="@id/text1"/>
     <TextView
         android:id="@+id/nbTotal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/bestscore"
-        android:textColor="#000"
+        android:textColor="@color/white"
         android:text="/"
         android:layout_alignBottom="@id/bestscore"/>
     <ImageView

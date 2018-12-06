@@ -18,11 +18,22 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
     android:background="@drawable/drawable_gradient_animation">
+
+    <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/viewKonfetti"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:elevation="2dp"
+        android:layout_centerHorizontal="true"/>
     <com.jetradarmobile.snowfall.SnowfallView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:snowflakeImage="@drawable/notemus1"
-        app:snowflakesNum="50"/>
+        app:snowflakesNum="15"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/messageJeuTermine"/>
 
     <!-- Holds the Toolbar and a nested LinearLayout-->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -112,7 +123,18 @@
                 android:layout_marginBottom="15dp"
                 android:textAllCaps="false"
                 android:background="@drawable/jouer_shape"/>
-
+            <Button
+                android:id="@+id/btnRec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:text="Rec"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@id/btnJouer"
+                android:layout_marginBottom="15dp"
+                android:textAllCaps="false"
+                android:background="@drawable/jouer_shape"/>
         <TextView
             android:id="@+id/messageVerrouille"
             android:layout_width="wrap_content"

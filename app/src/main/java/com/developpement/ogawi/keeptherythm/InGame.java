@@ -1,5 +1,6 @@
 package com.developpement.ogawi.keeptherythm;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -8,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.gesture.Gesture;
 import android.gesture.Prediction;
 import android.graphics.Bitmap;
@@ -29,9 +31,11 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -91,6 +95,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -104,9 +109,14 @@ import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 
 
 import com.appolica.flubber.Flubber;
+
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
+
+import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.InterstitialAd;
 import com.plattysoft.leonids.ParticleSystem;
 import com.skyfishjy.library.RippleBackground;
 
@@ -179,6 +189,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     Boolean actualiserTrophy;
     RippleBackground rippleBackground;
     int barreVie;
+
+    BarVisualizer mVisualizer;
+    private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,6 +239,10 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
        rippleBackground=(RippleBackground)findViewById(R.id.content);
         animationEstLancee = false;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_RECORD_AUDIO);
+        }
+
         sequences = new ArrayList<>();
         sequences.add("tap:1250;tap:1691;tap:2188;tap:2523;tap:3049;tap:3880;tap:4449;tap:5040;tap:5531;tap:6145;tap:6585;tap:7081;tap:7590;tap:8051;g:8320;tap:9063;d:9330;tap:10109;g:10366;tap:11087;d:11401;tap:12091;g:12408;tap:13150;d:13420;tap:14165;g:14427;tap:15170;d:15469;tap:16189;g:16479;tap:17199;d:17477;tap:18168;h:18488;tap:19232;h:19601;tap:20200;tap:21285;tap:22290;tap:23853;tap:24811;g:25230;tap:25833;g:26261;tap:26888;tap:27905;d:28263;tap:28866;tap:29888;tap:30977;tap:31995;tap:32927;d:36838;tap:37582;tap:39120;tap:40072;tap:41067;tap:42074;h:42433;tap:43150;d:43397;g:43949;d:44500;tap:45191;tap:49764;tap:50775;tap:51781;tap:52769;tap:54298;tap:55324;tap:56353;tap:57388;d:57745;tap:58348;tap:59423;d:59702;g:60343;d:60857;tap:61432;b:61738;h:62215;tap:62955;tap:63475;tap:64023;tap:64533;d:64713;g:64959;d:65158;tap:65615;tap:66066;tap:66550;tap:67106;tap:67605;d:67792;g:68116;d:68507;g:68739;d:68963;g:69128;tap:69704;tap:70149;b:70407;tap:71117;b:71459;tap:72143;tap:73172;tap:73675;h:73959;tap:74700;tap:75208;d:75574;d:76614;h:77539;tap:78227;tap:79229;tap:81221;tap:81762;h:82087;tap:82829;tap:83873;g:84156;tap:84899;d:85156;tap:85875;h:86116;tap:86890;g:87164;tap:87884;d:88258;tap:88900;g:89588;tap:90424;tap:90924;g:91814;b:92247;h:92762;b:93063;h:93268;b:93512;tap:93999;d:94249;g:94803;d:95084;g:95331;tap:96055;h:96328;b:96812;tap:97544;h:97858;h:99382;tap:100098;g:100465;d:100959;tap:101651;g:102001;tap:102664;d:102931;tap:104194;d:104392;g:104995;d:105418;tap:106172;g:106462;b:107037;h:107550;tap:108235;b:108513;h:109032;b:109280;h:109533;b:109771;tap:110292;d:110524;g:111056;g:112554;tap:113199;d:113386;tap:113961;g:114157;g:115322;d:115587;g:115802;d:116050;g:116247;tap:116876;tap:117419;d:117578;g:117926;tap:118471;h:119273;b:119496;h:119707;d:120538;g:120777;d:120992;g:121290;d:121471;g:121743;d:121942;tap:122458;tap:122984;d:123180;g:123535;d:123824;tap:124543;tap:125048;h:125302;b:125522;h:125975;b:126323;tap:126995;d:127219;g:127678;d:127975;tap:128601;b:128877;tap:129604;h:129878;tap:130618;b:131006;tap:131689;h:132012;tap:132635;d:132924;tap:133645;g:133983;tap:134674;d:134898;b:135545;h:136072;b:136553;tap:137207;tap:137764;tap:138269;tap:138787;d:139035;tap:139753;d:140111;tap:140753;g:140999;d:141508;g:142118;d:142584;g:143164;d:143645;g:144127;g:144699;d:145189;d:145666;g:146183;d:146659;g:147134;d:147661;g:148144;d:148415;g:148705;d:149226;g:150159;d:150422;g:150696;d:151229;g:151776;tap:152494;tap:152991;tap:153539;b:153784;h:154323;tap:155012;tap:155526;tap:156011;tap:156520;tap:157087;tap:157553;tap:158067;tap:158558;tap:159062;");
         sequences.add("tap:1329;tap:2182;tap:3077;tap:3949;tap:4735;d:5497;g:6237;tap:7305;tap:8177;tap:9031;d:9693;g:10487;tap:11556;tap:12460;tap:13311;d:13968;tap:14627;d:14794;tap:15419;d:15674;tap:16276;g:16550;tap:17269;g:17453;tap:18082;g:18321;tap:18946;tap:19751;g:19979;tap:20669;d:20830;tap:21456;d:21719;tap:22323;tap:23146;d:23394;tap:24055;g:24275;tap:24912;g:25193;tap:25768;tap:26600;d:27293;tap:27931;tap:28748;tap:29588;tap:30138;tap:30463;tap:31282;d:31555;g:31981;d:32431;g:32850;d:33284;g:33718;d:34116;g:34542;d:34960;g:35428;d:35817;g:36218;tap:36872;d:37086;g:37544;d:37986;g:38766;d:39235;g:39660;d:40570;g:41399;tap:42073;tap:42970;tap:44168;tap:45856;tap:46818;tap:47595;tap:48443;tap:49309;tap:50154;tap:51046;tap:51892;tap:52768;tap:53629;tap:54499;d:55120;g:55949;d:56362;g:56846;tap:57899;d:58518;g:58955;d:59377;tap:60421;tap:61330;d:61942;d:62844;tap:63897;g:64559;tap:65641;tap:66525;g:67153;tap:67757;d:67973;tap:68608;g:68828;tap:69913;d:70579;tap:71591;tap:72000;d:72298;g:73123;d:74029;tap:75029;tap:75915;tap:76782;tap:77673;tap:78475;tap:78927;tap:80202;tap:81899;g:82550;d:83387;g:84629;d:85052;g:85526;tap:86217;tap:87064;tap:88371;tap:88837;tap:89632;d:90274;tap:91716;tap:92165;g:92772;tap:93931;d:94511;tap:95620;tap:96076;g:96271;tap:96917;d:97132;tap:97793;tap:98226;d:98451;g:98841;d:99282;tap:99908;tap:100324;g:100587;d:101027;tap:101653;tap:102118;g:102288;d:102701;tap:103327;tap:103758;tap:104203;tap:105466;tap:105931;tap:107076;tap:107618;tap:108919;tap:109319;d:109606;g:109993;tap:111056;tap:112374;g:112558;tap:113221;tap:113645;d:114306;tap:114908;tap:115815;d:116022;g:116406;tap:117070;tap:117923;tap:118748;tap:119172;d:119400;g:119838;tap:120464;tap:121164;tap:121803;d:122411;g:122870;d:123270;tap:123914;tap:124764;tap:125994;tap:126477;d:126746;g:127164;d:127580;d:128448;d:129302;d:130164;tap:130738;g:131350;g:132271;g:133177;g:133947;tap:135037;tap:135909;tap:136772;tap:137208;tap:137639;tap:138520;tap:139192;tap:139717;tap:140190;tap:141085;d:141674;g:142604;d:143316;tap:144006;tap:144485;tap:145188;tap:146616;tap:147064;d:147318;g:147731;tap:148767;tap:149622;d:150179;g:151053;tap:151819;tap:152160;tap:153012;tap:153521;tap:153890;d:154130;g:154550;tap:155644;tap:156505;tap:157368;g:157565;d:157972;tap:158617;tap:159046;g:159338;d:160168;tap:160750;tap:161185;g:161418;tap:162515;tap:163364;tap:164196;tap:165049;d:165663;g:166568;d:167383;g:167796;tap:168460;tap:168876;d:169105;tap:169765;tap:170197;g:170485;tap:171113;tap:171499;g:171710;d:172125;tap:172750;tap:173198;g:173479;d:173884;tap:174487;tap:174917;g:175116;d:175574;tap:176234;tap:176633;g:176932;d:177316;d:178147;");
@@ -239,10 +258,14 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         sequences.add("tap:8789;tap:9635;g:9892;d:10359;tap:11049;g:11340;tap:12085;g:12359;tap:13050;g:13415;tap:14076;g:14383;tap:15102;g:15426;tap:16088;g:16411;tap:17016;g:17331;tap:18050;g:18396;tap:19056;d:20328;g:20905;d:21440;g:21779;tap:22936;d:23443;g:23748;d:23963;g:24640;d:26304;g:26868;d:27347;g:27861;d:28322;b:28841;h:29317;tap:30616;g:30835;d:31370;g:31864;tap:32525;d:32832;g:33548;d:33804;g:34913;d:35227;g:35712;d:36296;tap:37040;d:37344;g:37875;tap:38566;tap:39061;tap:39630;tap:40139;d:40372;g:40855;d:41411;b:42796;tap:44119;g:44791;d:45500;g:45882;tap:47252;d:47536;g:47922;d:48382;g:48863;d:50440;g:50892;d:51896;g:52789;d:53255;b:54627;h:55834;tap:56807;d:57315;g:57962;d:59127;g:59407;d:59831;g:60382;b:61049;d:62276;g:62753;d:63405;g:63856;b:64949;h:65416;b:66701;h:67023;d:68190;g:68766;d:69275;g:69810;d:70335;tap:70938;d:71311;tap:71937;d:72279;tap:72941;g:73329;tap:73957;g:74304;tap:74995;g:75377;tap:76038;d:76343;tap:77033;d:77428;tap:78117;d:78463;tap:79066;d:79420;tap:80047;g:80384;d:81441;g:81671;d:81878;tap:82240;g:83149;d:83734;g:84007;d:84816;g:86397;d:86880;d:87365;d:87832;d:88366;g:88810;d:89319;d:90800;tap:92652;g:93135;d:93648;g:93879;g:95253;d:95500;g:95789;g:96321;d:96796;g:98319;g:98832;g:99355;g:99922;g:100439;d:100850;g:101319;tap:102909;d:104146;g:104997;d:105755;g:106127;d:107492;b:108488;h:108942;b:110025;tap:111521;h:111790;tap:112506;h:112824;tap:113564;h:113847;tap:114564;h:114896;tap:115556;b:115869;h:116324;tap:117009;b:117335;tap:118020;h:118280;tap:118971;b:119296;tap:120012;h:120362;tap:120986;b:121328;tap:122016;h:122359;tap:123017;h:123375;tap:124089;b:124369;tap:125052;d:125408;tap:126068;d:126405;tap:127030;g:128442;d:129428;g:131298;d:132688;b:134192;h:135725;b:137282;d:138106;g:138453;tap:139287;d:140665;g:141718;tap:143072;d:143403;tap:144094;g:144350;tap:145071;g:145378;tap:146068;g:146401;tap:147090;g:147352;tap:148073;g:148326;tap:149046;d:149341;tap:150059;tap:150967;d:152211;g:153195;d:153626;g:153940;d:154961;g:155412;d:155764;g:155978;d:156401;g:156892;d:158322;d:158814;d:159353;d:159912;g:160363;d:160847;g:161347;b:162686;tap:164651;tap:165092;d:165545;g:165834;tap:167043;b:167341;h:167700;b:167962;h:168780;tap:170516;g:170822;tap:171483;g:171790;g:172393;g:172938;d:173347;tap:174597;g:174862;d:176381;b:177059;h:177816;b:179159;h:179720;b:180013;tap:181091;g:182359;d:183043;g:183960;tap:185121;d:185367;tap:186114;g:186428;tap:187058;g:187408;tap:188108;d:188337;tap:189029;g:189378;tap:190039;g:190353;tap:191083;d:191369;tap:192033;d:192449;tap:193053;g:193346;tap:194046;d:194437;tap:195050;d:195396;tap:196058;g:196426;tap:197053;d:197428;tap:198099;g:198411;tap:199048;d:200499;tap:203813;g:204012;tap:204615;g:204907;tap:205509;g:205874;tap:206477;g:206905;tap:207531;d:207864;tap:208555;d:208892;tap:209535;d:209860;tap:210519;h:210856;tap:211480;h:211869;tap:212556;h:212882;tap:213569;h:213891;tap:214533;h:214848;b:215430;");
         sequences.add("tap:1023;tap:2449;g:2665;d:3022;g:3254;d:3593;g:3809;d:4023;tap:4685;g:4821;d:5044;g:5326;d:5541;g:5747;d:6248;g:6617;b:6902;h:7239;b:7591;h:8025;b:8412;h:8642;b:8935;tap:9554;g:9803;tap:10407;d:10635;g:11128;d:11588;g:11998;tap:12689;d:12904;tap:13547;g:13768;d:14182;tap:14873;g:15113;tap:15740;d:15981;tap:16643;g:16939;tap:17582;d:17805;tap:18433;g:18711;tap:19339;d:19596;tap:20200;g:20506;tap:21133;d:21781;d:22250;d:22735;d:23136;d:23521;g:23980;g:24474;g:24897;g:25356;g:25783;h:26686;h:27120;h:27588;h:27935;b:28376;b:28875;b:29347;b:29794;d:30209;d:30718;d:31195;d:31568;d:31950;g:32406;g:32930;g:33388;g:33823;d:34220;d:34678;d:35121;d:35555;tap:36216;g:36420;tap:37111;d:37372;tap:38000;b:38229;tap:38857;h:39100;tap:39723;b:39993;tap:40681;h:40877;tap:41497;b:41784;tap:42443;h:42641;tap:43328;d:43583;tap:44187;d:44445;tap:45106;g:45344;tap:46034;tap:46415;tap:46907;tap:47365;g:47569;tap:48231;h:48475;tap:49098;d:49339;tap:50001;b:50244;tap:50905;g:51120;tap:51811;h:52019;tap:52643;d:52870;tap:53531;b:53784;tap:54407;g:54636;d:55143;g:55593;d:56019;g:56461;d:56894;tap:57584;g:57755;g:58315;g:58742;tap:59369;d:59601;g:59979;d:60428;tap:61090;b:61322;tap:61980;g:62216;d:62693;g:63137;tap:63797;tap:64216;d:64435;g:64913;tap:65516;tap:65974;d:66199;g:66625;tap:67344;tap:67793;d:68010;g:68452;d:68894;tap:69585;g:69793;b:70288;h:70687;b:71088;tap:71742;d:72015;g:72501;d:72911;b:73354;h:73781;b:74211;h:74627;tap:75342;d:75580;g:76008;d:76449;g:76859;d:77278;tap:77998;d:78212;tap:78873;d:79139;tap:79766;d:79978;g:80429;d:80896;g:81323;d:81729;tap:82390;d:82672;tap:83315;tap:83790;tap:84232;tap:84681;tap:85130;tap:85564;b:85796;h:86214;b:86679;h:87104;tap:87725;g:87976;d:88475;g:88928;d:89363;g:89815;d:90283;g:90681;b:91162;h:91569;b:92014;h:92463;tap:93097;g:93277;tap:93978;d:94227;tap:94891;g:95107;tap:95770;d:95978;tap:96650;d:96942;tap:97570;d:97794;tap:98457;d:98687;tap:99299;d:99625;tap:100200;g:100462;tap:101098;g:101395;tap:102007;g:102253;d:103070;g:103554;d:104024;g:104431;d:104874;g:105131;d:105354;tap:106017;h:106230;b:106706;tap:107332;g:107541;d:107926;g:108175;d:108423;tap:109115;d:109357;g:109818;d:110221;g:110476;d:110726;tap:111329;tap:111797;tap:112233;d:112482;d:112950;d:113404;d:113864;g:114295;g:114731;g:115151;g:115586;b:116028;b:116418;b:116923;b:117334;h:117785;h:118251;h:118702;h:119119;d:119553;d:120031;d:120455;d:120882;b:121339;b:121810;b:122293;b:122716;b:123198;tap:124203;tap:124653;g:124870;d:125355;g:125805;d:126208;tap:126870;g:127119;tap:127779;d:128013;tap:128704;g:128903;tap:129594;d:129794;tap:130454;g:130692;tap:131319;d:131564;tap:132256;g:132484;tap:133111;d:133318;tap:134009;g:134242;tap:134904;d:135152;tap:135756;b:135997;tap:136685;h:136906;tap:137530;b:137748;tap:138385;h:138655;tap:139295;d:139626;tap:140253;g:140472;tap:141099;d:141373;g:141922;d:142292;tap:142865;g:143140;tap:144677;g:144890;tap:145581;d:145817;tap:146444;g:146693;tap:147383;d:147579;tap:148208;g:148484;tap:149146;d:149362;tap:149990;b:150204;tap:150891;h:151136;tap:151739;b:151984;tap:152584;h:152915;tap:153541;b:153756;tap:154400;h:154694;tap:155293;b:155552;h:156015;b:156430;tap:157083;d:157314;g:157774;d:158224;tap:158866;b:159085;h:159597;b:160008;h:160447;d:160864;g:161037;d:161302;");
 
-
+        sequences.add("tap:1141;tap:1542;tap:1742;tap:2152;tap:2352;d:2643;g:2969;d:3167;g:3432;d:3705;tap:4206;tap:4406;tap:4881;g:5131;d:5378;g:5577;d:5841;g:6139;tap:6640;tap:6840;tap:7255;g:7429;d:7748;g:7931;d:8220;g:8518;tap:9073;tap:9273;tap:9671;g:9875;d:10186;g:10392;d:10641;g:10939;tap:11484;tap:11747;tap:11947;g:12219;d:12499;g:12722;d:12986;g:13369;tap:13952;tap:14220;tap:14420;tap:14935;tap:15135;tap:15384;tap:15670;tap:15870;g:16065;d:16347;g:16620;tap:17341;tap:17798;tap:17998;tap:18387;tap:18672;tap:18872;tap:19277;g:19466;d:19789;g:19987;d:20227;g:20517;tap:21042;tap:21242;tap:21724;tap:22146;tap:22346;tap:22543;tap:22743;g:23252;d:23516;g:23814;tap:24507;tap:25240;g:25700;d:25956;g:26244;tap:26872;tap:27633;tap:27833;g:28054;d:28319;g:28660;tap:29274;tap:29755;tap:29955;tap:30357;tap:30557;d:30746;g:31027;tap:31692;tap:32182;tap:32382;tap:32685;tap:32885;h:33139;b:33394;tap:34051;tap:34511;tap:34711;tap:35097;tap:35297;b:35550;h:35818;tap:36503;tap:36703;tap:36957;tap:37157;tap:37559;tap:37759;d:37922;tap:38901;tap:39112;tap:39312;tap:39665;tap:39865;g:40070;d:40334;g:40631;tap:41311;tap:41511;tap:41716;tap:41916;g:42131;d:42379;tap:42912;tap:43112;g:43496;d:43734;g:43957;d:44205;tap:44780;tap:45134;tap:45334;tap:45689;b:45830;h:46171;b:46382;h:46647;b:46865;tap:47415;tap:47615;g:48289;d:48570;g:48793;d:49033;g:49346;tap:49852;tap:50052;tap:50472;g:50731;d:50971;g:51194;d:51425;g:51673;tap:52265;tap:52465;tap:52871;g:53091;d:53348;g:53545;d:53785;g:54051;tap:54624;tap:54926;tap:55126;d:55474;g:55773;d:55962;g:56210;d:56458;tap:57005;tap:57326;h:57838;b:58178;h:58362;b:58631;h:58883;g:59193;d:59456;g:59703;tap:60449;tap:60950;tap:61150;tap:61507;d:61640;g:61920;d:62193;tap:62885;tap:63357;tap:63663;tap:63940;tap:64140;g:64304;d:64561;tap:65275;tap:65475;tap:65747;tap:66094;tap:66294;d:66482;g:66730;d:66978;h:67529;b:67822;h:67968;b:68240;h:68548;g:68944;d:69215;g:69596;d:69908;g:70197;d:70388;h:70813;h:71220;g:71505;g:71710;g:72022;d:72340;d:72642;d:72831;g:73176;g:73711;g:74103;d:74708;g:75341;d:75946;g:76497;b:77087;h:77400;b:77580;h:77830;b:78092;tap:78657;tap:78981;tap:79181;d:79475;g:79819;d:80386;g:81338;d:81635;tap:82179;b:82457;h:82709;b:82917;tap:83435;tap:83635;tap:84014;d:84271;g:84647;d:84911;g:85429;d:85710;tap:86896;tap:87096;b:87195;h:87442;b:87717;tap:88280;tap:88575;tap:88775;h:89122;b:89404;h:89612;b:89853;h:90091;tap:90653;tap:90853;tap:91258;g:91453;d:91700;g:91941;d:92189;tap:92704;tap:93124;tap:93324;tap:93648;g:93886;d:94182;g:94397;d:94670;g:94942;b:95246;h:95525;tap:96446;h:96603;b:96826;h:97073;b:97379;tap:97914;tap:98230;tap:98551;h:98690;b:98959;h:99136;b:99407;h:99673;tap:100206;tap:100406;tap:100847;d:101053;g:101354;d:101533;g:101806;b:102121;tap:102703;tap:102903;tap:103285;h:103503;b:103791;h:103978;b:104208;h:104453;tap:104923;tap:105258;d:105746;g:106124;d:106338;g:106636;d:106900;tap:107462;tap:107662;tap:108068;d:108260;g:108575;d:108782;g:109038;d:109311;h:109603;b:109870;tap:110869;tap:111069;b:111194;h:111456;b:111708;tap:112224;tap:112424;tap:112856;d:113122;g:113370;d:113593;g:113849;d:114155;tap:114663;tap:114863;tap:115249;g:115514;g:116031;g:116319;d:116541;g:116806;tap:117331;tap:117648;d:117893;g:118181;d:118396;g:118644;b:118913;tap:119484;tap:119769;tap:119969;d:120303;g:120558;d:120798;g:121063;d:121360;tap:121865;tap:122065;tap:122455;h:122683;b:122960;h:123133;b:123398;h:123693;tap:124226;tap:124426;b:125047;h:125387;b:125585;h:125881;b:126135;tap:126672;tap:126980;tap:127291;d:127503;g:127756;d:127970;g:128293;d:128549;tap:129082;tap:129282;tap:129647;g:129888;d:130216;g:130422;d:130678;g:130943;tap:131476;tap:131676;tap:132065;h:132298;b:132581;h:132782;b:133029;h:133293;tap:133795;tap:133995;tap:134945;tap:135502;tap:136095;tap:136679;tap:136988;tap:137188;tap:137953;tap:138464;tap:138664;tap:139459;tap:139778;tap:140336;tap:140889;tap:142130;tap:142768;tap:143195;tap:143497;tap:143697;tap:144169;tap:144369;h:144610;b:144852;tap:145423;tap:145919;tap:146331;tap:146638;tap:146838;tap:147557;tap:148167;tap:149033;tap:149233;tap:149962;tap:151320;tap:151738;tap:152400;tap:152833;tap:153033;tap:153413;tap:153819;tap:154019;");
+        sequences.add("tap:1825;tap:2346;tap:2813;tap:3305;tap:3788;tap:4266;tap:4698;tap:5203;tap:5671;tap:6121;tap:6625;tap:7058;tap:7557;tap:8007;tap:8437;tap:8637;tap:8964;tap:9334;tap:9534;tap:9974;tap:10407;tap:11263;tap:11463;tap:11504;tap:11704;tap:12288;tap:12785;tap:13362;tap:13562;tap:14198;tap:14625;tap:15094;tap:15617;d:15881;g:16117;d:16366;g:16765;d:16986;g:17210;d:17538;g:17935;d:18167;d:18668;d:19175;g:19609;g:20127;g:20553;h:21037;h:21522;h:21959;b:22421;h:22920;b:23396;tap:24079;d:24316;g:24793;d:25302;g:25683;d:26177;tap:26868;d:27128;g:27609;tap:28300;d:28547;tap:29268;g:30468;d:31134;g:31818;d:32032;g:32273;d:33058;g:33266;d:33735;g:33965;d:34197;g:34943;h:35234;b:35698;h:35911;b:36099;h:36855;b:37058;d:37490;g:37721;d:37960;g:38522;d:38982;g:39432;d:39892;g:40415;d:40884;tap:41490;tap:41690;tap:42013;d:42325;g:42540;d:42763;tap:43456;tap:43898;tap:44870;tap:45377;tap:45784;d:46060;g:46300;d:46548;tap:47210;d:47468;tap:48189;g:48455;tap:49147;d:49421;tap:50085;h:50297;tap:50957;h:51246;tap:51933;h:52232;tap:52878;d:53168;tap:53797;b:54074;tap:54737;g:55012;tap:55714;g:56019;tap:56650;tap:57099;tap:57600;tap:58095;tap:58573;d:58807;g:59308;d:59769;g:60225;tap:60888;h:61113;tap:61825;h:62063;tap:62779;h:63035;tap:63754;d:64008;g:64475;tap:65166;h:65496;b:65884;tap:66571;d:66858;h:67281;tap:67999;g:68220;d:68786;tap:69415;tap:69943;tap:70388;d:70651;g:71094;d:71474;tap:71953;tap:72153;d:72512;g:72751;d:73006;g:73392;tap:73829;tap:74029;h:74862;b:75382;tap:76010;d:76274;g:76788;d:77169;tap:77590;tap:77790;d:78040;g:78465;d:78703;g:79047;tap:79502;tap:79702;d:80027;g:80316;d:80547;g:80946;tap:81357;tap:81557;b:81835;h:82396;b:82815;tap:83260;tap:83460;b:83749;h:84166;b:84376;h:84724;tap:85117;tap:85317;d:85593;g:85982;d:86195;tap:86859;tap:87373;d:87644;g:87873;d:88104;tap:88886;tap:89086;d:90014;g:90490;b:90933;h:91417;b:91918;h:92329;b:92565;h:92778;d:93570;h:94175;b:94414;h:94663;b:95412;h:95636;d:96800;g:97309;d:97556;g:97991;d:98262;g:98468;d:99182;g:99428;d:99879;tap:100598;d:100896;tap:101559;d:101846;tap:102508;d:102797;g:103156;d:103617;tap:104307;d:105064;g:105328;d:105567;tap:106258;d:106606;tap:107235;tap:107630;tap:107830;d:107953;g:108224;tap:108806;tap:109006;d:109355;g:109814;d:110320;tap:111000;d:111248;g:111518;d:111694;b:112169;h:112435;b:112634;tap:113301;tap:113501;b:113595;h:114295;b:114521;h:114948;d:115204;g:115418;d:115994;g:116470;d:116859;tap:117288;tap:117488;d:117667;g:118077;d:118300;b:118767;h:119017;tap:119448;d:120230;g:120526;b:122189;h:122556;tap:123208;d:123724;g:124038;tap:124683;tap:125186;d:125296;g:125669;d:125892;tap:126585;d:126833;tap:127726;tap:127926;b:128070;h:128273;tap:128925;d:129407;g:129656;d:130106;g:130625;tap:131521;d:131987;g:132498;d:133264;g:133848;tap:134592;d:135347;g:135883;b:136292;h:136663;b:137004;h:137244;b:137640;tap:138360;d:138542;g:139152;d:139637;tap:140265;g:140400;d:140748;g:141003;b:141402;h:141869;tap:143139;tap:143558;tap:143758;h:143934;b:144187;h:144518;b:144788;tap:145439;h:145769;tap:146278;d:146677;g:147155;d:147385;tap:147835;d:148427;g:148624;d:149006;tap:149670;d:151445;g:152228;d:152859;g:153274;d:154221;d:154763;d:155223;d:155698;g:156108;g:156593;g:157045;b:157627;h:157867;b:158090;h:158432;tap:159123;tap:159785;tap:159985;d:160383;tap:161083;d:161482;g:161770;tap:162464;tap:162922;d:163348;g:163669;d:164076;tap:164508;tap:164876;b:165515;h:165752;tap:166272;tap:166760;b:167518;h:167944;b:168178;tap:168654;h:169293;b:169565;h:169849;tap:170235;tap:170435;d:171298;g:171706;tap:172086;tap:172286;tap:173124;d:173354;g:173609;tap:173982;tap:174182;d:174642;g:174847;d:175054;g:175514;tap:175819;tap:176019;d:176563;g:176793;d:177024;g:177331;tap:178022;b:178466;h:178661;b:178896;h:179226;tap:179910;b:180668;");
+        sequences.add("tap:1126;tap:1614;tap:1814;tap:2333;tap:3188;d:3346;tap:3981;tap:4304;tap:4504;g:4815;d:4988;d:5494;g:5855;d:6256;tap:6859;tap:7311;d:7527;g:7862;tap:8225;tap:8425;d:8741;g:9157;d:9566;tap:10169;d:10377;g:10583;d:10952;tap:11493;tap:11693;h:12019;b:12457;h:12842;d:13141;tap:13920;d:14142;tap:14771;d:15030;g:15425;d:15801;g:16144;tap:16772;d:17008;g:17435;d:17843;tap:18198;tap:18398;d:18715;g:19528;tap:20132;h:20398;b:21330;h:21538;tap:21948;d:22371;g:22845;d:23172;g:23713;d:24118;g:24522;d:24919;g:25278;b:25698;h:26153;b:26897;h:27229;d:27850;g:28199;d:28742;g:29283;d:29651;tap:30277;d:30490;g:30925;d:31286;tap:31911;tap:32351;d:32542;g:32946;tap:33573;d:33804;g:34202;d:34506;tap:35225;b:35476;h:35848;b:36315;d:36697;g:37170;d:37533;b:37940;h:38297;b:38754;d:39172;tap:40162;d:40399;g:40825;d:41169;tap:41810;d:42017;g:42518;d:42877;tap:43504;d:43759;g:44194;d:44566;b:44951;h:45367;b:45816;d:46025;g:46288;d:46570;tap:47288;d:47449;tap:48076;d:48245;g:48468;tap:49095;d:49248;g:49486;tap:50113;d:50409;g:51352;tap:51730;tap:51930;tap:53380;d:53629;d:54119;tap:54665;tap:55106;d:55284;g:55621;d:56023;tap:56712;d:56943;g:57362;tap:58101;tap:58301;d:58617;g:59082;d:59369;tap:59860;d:60282;g:60707;tap:61248;tap:61448;b:61787;h:62235;tap:62920;b:63344;tap:64186;h:64393;tap:65010;h:65249;tap:65848;d:66071;tap:66697;g:66904;d:67353;g:67721;tap:68324;h:68512;b:68999;tap:69571;tap:69966;h:70159;b:70541;d:71279;g:72133;b:72967;h:73823;d:74639;g:75511;b:76298;h:76729;tap:77875;tap:78680;tap:80014;d:80219;g:80555;b:81414;h:81791;b:82197;h:82550;d:82958;g:83430;d:83832;b:84124;tap:84855;h:85098;b:85526;tap:86068;d:86328;g:86718;d:87113;tap:87477;tap:87677;d:88006;g:88396;d:88814;tap:89417;d:89673;g:90041;d:90422;tap:90792;tap:90992;b:91442;h:91715;b:92132;tap:92731;h:92982;b:93330;h:93768;tap:94134;tap:94334;d:94798;g:95356;tap:96016;d:96272;g:96694;d:97091;tap:97648;tap:97848;b:98221;h:98721;tap:99379;d:99608;g:100022;d:100390;tap:100934;d:101214;g:101648;d:102045;tap:102705;d:102911;g:103314;d:103689;tap:104316;d:104595;g:104964;d:105365;tap:105991;b:106251;h:106626;b:107030;tap:107483;tap:107683;d:108288;g:108722;tap:109218;tap:109418;d:109779;g:110325;d:110706;h:111131;b:111536;h:111945;b:112357;tap:112978;d:113235;g:113695;tap:114239;tap:114607;d:114898;g:115296;tap:115868;d:116100;g:116559;d:116986;g:117345;tap:117919;d:118181;tap:118808;tap:119241;d:119424;g:119867;d:120293;b:120676;h:121061;b:121487;tap:122133;d:122395;g:122747;d:123221;g:123598;d:123978;h:124372;d:124864;b:125219;g:125624;b:125988;h:126441;d:126816;g:127216;b:127642;h:128026;b:128468;d:129266;tap:129993;d:130956;tap:132929;d:133134;g:133548;tap:134093;d:134382;g:134739;d:135090;tap:135687;tap:135887;d:136170;g:136592;d:136839;tap:137422;d:137688;g:138061;d:138458;tap:139069;d:139319;g:139733;d:140101;tap:140514;tap:140714;d:141047;g:141385;d:141732;tap:142368;d:142621;g:143066;d:143421;tap:143881;tap:144081;d:144435;g:145070;b:145441;tap:146087;h:146363;tap:146942;h:147163;tap:147774;b:147969;tap:148602;d:148791;tap:149492;d:149645;tap:150282;tap:150694;d:150885;tap:151499;tap:151923;tap:152344;tap:152738;tap:153183;tap:153635;d:153800;tap:154414;g:154612;tap:155195;d:155394;tap:156066;d:156239;tap:156875;h:157097;tap:157704;b:157948;tap:158528;d:158721;tap:159334;h:159567;tap:160179;d:160436;tap:160960;tap:162710;tap:164316;tap:165430;");
+        sequences.add("tap:1720;d:2214;d:2804;g:3301;tap:4019;d:4338;tap:5080;d:5444;tap:6132;tap:7152;d:7500;tap:8143;tap:8677;d:8947;g:9160;tap:9706;d:10095;tap:10783;d:11173;h:11654;tap:12315;d:12661;g:13200;tap:13827;d:14167;tap:14826;d:15277;g:15824;tap:16466;d:16569;tap:17026;d:17248;g:17480;tap:17996;d:18360;tap:18985;g:19387;d:19919;tap:20609;tap:21116;d:21453;h:21911;tap:22716;b:23814;h:24176;b:24492;tap:25219;d:25552;g:25847;tap:26314;tap:27201;d:27631;g:27885;d:28190;tap:28853;tap:29357;d:29687;g:30218;d:30824;tap:31427;b:31837;h:32313;tap:32978;tap:33470;d:33818;g:34339;tap:35584;d:36289;g:36544;d:36979;tap:37669;d:38010;g:38503;b:39111;tap:39722;tap:40738;d:41067;g:41329;d:41560;b:42105;h:42362;b:42675;tap:43798;tap:44099;tap:44299;tap:44641;tap:44841;tap:45452;tap:45948;d:46049;g:46280;b:46709;h:47295;b:47813;d:48323;g:48824;d:49331;g:49954;d:50404;tap:51094;h:51461;tap:52097;tap:52297;tap:52657;tap:52857;tap:53212;d:53562;g:54068;d:54589;tap:55250;b:55620;d:56338;g:56577;d:56891;g:57154;tap:57836;tap:58036;tap:58424;h:58652;b:58958;h:59225;tap:60319;tap:60627;tap:60934;tap:61241;tap:61667;tap:61867;d:62349;g:62619;d:62891;tap:63552;tap:64460;tap:64822;tap:65022;tap:65364;tap:65564;tap:65891;tap:66091;tap:66368;tap:66568;d:66928;g:67189;tap:67671;d:67999;tap:68720;g:69018;d:69581;g:70055;b:70382;h:70596;tap:71335;d:71508;tap:72344;tap:73328;d:73744;tap:74404;tap:74897;d:75152;g:75408;tap:75953;d:76276;tap:76904;g:77314;d:77773;tap:78493;tap:78760;tap:78960;d:79384;g:79639;d:79960;tap:80651;h:80852;tap:81599;h:81965;tap:82647;tap:82847;h:83031;tap:83639;tap:83839;g:84011;tap:84701;b:85137;tap:85759;h:86119;tap:86805;d:86923;tap:87339;g:87655;d:87885;tap:88326;g:88681;tap:89343;b:89750;h:90019;tap:90732;d:90934;tap:91450;d:91787;g:92365;d:92815;tap:93419;d:93824;tap:94274;tap:95523;d:95904;g:96175;d:96439;tap:97129;tap:97329;h:97473;tap:98444;tap:99662;d:99998;g:100278;tap:100744;d:101537;tap:102299;tap:102499;tap:102878;tap:103374;d:103731;g:104027;d:104234;g:104480;d:104786;g:105074;tap:105896;tap:106096;d:106501;g:106755;d:107027;g:107323;tap:108015;d:108532;g:108966;d:109334;tap:110032;tap:110232;tap:110567;tap:110767;tap:111085;tap:111285;tap:111586;tap:111786;tap:112141;d:112499;g:113045;d:113562;d:114361;g:115101;d:115577;h:115858;tap:116314;h:116580;tap:117298;b:117639;tap:118279;tap:118547;tap:118747;tap:119070;tap:119270;tap:119596;tap:119796;tap:120123;tap:120323;d:120485;g:120757;d:120971;tap:121446;h:121759;b:121993;tap:122434;tap:122634;tap:122970;tap:123170;tap:123528;tap:123728;tap:123981;tap:124181;tap:124507;tap:124707;d:124911;g:125174;d:125413;tap:126556;tap:126756;tap:127127;tap:127380;tap:127580;tap:127905;tap:128105;tap:128399;tap:128599;d:128770;g:129041;d:129247;g:129536;d:129854;g:130126;tap:130687;tap:130887;tap:131246;tap:131446;tap:131797;tap:131997;tap:132298;tap:132498;b:132877;h:133135;b:133358;tap:133870;d:134165;g:134601;d:135322;g:135512;d:136005;g:136211;tap:136931;d:137296;g:137583;d:137822;g:138145;d:138359;tap:139020;d:139400;g:139663;d:139968;h:140411;b:140632;tap:141132;h:141404;b:141717;h:141988;b:142543;tap:143154;d:143518;g:143772;d:144036;g:144559;d:144756;tap:145281;d:145575;g:145830;d:146078;b:146571;tap:147286;h:147610;b:147881;h:148828;tap:149388;b:149697;h:149947;tap:150445;d:150744;g:151024;tap:151498;d:151796;g:152051;d:152549;g:152779;tap:153257;tap:153457;d:153854;g:154116;d:154355;tap:155564;d:155945;g:156511;d:156912;tap:157405;tap:157605;d:157946;g:158208;d:158513;tap:159722;b:160159;h:160411;b:160861;h:161112;tap:161781;b:162152;h:162428;b:162668;tap:163766;d:164209;g:164447;d:164941;g:165221;tap:165911;d:166184;tap:166927;tap:167954;tap:168154;tap:168480;tap:168680;tap:168990;tap:169190;tap:169507;tap:169707;tap:170058;tap:170258;g:170421;d:170611;tap:171126;tap:172112;tap:172312;d:172698;g:173245;d:173466;tap:174157;d:174602;g:175037;d:175494;tap:176213;tap:176489;tap:176689;tap:177030;tap:177230;tap:177549;tap:177749;tap:178062;d:178159;g:179215;d:179549;b:180246;h:180619;d:181302;g:181823;d:182037;g:182342;d:182743;tap:183487;h:183875;tap:184494;tap:184780;tap:184980;tap:185321;tap:185521;tap:185864;tap:186064;tap:186325;tap:186525;g:186729;d:186927;b:187457;tap:188615;tap:188815;tap:189180;tap:189455;tap:189655;tap:189972;tap:190172;d:190285;g:190590;d:190812;tap:191789;h:192160;tap:192774;tap:192974;tap:193341;tap:193541;tap:193892;tap:194092;tap:194411;tap:194611;d:194764;g:195044;d:195258;tap:195977;h:196229;b:196766;h:197271;tap:197746;tap:197946;g:198118;d:198339;g:198611;d:198850;g:199147;d:199344;h:199625;b:199852;tap:201075;d:201903;g:202718;d:203141;");
         go = findViewById(R.id.go);
         go.setVisibility(View.INVISIBLE);
 
+        mVisualizer=findViewById(R.id.barvisualizer);
 
         go.setOnClickListener(new View.OnClickListener() {
 
@@ -293,6 +316,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 barreHorizontal4.setVisibility(View.VISIBLE);
 
 
+
+                //TODO: init MediaPlayer and play the audio
+
+                //get the AudioSessionId from your MediaPlayer and pass it to the visualizer
+
+
+
                 mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     public void onCompletion(MediaPlayer mp) {
                         Handler handler = new Handler();
@@ -306,12 +336,14 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                 j.putExtra("manques", 2*couples.length - score);
                                 startActivity(j);
                                 mPlayer.release();
+                                mVisualizer.release();
                                 toast.cancel();
                             }
                         }, 1000);
 
                     }
                 });
+
                 lancerAnimation(sequence);
 
 
@@ -344,6 +376,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
         //  sequence = genererSequenceAleatoire(pos);
         nom_txt = new ArrayList<>();
+
         nom_txt.add("cybersdf_dolling.txt");
         nom_txt.add("cdk_like_music_cdk_mix.txt");
         nom_txt.add("alla_what_parody.txt");
@@ -356,26 +389,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         nom_txt.add("go_not_gently.txt");
         nom_txt.add("triangle.txt");
         nom_txt.add("bigcartheft.txt");
-        //nom_txt.add("mindmapthat_music_through_love.txt");
-        // nom_txt.add("alexberoza_good_day.txt");
-        //nom_txt.add("abrighterheart.txt");
-        //nom_txt.add("we_wish_you_a_merry_xmas.txt");
-        // nom_txt.add("there_you_go.txt");
-        // nom_txt.add("tobias_weber_between_worlds_instrumental.txt");
-        //   nom_txt.add("pool.txt");
-        //  nom_txt.add("the_voyage.txt");
-        // nom_txt.add("hiphop.txt");
-        // nom_txt.add("joy_to_the_world.txt");
-        //   nom_txt.add("epicseries.txt");
-        //  nom_txt.add("bird_in_hand.txt");
-        // nom_txt.add("ectoplasm.txt");
-        //  nom_txt.add("vj_memes_paint_the_sky.txt");
-        // nom_txt.add("alison");
-        //  nom_txt.add("piledriver.txt");
-        //   nom_txt.add("djlang59_drops_of_h2o_the_filtered_water_treatment.txt");
-        //  nom_txt.add("leavinthelights.txt");
-        //  nom_txt.add("speck_moonlight_sonata_shifting_sun_mix.txt");
-     //   nom_txt.add("what_da_funk.txt");
+
+        nom_txt.add("arroz_con_pollo.txt");
+        nom_txt.add("tango_de_manzana.txt");
+        nom_txt.add("no_frills_salsa.txt");
+        nom_txt.add("what_is_love.txt");
 
         ArrayList<String> listeUrl=new ArrayList<>();
         listeUrl.add("https://www.auboutdufil.com/get.php?web=https://archive.org/download/auboutdufil-archives/502/Cybersdf-Dolling.mp3");
@@ -390,27 +408,12 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         listeUrl.add("https://audionautix.com/Music/GoNotGently.mp3");
         listeUrl.add("https://audionautix.com/Music/Triangle.mp3");
         listeUrl.add("https://audionautix.com/Music/BigCarTheft.mp3");
-        //listeUrl.add("https://soundcloud.com/twisterium/london-night-free-instrumental-background-music?in=twisterium/sets/free-commercial-instrumental");
-        //   listeUrl.add("http://ccmixter.org/content/mindmapthat/mindmapthat_-_Music_Through_Love.mp3");
-        //  listeUrl.add("http://ccmixter.org/content/AlexBeroza/AlexBeroza_-_Good_Day.mp3");
-        //   listeUrl.add("https://audionautix.com/Music/ABrighterHeart.mp3");
-        // listeUrl.add("https://audionautix.com/Music/WeWishYouAMerryXmas.mp3");
-        //  listeUrl.add("http://ccmixter.org/content/tobias_weber/tobias_weber_-_Between_Worlds_(Instrumental).mp3");
-        //  listeUrl.add("https://audionautix.com/Music/Pool.mp3");
-        // listeUrl.add("https://audionautix.com/Music/ThereYouGo.mp3");
-        // listeUrl.add("https://audionautix.com/Music/TheVoyage.mp3");
-        //  listeUrl.add("https://audionautix.com/Music/HipHop1.mp3");
-        // listeUrl.add("https://audionautix.com/Music/JoyToTheWorld.mp3");
-        //  listeUrl.add("https://audionautix.com/Music/EpicSeries.mp3");
-        // listeUrl.add("https://audionautix.com/Music/BirdInHand.mp3");
-        // listeUrl.add("https://audionautix.com/Music/Ectoplasm.mp3");
-        // listeUrl.add("http://ccmixter.org/content/VJ_Memes/VJ_Memes_-_Paint_The_Sky.mp3");
-        // listeUrl.add("https://audionautix.com/Music/Alison.mp3");
-        // listeUrl.add("https://audionautix.com/Music/Piledriver.mp3");
-        //  listeUrl.add("http://ccmixter.org/content/djlang59/djlang59_-_Drops_of_H2O_(_The_Filtered_Water_Treatment_).mp3");
-        // listeUrl.add("https://audionautix.com/Music/LeavinTheLights.mp3");
-        // listeUrl.add("http://ccmixter.org/content/speck/speck_-_Moonlight_Sonata_(Shifting_Sun_Mix)_1.mp3");
-      //  listeUrl.add("https://audionautix.com/Music/Whatdafunk.mp3");
+
+        listeUrl.add("https://incompetech.com/music/royalty-free/mp3-royaltyfree/Arroz%20Con%20Pollo.mp3");
+        listeUrl.add("https://incompetech.com/music/royalty-free/mp3-royaltyfree/Tango%20de%20Manzana.mp3");
+        listeUrl.add("https://incompetech.com/music/royalty-free/mp3-royaltyfree/No%20Frills%20Salsa.mp3");
+        listeUrl.add("https://incompetech.com/music/royalty-free/mp3-royaltyfree/What%20Is%20Love.mp3");
+
 
 
 
@@ -428,6 +431,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
        }
 
        else {
+
                 //on télécharge
 // instantiate it within the onCreate method
 
@@ -680,7 +684,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         return precision;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mVisualizer != null) {
+           mVisualizer.release();
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -719,7 +729,9 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             toast.cancel();
 
-
+           if (mVisualizer != null) {
+                mVisualizer.release();
+            }
 
 
         }
@@ -886,7 +898,9 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                 File mFolder = new File(getFilesDir() + "/Music");
                 String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".mp3";
+
                 mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
+
             }
         }
     }
@@ -918,15 +932,17 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 //                        .setAcceleration(0.00005f, 45)
                     .oneShot(findViewById(R.id.gOverlay), 5);
             rippleBackground=(RippleBackground)findViewById(R.id.content);
-            rippleBackground.clearAnimation();
+           // rippleBackground.clearAnimation();
             rippleBackground.startRippleAnimation();
           //  rippleBackground.stopRippleAnimation();
+
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
+
                    rippleBackground.stopRippleAnimation();
                 }
-            }, 800);
+            }, 600);
 
             // .emit(x,y,5,1000);
 
@@ -939,7 +955,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         @Override
         public void onLongPress(MotionEvent e) {
 
-            derniereAction.setVariable("touch1");
+           // derniereAction.setVariable("touch1");
 
             //  Toast.makeText(InGame.this, "touch1", Toast.LENGTH_SHORT).show();
         }
@@ -1020,7 +1036,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     derniereAction.setVariable("b");
 
                     //   Toast.makeText(InGame.this, "down", Toast.LENGTH_SHORT).show();
-                    new ParticleSystem(InGame.this, 5, R.drawable.fleche_bas4_vert, 1000,R.id.gOverlay)
+                    new ParticleSystem(InGame.this, 5, R.drawable.fleche_bas4_rouge, 1000,R.id.gOverlay)
                             .setSpeedByComponentsRange(-0.0f, 0.0f, -0.5f, -0.5f)
 
 //                        .setAcceleration(0.00005f, 45)
@@ -1081,7 +1097,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     public void actualiserScore(int precision) {
         //actualise int score
 
-
+        final int indiceActuel=listeIndicesActuels.get(0);
         if(precision==1){
             //perfect
             score+=2;
@@ -1093,16 +1109,17 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
             textPerfect.startAnimation(animBounce);
           //  zoneJeu.getChildAt(listeIndicesActuels.get(0)).setBackground(getDrawable(R.drawable.emoji_muscle));
+
             if (listeIndicesActuels.size() > 0) {
-                ((ImageView)zoneJeu.getChildAt(listeIndicesActuels.get(0))).setImageDrawable(getDrawable(R.drawable.plusdeux));
+                ((ImageView)zoneJeu.getChildAt(listeIndicesActuels.get(0))).setImageDrawable(getDrawable(R.drawable.plusdeux2));
              //   zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
 
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
-                       // zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
+                        zoneJeu.getChildAt(indiceActuel).setVisibility(View.GONE);
                     }
-                }, 200);
+                }, 600);
             }
 
 
@@ -1121,15 +1138,15 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 ((ImageView)zoneJeu.getChildAt(listeIndicesActuels.get(0))).setImageDrawable(getDrawable(R.drawable.plusun));
                 //  zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
 
-
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                          zoneJeu.getChildAt(indiceActuel).setVisibility(View.GONE);
+                    }
+                }, 600);
             }
  //zoneJeu.getChildAt(listeIndicesActuels.get(0)).setBackground(getDrawable(R.drawable.emoji_langue));
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                  //  zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
-                }
-            }, 0);
+
 
         }
 
@@ -1140,7 +1157,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
              if(actualiserTrophy==true) {
                  nextTrophy.setImageDrawable(getDrawable(R.drawable.trophy_or));
                  actualiserTrophy = false;
-                 nextPalierScore.setText(String.valueOf(Math.round((int) (0.9 * 2 * couples.length))));
+                 nextPalierScore.setText(String.valueOf(Math.round((int) (0.95 * 2 * couples.length))));
                  Flubber.with()
                          .animation(Flubber.AnimationPreset.WOBBLE) // Slide up animation
                          .repeatCount(1)                              // Repeat once
@@ -1149,7 +1166,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                          .start();
              }
         }
-         else if(score>=Math.round((int)(0.7*2*couples.length)) ){
+         else if(score>=Math.round((int)(0.75*2*couples.length)) ){
              if(actualiserTrophy==false) {
                  nextTrophy.setImageDrawable(getDrawable(R.drawable.trophy_argent));
                  nextPalierScore.setText(String.valueOf(Math.round((int) (0.8 * 2 * couples.length))));
@@ -1242,6 +1259,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
     public void lancerAnimation(ArrayList<String> sequence) {
+
         indiceActuelSequence=0;
         vOverlay.setOnTouchListener(touchListener);
 
@@ -1250,7 +1268,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         sequenceARealiser = ( sequences.get(pos - 1));
        // sequenceARealiser = traiterSequences( sequences.get(pos - 1));
         couples = sequenceARealiser.split(";");
-        nextPalierScore.setText(String.valueOf (Math.round((int)(0.7*2*couples.length))));
+        nextPalierScore.setText(String.valueOf (Math.round((int)(0.75*2*couples.length))));
         nextTrophy.setImageDrawable(getDrawable(R.drawable.trophy_bronze));
         //   Toast.makeText(InGame.this, s, Toast.LENGTH_LONG).show();
         listeTminToClick = new ArrayList<>();
@@ -1297,7 +1315,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.tap1))){
                 i.setY(45*heightZoneJeu/100);
             }
-            else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_droite4_vert))){
+            else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_droite5_sombre))){
                 i.setY(64*heightZoneJeu/100);
             }
             else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_haut4_vert))){
@@ -1338,6 +1356,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                             mChronometer.setBase(SystemClock.elapsedRealtime());
                             mChronometer.start();
                         //    mPlayer.setVolume(0.3f,0.3f);
+
                             mPlayer.start();
                         }
                     }, tempsDemarrageMusique);
@@ -1375,6 +1394,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             }
 
 
+
             va.start();
 
 
@@ -1385,7 +1405,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         }
 
 
+        int audioSessionId = mPlayer.getAudioSessionId();
+           mVisualizer=findViewById(R.id.barvisualizer);
 
+        if (audioSessionId != -1){
+
+            mVisualizer.setAudioSessionId(audioSessionId);
+        }
 
     }
 
@@ -1398,7 +1424,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
             } else if (symbole.equals("d")) {
-                retour = getDrawable(R.drawable.fleche_droite4_vert);
+                retour = getDrawable(R.drawable.fleche_droite5_sombre);
 
             } else if (symbole.equals("h")) {
                 retour = getDrawable(R.drawable.fleche_haut4_vert);
@@ -1431,7 +1457,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             retour = getDrawable(R.drawable.fleche_gauche4_rouge);
 
 
-        } else if (d.getConstantState().equals(getDrawable(R.drawable.fleche_droite4_vert).getConstantState())) {
+        } else if (d.getConstantState().equals(getDrawable(R.drawable.fleche_droite5_sombre).getConstantState())) {
             retour = getDrawable(R.drawable.fleche_droite4_rouge);
 
         } else if (d.getConstantState().equals(getDrawable((R.drawable.fleche_haut4_vert)).getConstantState())) {
@@ -1536,6 +1562,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                          startActivity(j);
                                          mPlayer.stop();
                                          mPlayer.release();
+                                        // mVisualizer.release();
                                          toast.cancel();
                                      }
                                  }, 1000);
@@ -1552,13 +1579,10 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
                     }
-                  //  zoneJeu.getChildAt(indiceVue).setVisibility(View.GONE);
-                    //animation.removeAllUpdateListeners();
+
                 }
 
 
-               // indiceActuelSequence++;
-               // animation.cancel();
             }
 
             else if((float)animation.getAnimatedValue()>=0.80*zoneJeu.getWidth()){
@@ -1588,7 +1612,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
 
-               // animation.removeAllUpdateListeners();
+
             }
 
 
@@ -1597,632 +1621,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         }
 
     }
+
+
 
 }
-/*
-public class InGame extends AppCompatActivity {//implements OnGesturePerformedListener{
-    Intent i;
-    static final int NUM_ITEMS = 50;
-    //   ImageFragmentPagerAdapter imageFragmentPagerAdapter;
-    ViewPager viewPager;
-    private Toolbar mTopToolbar;
-    ActionBarDrawerToggle mDrawerToggle;
-    DrawerLayout mDrawer;
-    TextView messageTextView;
-    ListView mDrawerListView;
-    Boolean isDrawerOpen;
-    float x1, x2;
-    float y1, y2;
-    static ArrayList<String> sequence;
-    static int indiceActuelSequence;
-    static ImageView flecheactuelle;
-    static int dernierePositionConnue = 24;//on part de 0 donc à 25,positionActuelle=24
-    boolean leftToRight = false;
-    boolean rightToLeft = false;
-    String dernierSymbole;
-    ArrayList<Integer> listeTminToClick;//temps minimum pour chaque animation que le joueur doit attendre avant de cliquer , pour un bon timing
-    int tmin;
-
-    //private JazzyViewPager vpage;
-
-    static StringModified derniereAction;//derniere action effectuée par joueur tap,cr,cl...
-    long timeOfDerniereAction;
-    int score;
-    //View v;
-    GestureOverlayView v;
-    private GestureDetector mDetector;
-    TextView scoreT;
-    int widthView;
-    int heightView;
-    private GestureLibrary gLibrary;
-    RelativeLayout symboleT;
-    RelativeLayout symboleUtilisateur;
-    Chronometer mChronometer;
-    Boolean elementActuelClickable;
-    MediaPlayer mPlayer;
-
-    ArrayList<String> listeUrl;
-    int indicesequence;
-    File gpxfile;
-    int pos;
-    String coupleMvtTemps;
-    ArrayList<String> nom_txt;
-    ProgressDialog mProgressDialog;
-    GestureOverlayView vOverlay;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_ecran_ingame);
-        i = getIntent();
-        pos = i.getExtras().getInt("niveau");
-
-        coupleMvtTemps = "";
-        nom_txt = new ArrayList<>();
-        nom_txt.add("cybersdf_dolling.txt");
-        nom_txt.add("cdk_like_music_cdk_mix.txt");
-        nom_txt.add("alla_what_parody.txt");
-        nom_txt.add("carol_of_the_bells.txt");
-        nom_txt.add("jeffspeed68_two_pianos.txt");
-        nom_txt.add("adagioinc.txt");
-        nom_txt.add("tender_remains.txt");
-        nom_txt.add("rocker.txt");
-        nom_txt.add("hansatom_persephone.txt");
-        nom_txt.add("go_not_gently.txt");
-        nom_txt.add("triangle.txt");
-        nom_txt.add("bigcartheft.txt");
-
-//        nom_txt.add("mindmapthat_music_through_love.txt");
-//        nom_txt.add("cdk_like_music_cdk_mix.txt");
-//        nom_txt.add("alexberoza_good_day.txt");
-//        nom_txt.add("abrighterheart.txt");
-//        nom_txt.add("alla_what_parody.txt");
-//        nom_txt.add("we_wish_you_a_merry_xmas.txt");
-//        nom_txt.add("carol_of_the_bells.txt");
-//        nom_txt.add("tobias_weber_between_worlds_instrumental.txt");
-//        nom_txt.add("pool.txt");
-//        nom_txt.add("rocker.txt");
-//        nom_txt.add("there_you_go.txt");
-//        nom_txt.add("jeffspeed68_two_pianos.txt");
-//        nom_txt.add("adagioinc.txt");
-//        nom_txt.add("the_voyage.txt");
-//        nom_txt.add("hiphop.txt");
-//        nom_txt.add("hansatom_persephone.txt");
-//        nom_txt.add("joy_to_the_world.txt");
-//        nom_txt.add("epicseries.txt");
-//        nom_txt.add("bird_in_hand.txt");
-//        nom_txt.add("ectoplasm.txt");
-//        nom_txt.add("vj_memes_paint_the_sky.txt");
-//        nom_txt.add("alison");
-//        nom_txt.add("piledriver.txt");
-//        nom_txt.add("go_not_gently.txt");
-//        nom_txt.add("djlang59_drops_of_h2o_the_filtered_water_treatment.txt");
-//        nom_txt.add("leavinthelights.txt");
-//        nom_txt.add("speck_moonlight_sonata_shifting_sun_mix.txt");
-//        nom_txt.add("triangle.txt");
-//        nom_txt.add("bigcartheft.txt");
-//        nom_txt.add("what_da_funk.txt");
-
-        listeUrl = new ArrayList<>();
-        // **** ajout des musiques
-        listeUrl.add("https://www.auboutdufil.com/get.php?web=https://archive.org/download/auboutdufil-archives/502/Cybersdf-Dolling.mp3");
-        listeUrl.add("http://ccmixter.org/content/cdk/cdk_-_Like_Music_(cdk_Mix)_1.mp3");
-        listeUrl.add("https://audionautix.com/Music/AllaWhatParody.mp3");
-        listeUrl.add("https://audionautix.com/Music/CarolOfTheBells.mp3");
-        listeUrl.add("http://ccmixter.org/content/JeffSpeed68/JeffSpeed68_-_Two_Pianos.mp3");
-        listeUrl.add("https://audionautix.com/Music/AdagioInC.mp3");
-        listeUrl.add("https://www.auboutdufil.com/get.php?web=https://archive.org/download/auboutdufil-archives/492/Myuu-TenderRemains.mp3");
-        listeUrl.add("https://audionautix.com/Music/Rocker.mp3");
-        listeUrl.add("http://ccmixter.org/content/hansatom/hansatom_-_Persephone.mp3");
-        listeUrl.add("https://audionautix.com/Music/GoNotGently.mp3");
-        listeUrl.add("https://audionautix.com/Music/Triangle.mp3");
-        listeUrl.add("https://audionautix.com/Music/BigCarTheft.mp3");
-        vOverlay = (GestureOverlayView) findViewById(R.id.gOverlay);
-        vOverlay.setVisibility(View.VISIBLE);
-        mDetector = new GestureDetector(this, new MyGestureListener());
-
-        // Add a touch1 listener to the view
-        // The touch1 listener passes all its events on to the gesture detector
-
-        vOverlay.setOnTouchListener(touchListener);
-        //chargement musique
-        File mFolder = new File(getFilesDir() + "/Music");
-        File file = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".mp3");
-        String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".mp3";
-        if (file.exists()) {
-            //on recupère le fichier depuis le repertoire
-
-
-            mPlayer = MediaPlayer.create(this, Uri.parse(filePath));
-            mChronometer = new Chronometer(this);
-            mChronometer.setBase(SystemClock.elapsedRealtime());
-
-
-            mPlayer.start();
-            mChronometer.start();
-        } else {
-            //on télécharge
-// instantiate it within the onCreate method
-
-
-            mProgressDialog = new ProgressDialog(InGame.this);
-
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Téléchargement de la musique");
-            mProgressDialog.setIndeterminate(true);
-
-            mProgressDialog.setCancelable(true);
-
-// execute this when the downloader must be fired
-            final DownloadTask downloadTask = new DownloadTask(InGame.this);
-            downloadTask.execute(listeUrl.get(pos - 1));
-
-
-            mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    downloadTask.cancel(true);
-                    File mFolder = new File(getFilesDir() + "/Music");
-                    File file = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".mp3");
-                    //  String filePath=mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+".mp3";
-                    file.delete();
-                    Intent i = new Intent(getApplicationContext(), EcranAccueil.class);
-                    startActivity(i);
-                    finish();
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
-                }
-            });
-
-
-            // **** fin ajout des musiques
-
-
-            indiceActuelSequence = 0;
-            score = 0;
-
-
-            derniereAction = new StringModified();
-            timeOfDerniereAction = 0;
-            //symboleT = (RelativeLayout) findViewById(R.id.symbole);
-            // symboleUtilisateur = (RelativeLayout) findViewById(R.id.symboleMis);
-            v = (GestureOverlayView) findViewById(R.id.gOverlay);
-            scoreT = (TextView) findViewById(R.id.score);
-            scoreT.setText(String.valueOf(score));
-            elementActuelClickable = false;
-
-
-            // Toast.makeText(InGame.this, String.valueOf(pos), Toast.LENGTH_SHORT).show();
-//flecheactuelle = findViewById(R.id.flecheactuelle);
-
-            // dernierSymbole = actualiserSymbole(flecheactuelle, sequence, indiceActuelSequence);
-
-
-            isDrawerOpen = false;
-
-
-            // mTopToolbar = (Toolbar) findViewById(R.id.ingame_toolbar);
-          //  setSupportActionBar(mTopToolbar);
-            // These lines are needed to display the top-left hamburger button
-//            getSupportActionBar().setHomeButtonEnabled(true);
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-//            getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-
-            mDetector = new GestureDetector(this, new MyGestureListener());
-
-            // Add a touch1 listener to the view
-            // The touch1 listener passes all its events on to the gesture detector
-            v.setOnTouchListener(touchListener);
-            v.post(new Runnable() {
-                @Override
-                public void run() {
-                    widthView = v.getWidth(); //height is ready
-                }
-            });
-
-            //  lancerAnimation(sequence);
-
-        }
-    }
-
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            generateNoteOnSD(getApplicationContext(), nom_txt.get(pos - 1), coupleMvtTemps);
-            mPlayer.stop();
-            finish();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    // This touch1 listener passes everything on to the gesture detector.
-    // That saves us the trouble of interpreting the raw touch1 events
-    // ourselves.
-    View.OnTouchListener touchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            // pass the events to the gesture detector
-            // a return value of true means the detector is handling it
-            // a return value of false means the detector didn't
-            // recognize the event
-
-            return mDetector.onTouchEvent(event);
-
-        }
-    };
-
-        private class DownloadTask extends AsyncTask<String, Integer, String> {
-
-            private Context context;
-            private PowerManager.WakeLock mWakeLock;
-
-            public DownloadTask(Context context) {
-                this.context = context;
-            }
-
-            @Override
-            protected String doInBackground(String... sUrl) {
-                InputStream input = null;
-                OutputStream output = null;
-                HttpURLConnection connection = null;
-
-                File mFolder = new File(getFilesDir() + "/Music");
-                File file = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".mp3");
-                if (!mFolder.exists()) {
-                    mFolder.mkdir();
-                }
-                if (!file.exists()) {
-                    try {
-                        file.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                try {
-                    URL url = new URL(sUrl[0]);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.connect();
-
-                    // expect HTTP 200 OK, so we don't mistakenly save error report
-                    // instead of the file
-                    if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                        return "Server returned HTTP " + connection.getResponseCode()
-                                + " " + connection.getResponseMessage();
-                    }
-
-                    // this will be useful to display download percentage
-                    // might be -1: server did not report the length
-                    int fileLength = connection.getContentLength();
-
-                    // download the file
-                    input = connection.getInputStream();
-
-                    output = new FileOutputStream(file);
-
-                    byte data[] = new byte[4096];
-                    long total = 0;
-                    int count;
-                    while ((count = input.read(data)) != -1) {
-                        // allow canceling with back button
-                        if (isCancelled()) {
-                            input.close();
-                            return null;
-                        }
-                        total += count;
-                        // publishing the progress....
-                        if (fileLength > 0) // only if total length is known
-                            publishProgress((int) (total * 100 / fileLength));
-                        output.write(data, 0, count);
-                    }
-                } catch (Exception e) {
-                    return e.toString();
-                } finally {
-                    try {
-                        if (output != null)
-                            output.close();
-                        if (input != null)
-                            input.close();
-                    } catch (IOException ignored) {
-                    }
-
-                    if (connection != null)
-                        connection.disconnect();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                // take CPU lock to prevent CPU from going off if the user
-                // presses the power button during download
-                PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                        getClass().getName());
-                mWakeLock.acquire();
-                mProgressDialog.show();
-            }
-
-            @Override
-            protected void onProgressUpdate(Integer... progress) {
-                super.onProgressUpdate(progress);
-                // if we get here, length is known, now set indeterminate to false
-                mProgressDialog.setIndeterminate(false);
-                mProgressDialog.setMax(100);
-                mProgressDialog.setProgress(progress[0]);
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                mWakeLock.release();
-                mProgressDialog.dismiss();
-                if (result != null) {
-                    Toast.makeText(context, "Erreur téléchargement de la musique", Toast.LENGTH_LONG).show();
-                    File mFolder = new File(getFilesDir() + "/Music");
-                    File file = new File(mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+".mp3");
-                    //  String filePath=mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+".mp3";
-                    file.delete();
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            // Actions to do after 10 seconds
-                            Intent i = new Intent(getApplicationContext(), EcranAccueil.class);
-                            startActivity(i);
-                            finish();
-                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                        }
-                    }, 1000);
-
-                } else {
-                    //Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
-
-
-                    File mFolder = new File(getFilesDir() + "/Music");
-                    String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".mp3";
-                    mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
-                    mChronometer = new Chronometer(getApplicationContext());
-                    mChronometer.setBase(SystemClock.elapsedRealtime());
-
-
-                    mPlayer.start();
-                    mChronometer.start();
-
-                }
-            }
-        }
-
-    // In the SimpleOnGestureListener subclass you should override
-// onDown and any other gesture that you want to detect.
-    class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
-        ImageView i = new ImageView(getApplicationContext());
-
-        @Override
-        public boolean onDown(MotionEvent event) {
-
-
-            // don't return false here or else none of the other
-            // gestures will work
-            return true;
-        }
-
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            int fadeOutDuration = 1000;
-            Animation fadeOut = new AlphaAnimation(1, 0);
-            fadeOut.setInterpolator(new AccelerateInterpolator()); // and this
-
-            fadeOut.setDuration(fadeOutDuration);
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                public void onAnimationEnd(Animation animation) {
-                 //   symboleUtilisateur.removeAllViews();
-                }
-
-                public void onAnimationRepeat(Animation animation) {
-                }
-
-                public void onAnimationStart(Animation animation) {
-                }
-            });
-         //   derniereAction.setVariable("tap");
-            timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
-            coupleMvtTemps+="tap:" + String.valueOf(timeOfDerniereAction)+";";
-
-            i.setImageDrawable(getDrawable(R.drawable.tap));
-           // symboleUtilisateur.removeAllViews();
-          //  symboleUtilisateur.addView(i);
-            i.startAnimation(fadeOut);
-              Toast.makeText(InGame.this, "tap", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            int fadeOutDuration = 1000;
-            Animation fadeOut = new AlphaAnimation(1, 0);
-            fadeOut.setInterpolator(new AccelerateInterpolator()); // and this
-
-            fadeOut.setDuration(fadeOutDuration);
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                public void onAnimationEnd(Animation animation) {
-                   // symboleUtilisateur.removeAllViews();
-                }
-
-                public void onAnimationRepeat(Animation animation) {
-                }
-
-                public void onAnimationStart(Animation animation) {
-                }
-            });
-          //  derniereAction.setVariable("touch1");
-            timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
-            coupleMvtTemps+="touch1:" + String.valueOf(timeOfDerniereAction)+";";
-            i.setImageDrawable(getDrawable(R.drawable.touch1));
-          //  symboleUtilisateur.removeAllViews();
-          //  symboleUtilisateur.addView(i);
-            i.startAnimation(fadeOut);
-            //  Toast.makeText(InGame.this, "touch1", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-
-            return true;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2,
-                                float distanceX, float distanceY) {
-
-            // String direction=identifierDirectionGeste(e1,e2);
-            //  Toast.makeText(InGame.this, String.valueOf(Math.abs(e2.getX()-e1.getX())), Toast.LENGTH_SHORT).show();
-
-
-
-if (Math.abs(e2.getX() - e1.getX()) < Math.abs(e2.getY() - e1.getY())) {
-
-
-                   if (e2.getY() - e1.getY() > 0) {
-
-                         //  derniereAction.setVariable("h");
-                           Toast.makeText(InGame.this, "up", Toast.LENGTH_SHORT).show();
-
-                   } else if (e2.getY() - e1.getY() < 0) {
-
-                       //    derniereAction.setVariable("b");
-                           Toast.makeText(InGame.this, "down", Toast.LENGTH_SHORT).show();
-
-                   }
-               }
-
-
-
-            return true;
-        }
-
-        @Override
-        public boolean onFling(MotionEvent event1, MotionEvent event2,
-                               float velocityX, float velocityY) {
-            int fadeOutDuration = 1000;
-            Animation fadeOut = new AlphaAnimation(1, 0);
-            fadeOut.setInterpolator(new AccelerateInterpolator()); // and this
-
-            fadeOut.setDuration(fadeOutDuration);
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                public void onAnimationEnd(Animation animation) {
-                 //   symboleUtilisateur.removeAllViews();
-                }
-
-                public void onAnimationRepeat(Animation animation) {
-                }
-
-                public void onAnimationStart(Animation animation) {
-                }
-            });
-            if (Math.abs(event2.getY() - event1.getY()) < Math.abs(event2.getX() - event1.getX())) {
-
-
-                if (event2.getX() - event1.getX() > 0) {
-                  //  derniereAction.setVariable("g");
-                    timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
-                    coupleMvtTemps+="g:" + String.valueOf(timeOfDerniereAction)+";";
-
-                    i.setImageDrawable(getDrawable(R.drawable.fleche_gauche2));
-                 //   symboleUtilisateur.removeAllViews();
-                 //   symboleUtilisateur.addView(i);
-                    i.startAnimation(fadeOut);
-                    Toast.makeText(InGame.this, "left", Toast.LENGTH_SHORT).show();
-                } else if (event2.getX() - event1.getX() < 0) {
-                 //   derniereAction.setVariable("d");
-                    timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
-                    coupleMvtTemps+="d:" + String.valueOf(timeOfDerniereAction)+";";
-                    i.setImageDrawable(getDrawable(R.drawable.fleche_droite2));
-                 //   symboleUtilisateur.removeAllViews();
-                 //   symboleUtilisateur.addView(i);
-                    i.startAnimation(fadeOut);
-                       Toast.makeText(InGame.this, "right", Toast.LENGTH_SHORT).show();
-                }
-            } else if (Math.abs(event2.getX() - event1.getX()) < Math.abs(event2.getY() - event1.getY())) {
-
-
-                if (event2.getY() - event1.getY() > 0) {
-                    timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
-                 //   derniereAction.setVariable("h");
-                    coupleMvtTemps+="h:" + String.valueOf(timeOfDerniereAction)+";";
-
-                    i.setImageDrawable(getDrawable(R.drawable.fleche_haut2));
-                  //  symboleUtilisateur.removeAllViews();
-                  //  symboleUtilisateur.addView(i);
-                    i.startAnimation(fadeOut);
-                        Toast.makeText(InGame.this, "up", Toast.LENGTH_SHORT).show();
-
-                } else if (event2.getY() - event1.getY() < 0) {
-                       timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
-             //       derniereAction.setVariable("b");
-                    coupleMvtTemps+="b:" + String.valueOf(timeOfDerniereAction)+";";
-
-
-                    i.setImageDrawable(getDrawable(R.drawable.fleche_bas2));
-                   // symboleUtilisateur.removeAllViews();
-                  //  symboleUtilisateur.addView(i);
-                    i.startAnimation(fadeOut);
-                    Toast.makeText(InGame.this, "down", Toast.LENGTH_SHORT).show();
-
-                }
-            }
-            return true;
-        }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_ingame, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void generateNoteOnSD(Context context, String sFileName, String sBody) {
-        try {
-            File root= new File(getFilesDir().getAbsolutePath(),"sequence");
-            if (!root.exists()) {
-                root.mkdirs();
-            }
-            if(gpxfile==null) {
-                gpxfile = new File(root, sFileName);
-
-            }
-            FileWriter writer = new FileWriter(gpxfile);
-            writer.append(sBody);
-            writer.flush();
-            writer.close();
-            Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-// Create a new output file stream
-
-
-
-
-
-    }
-
-}
-*/

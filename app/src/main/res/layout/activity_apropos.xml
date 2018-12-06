@@ -81,7 +81,8 @@ WeWishYouAMerryXmas,Whatdafunk, EpicSeries,Piledriver,LeavinTheLights,BigCarThef
 \n\n-CircleProgress :https://github.com/lzyzsd/CircleProgress
 \n\n-Snowfall(Apache License):https://github.com/JetradarMobile/android-snowfall
 \n\n-RippleBackground(MIT License) :https://github.com/skyfishjy/android-ripple-background
-\n\n-Leonids(Apache License):https://github.com/plattysoft/Leonids"
+\n\n-Leonids(Apache License):https://github.com/plattysoft/Leonids
+\n\n-BarVisualizer:https://github.com/gauravk95/audio-visualizer-android"
         android:textColor="@color/white"
         android:textSize="15sp"
         android:layout_marginTop="10dp"

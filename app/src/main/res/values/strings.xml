@@ -38,6 +38,6 @@
             <item>RotateDown</item>
             <item>Accordion</item>
         </string-array>
-
+    <string name="ad_id_interstitial">ca-app-pub-3940256099942544/1033173712</string>
 
 </resources>
