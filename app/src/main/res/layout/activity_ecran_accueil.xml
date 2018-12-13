@@ -34,6 +34,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/messageJeuTermine"/>
+    <FrameLayout
+        android:id="@+id/container_pop_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp" />
 
     <!-- Holds the Toolbar and a nested LinearLayout-->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -42,13 +49,48 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- This Toolbar will be used as our action bar using setSupportActionBar() -->
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/main_toolbar"
-            android:layout_height="wrap_content"
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:minHeight="?android:attr/actionBarSize"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+            android:layout_height="wrap_content"
+           >
+
+            <ImageView
+                android:id="@+id/show_achievements"
+                android:layout_width="wrap_content"
+                android:layout_toLeftOf="@id/show_leaderboard"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="15dp"
+
+                android:layout_marginTop="10dp"
+               android:background="@drawable/achievements" />
+
+            <!-- show leaderboards -->
+
+            <ImageView
+                android:id="@+id/show_leaderboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_alignBottom="@id/action_settings"
+                android:layout_toLeftOf="@id/action_settings"
+                android:background="@drawable/leaderboard"
+
+
+                android:text="Leaderboard" />
+            <ImageView
+                android:id="@+id/action_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/settings"
+                />
+        </RelativeLayout>
 
         <!-- This LinearLayout will be displayed below the Toolbar and contain our "main" views -->
         <RelativeLayout
@@ -134,7 +176,8 @@
                 android:layout_toRightOf="@id/btnJouer"
                 android:layout_marginBottom="15dp"
                 android:textAllCaps="false"
-                android:background="@drawable/jouer_shape"/>
+                android:background="@drawable/jouer_shape"
+                android:visibility="invisible"/>
         <TextView
             android:id="@+id/messageVerrouille"
             android:layout_width="wrap_content"

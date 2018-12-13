@@ -112,7 +112,7 @@ import com.appolica.flubber.Flubber;
 
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
 
-import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
+
 import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import com.google.android.gms.ads.AdListener;
@@ -190,7 +190,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     RippleBackground rippleBackground;
     int barreVie;
 
-    BarVisualizer mVisualizer;
+
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
 
 
@@ -239,9 +239,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
        rippleBackground=(RippleBackground)findViewById(R.id.content);
         animationEstLancee = false;
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_RECORD_AUDIO);
-        }
+
 
         sequences = new ArrayList<>();
         sequences.add("tap:1250;tap:1691;tap:2188;tap:2523;tap:3049;tap:3880;tap:4449;tap:5040;tap:5531;tap:6145;tap:6585;tap:7081;tap:7590;tap:8051;g:8320;tap:9063;d:9330;tap:10109;g:10366;tap:11087;d:11401;tap:12091;g:12408;tap:13150;d:13420;tap:14165;g:14427;tap:15170;d:15469;tap:16189;g:16479;tap:17199;d:17477;tap:18168;h:18488;tap:19232;h:19601;tap:20200;tap:21285;tap:22290;tap:23853;tap:24811;g:25230;tap:25833;g:26261;tap:26888;tap:27905;d:28263;tap:28866;tap:29888;tap:30977;tap:31995;tap:32927;d:36838;tap:37582;tap:39120;tap:40072;tap:41067;tap:42074;h:42433;tap:43150;d:43397;g:43949;d:44500;tap:45191;tap:49764;tap:50775;tap:51781;tap:52769;tap:54298;tap:55324;tap:56353;tap:57388;d:57745;tap:58348;tap:59423;d:59702;g:60343;d:60857;tap:61432;b:61738;h:62215;tap:62955;tap:63475;tap:64023;tap:64533;d:64713;g:64959;d:65158;tap:65615;tap:66066;tap:66550;tap:67106;tap:67605;d:67792;g:68116;d:68507;g:68739;d:68963;g:69128;tap:69704;tap:70149;b:70407;tap:71117;b:71459;tap:72143;tap:73172;tap:73675;h:73959;tap:74700;tap:75208;d:75574;d:76614;h:77539;tap:78227;tap:79229;tap:81221;tap:81762;h:82087;tap:82829;tap:83873;g:84156;tap:84899;d:85156;tap:85875;h:86116;tap:86890;g:87164;tap:87884;d:88258;tap:88900;g:89588;tap:90424;tap:90924;g:91814;b:92247;h:92762;b:93063;h:93268;b:93512;tap:93999;d:94249;g:94803;d:95084;g:95331;tap:96055;h:96328;b:96812;tap:97544;h:97858;h:99382;tap:100098;g:100465;d:100959;tap:101651;g:102001;tap:102664;d:102931;tap:104194;d:104392;g:104995;d:105418;tap:106172;g:106462;b:107037;h:107550;tap:108235;b:108513;h:109032;b:109280;h:109533;b:109771;tap:110292;d:110524;g:111056;g:112554;tap:113199;d:113386;tap:113961;g:114157;g:115322;d:115587;g:115802;d:116050;g:116247;tap:116876;tap:117419;d:117578;g:117926;tap:118471;h:119273;b:119496;h:119707;d:120538;g:120777;d:120992;g:121290;d:121471;g:121743;d:121942;tap:122458;tap:122984;d:123180;g:123535;d:123824;tap:124543;tap:125048;h:125302;b:125522;h:125975;b:126323;tap:126995;d:127219;g:127678;d:127975;tap:128601;b:128877;tap:129604;h:129878;tap:130618;b:131006;tap:131689;h:132012;tap:132635;d:132924;tap:133645;g:133983;tap:134674;d:134898;b:135545;h:136072;b:136553;tap:137207;tap:137764;tap:138269;tap:138787;d:139035;tap:139753;d:140111;tap:140753;g:140999;d:141508;g:142118;d:142584;g:143164;d:143645;g:144127;g:144699;d:145189;d:145666;g:146183;d:146659;g:147134;d:147661;g:148144;d:148415;g:148705;d:149226;g:150159;d:150422;g:150696;d:151229;g:151776;tap:152494;tap:152991;tap:153539;b:153784;h:154323;tap:155012;tap:155526;tap:156011;tap:156520;tap:157087;tap:157553;tap:158067;tap:158558;tap:159062;");
@@ -265,7 +263,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         go = findViewById(R.id.go);
         go.setVisibility(View.INVISIBLE);
 
-        mVisualizer=findViewById(R.id.barvisualizer);
+
 
         go.setOnClickListener(new View.OnClickListener() {
 
@@ -334,9 +332,10 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                 j.putExtra("score", score);
                                 j.putExtra("nbTotalMvts", 2*couples.length);
                                 j.putExtra("manques", 2*couples.length - score);
+                                mPlayer.reset();
+                              //  mPlayer.release();
+
                                 startActivity(j);
-                                mPlayer.release();
-                                mVisualizer.release();
                                 toast.cancel();
                             }
                         }, 1000);
@@ -687,9 +686,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mVisualizer != null) {
-           mVisualizer.release();
-        }
+
     }
 
     @Override
@@ -704,10 +701,19 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     @Override
     protected void onPause() {
         super.onPause();
-        if(mPlayer!=null && mPlayer.isPlaying()) {
-            mPlayer.pause();
-            media_length = mPlayer.getCurrentPosition();
+        if(mPlayer!=null ) {
 
+            try {
+                //erreur ici sur LA CONdition isPlaying
+                if (mPlayer.isPlaying()) {
+                    mPlayer.pause();
+                    media_length = mPlayer.getCurrentPosition();
+                }
+
+            }
+            catch (Exception e){
+
+            }
         }
         toast.cancel();
     }
@@ -728,10 +734,6 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             finish();
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             toast.cancel();
-
-           if (mVisualizer != null) {
-                mVisualizer.release();
-            }
 
 
         }
@@ -1405,13 +1407,6 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         }
 
 
-        int audioSessionId = mPlayer.getAudioSessionId();
-           mVisualizer=findViewById(R.id.barvisualizer);
-
-        if (audioSessionId != -1){
-
-            mVisualizer.setAudioSessionId(audioSessionId);
-        }
 
     }
 
@@ -1548,6 +1543,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                              }
                              else if(barreVie==1){
+                                 barreVie-=1;
                                  //barre vie vaut 0 - on stop la partie
                                  progress.setProgress(0);
                                  Handler handler = new Handler();
@@ -1559,10 +1555,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                          j.putExtra("score", score);
                                          j.putExtra("nbTotalMvts", 2*couples.length);
                                          j.putExtra("manques", 2*couples.length - score);
-                                         startActivity(j);
-                                         mPlayer.stop();
+
+                                       //  mPlayer.stop();
+                                        // mPlayer.reset();
                                          mPlayer.release();
-                                        // mVisualizer.release();
+
+                                         startActivity(j);
+                                         finish();
                                          toast.cancel();
                                      }
                                  }, 1000);

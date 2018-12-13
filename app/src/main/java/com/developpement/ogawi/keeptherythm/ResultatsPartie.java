@@ -19,9 +19,13 @@ import android.widget.Toast;
 import com.appolica.flubber.Flubber;
 import com.developpement.ogawi.keeptherythm.bdd.Score;
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
+import com.developpement.ogawi.keeptherythm.google.example.games.basegameutils.BaseGameActivity;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesClient;
 import com.plattysoft.leonids.ParticleSystem;
 
 import org.w3c.dom.Text;
@@ -33,7 +37,7 @@ import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
 
-public class ResultatsPartie  extends AppCompatActivity {
+public class ResultatsPartie  extends BaseGameActivity {
     Button rejouer;
     Button accepter;
     Intent i;
@@ -60,6 +64,8 @@ public class ResultatsPartie  extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.fragment_resultats_partie);
+        GamesClient gamesClient = Games.getGamesClient(ResultatsPartie.this, GoogleSignIn.getLastSignedInAccount(this));
+        gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
 
         playerResults= MediaPlayer.create(this, R.raw.airtone_nightrain);
         // float log1=(float)(Math.log(maxVolume-currVolume)/Math.log(maxVolume));
@@ -125,6 +131,32 @@ public class ResultatsPartie  extends AppCompatActivity {
                         .apply();
             }
 
+            //actualisation de XP
+            if(sharedPreferences.contains("scorexp")){
+
+                    sharedPreferences
+                            .edit()
+                            .putInt("scorexp",sharedPreferences.getInt("scorexp",0)+score)
+                            .apply();
+
+
+
+            }
+            else{
+                sharedPreferences
+                        .edit()
+                        .putInt("scorexp",score)
+                        .apply();
+            }
+
+               // Games.Achievements.unlock(getApiClient(),
+                 //       getString(R.string.correct_guess_achievement));
+
+                Games.getLeaderboardsClient(this, GoogleSignIn.getLastSignedInAccount(this)).submitScore(
+                        getString(R.string.leaderboard_id),
+                        sharedPreferences.getInt("scorexp",0));
+
+
 
             //fonction pour debloquer si necessaire niveau suivant
 
@@ -154,7 +186,64 @@ public class ResultatsPartie  extends AppCompatActivity {
                     ImageView clap=findViewById(R.id.clap);
                     text100pourcent.setVisibility(View.VISIBLE);
                     clap.setVisibility(View.VISIBLE);
+
+                    //Reussite 100% niveau
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_100pourcent));
+
                 }
+
+                if(niveau==1){
+                    //Reussite niveau1 avec or
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.terminer_niveau1_or));
+
+                }
+
+                //Actualisation nombre total de trophées en or
+                int nbTotalTorpheesOr=nombreTotalTropheesOrDifferents(sharedPreferences.getInt("niveau_max_atteint",0));
+
+
+                //Reussites trophees or
+                if(nbTotalTorpheesOr==3){
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_3trophees_or));
+
+                }
+                else if(nbTotalTorpheesOr==6){
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_6trophees_or));
+
+                }
+                else if(nbTotalTorpheesOr==9){
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_9trophees_or));
+
+                }
+                else if(nbTotalTorpheesOr==15){
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_15trophees_or));
+
+                }
+                else if(nbTotalTorpheesOr==30){
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_30trophees_or));
+
+                }
+
+
+
+
+
+
+
 
             }
            else if(score>=sAr){
@@ -197,6 +286,68 @@ public class ResultatsPartie  extends AppCompatActivity {
                     .duration(1000)                              // Last for 1000 milliseconds(1 second)
                     .createFor(trophee)                             // Apply it to the view
                     .start();
+
+            //Reussites XP
+            if(sharedPreferences.contains("scorexp")){
+
+                if(sharedPreferences.getInt("scorexp",0)>=50000){
+                    //verifier que achievement non debloques
+
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_50000XP));
+
+                }
+                else if(sharedPreferences.getInt("scorexp",0)>=20000){
+                    //verifier que achievement non debloques
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_20000XP));
+
+                }
+                else if(sharedPreferences.getInt("scorexp",0)>=10000){
+                    //verifier que achievement non debloques
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_10000XP));
+
+                }
+                else if(sharedPreferences.getInt("scorexp",0)>=6000){
+                    //verifier que achievement non debloques
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_6000XP));
+
+                }
+                else if(sharedPreferences.getInt("scorexp",0)>=4000){
+                    //verifier que achievement non debloques
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_4000XP));
+
+                }
+                else if(sharedPreferences.getInt("scorexp",0)>=2000){
+                    //verifier que achievement non debloques
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_2000XP));
+
+                }
+                else if(sharedPreferences.getInt("scorexp",0)>=1000){
+                    //verifier que achievement non debloques
+
+                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                                getString(R.string.obtenir_1000XP));
+
+                }
+
+            }
+
+
+
+
+
+
         }
         else{
             String encouragement1="Allez, retente ta chance...";
@@ -311,6 +462,23 @@ public class ResultatsPartie  extends AppCompatActivity {
         return retour;
     }
 
+    public int nombreTotalTropheesOrDifferents(int niveauMax){
+
+        int retour=0;
+
+        for(int i=1;i<=niveauMax;i++){
+            if(sharedPreferences.contains("trophy_niveau"+String.valueOf(i))){
+                if("or".equals(sharedPreferences.getString("trophy_niveau"+String.valueOf(i),""))){
+                   retour+=1;
+                }
+
+
+            }
+        }
+        return retour;
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -376,4 +544,13 @@ public class ResultatsPartie  extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onSignInFailed() {
+
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+
+    }
 }

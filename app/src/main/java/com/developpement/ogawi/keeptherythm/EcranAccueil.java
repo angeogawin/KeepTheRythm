@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,7 +41,16 @@ import android.widget.Toast;
 
 import com.appolica.flubber.Flubber;
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
+import com.developpement.ogawi.keeptherythm.google.example.games.basegameutils.BaseGameActivity;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.plattysoft.leonids.ParticleSystem;
 
 import java.util.ArrayList;
@@ -50,7 +60,12 @@ import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
 
-public class EcranAccueil extends AppCompatActivity {
+import com.google.android.gms.games.Games;
+
+public class EcranAccueil extends BaseGameActivity {
+    private static final int RC_LEADERBOARD_UI = 9004;
+    private static final int RC_ACHIEVEMENT_UI = 9003;
+    private static final int RC_SIGN_IN=9008;
 
     static final int NUM_ITEMS = 16;
     ImageFragmentPagerAdapter imageFragmentPagerAdapter;
@@ -81,13 +96,34 @@ public class EcranAccueil extends AppCompatActivity {
     GestureOverlayView detecteurGeste;
     private GestureDetector mDetector;
     final static int NIV_MAX_ATTEIGNABLE=16;
+
+
+    ImageView showachievement;
+    ImageView showleaderboard;
+    ImageView actionsettings;
+
+    GoogleSignInClient mGoogleSignInClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
        // requestWindowFeature(Window.FEATURE_NO_TITLE);
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_ecran_accueil);
+
+
+        // Configure sign-in to request the user's ID, email address, and basic
+//////// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        showleaderboard=findViewById(R.id.show_leaderboard);
+        showachievement=findViewById(R.id.show_achievements);
+        actionsettings=findViewById(R.id.action_settings);
         AppRater.app_launched(this);
 
         final TextView messageVerrou=findViewById(R.id.messageVerrouille);
@@ -166,6 +202,13 @@ public class EcranAccueil extends AppCompatActivity {
                     .stream(150, 3000L);
 
             AppRater.app_launched_after100(this);
+
+            //Reussite 100%
+
+                Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this))
+                        .unlock(getString(R.string.terminer_tout));
+
+
         }
         isDrawerOpen=false;
 
@@ -208,12 +251,12 @@ public class EcranAccueil extends AppCompatActivity {
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layoutaccueil);
 
-        mTopToolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(mTopToolbar);
+    //    mTopToolbar = (Toolbar) findViewById(R.id.main_toolbar);
+       // setSupportActionBar(mTopToolbar);
         // These lines are needed to display the top-left hamburger button
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //getSupportActionBar().setHomeButtonEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        //getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // Make the hamburger button work
         mDrawerToggle = new ActionBarDrawerToggle(this,mDrawer,R.string.app_name,R.string.app_name){
@@ -228,6 +271,12 @@ public class EcranAccueil extends AppCompatActivity {
         mDrawer.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
+        actionsettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawer.openDrawer(Gravity.LEFT);
+            }
+        });
         // Change the TextView message when ListView item is clicked
         mDrawerListView = (ListView) findViewById(R.id.left_drawer);
         mDrawerListView.setOnItemClickListener(new ListView.OnItemClickListener() {
@@ -295,6 +344,83 @@ public class EcranAccueil extends AppCompatActivity {
         });
 
 
+       showachievement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+                if(account!=null){
+                    //SI LE COMPTE EXISTE
+                    if (GoogleSignIn.hasPermissions(account, Games.SCOPE_GAMES_LITE)) {
+                        showAchievements(account);
+                    }
+                    else {
+                        //SI LE COMPTE N'A PAS LES PERMISSIONS
+                        mGoogleSignInClient
+                                .silentSignIn()
+                                .addOnCompleteListener(
+                                        getParent(),
+                                        task -> {
+                                            if (task.isSuccessful()) {
+                                                showAchievements(task.getResult());
+                                            } else {
+                                                demanderJoueurConnexion();
+                                            }
+                                        });
+                    }
+
+
+                }
+                else{
+                    //SI AUCUN COMPTE DETECTE
+                    Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                    startActivityForResult(signInIntent,RC_SIGN_IN);
+
+                }
+
+
+
+
+            }
+        });
+       showleaderboard.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+              if(account!=null){
+                  //SI LE COMPTE EXISTE
+                  if (GoogleSignIn.hasPermissions(account, Games.SCOPE_GAMES_LITE)) {
+                      //SI LE COMPTE A LES PERMISSIONS
+                     showLeaderBoard(account);
+                  } else {
+                      //SI LE COMPTE N'A PAS LES PERMISSIONS
+                      mGoogleSignInClient
+                              .silentSignIn()
+                              .addOnCompleteListener(
+                                      getParent(),
+                                      task -> {
+                                          if (task.isSuccessful()) {
+                                              showLeaderBoard(task.getResult());
+                                          } else {
+                                              demanderJoueurConnexion();
+                                          }
+                                      });
+                  }
+              }
+
+
+               else {
+                  //SI AUCUN COMPTE DETECTE
+                   Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                   startActivityForResult(signInIntent,RC_SIGN_IN);
+               }
+
+
+
+
+
+           }
+       });
 
 
 
@@ -321,6 +447,30 @@ public class EcranAccueil extends AppCompatActivity {
         }
     };
 
+    public void showLeaderBoard(GoogleSignInAccount account){
+        Games.getLeaderboardsClient(getApplicationContext(), account)
+                .getLeaderboardIntent(getString(R.string.leaderboard_id))
+                .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                    @Override
+                    public void onSuccess(Intent intent) {
+                        startActivityForResult(intent, RC_LEADERBOARD_UI);
+                    }
+                });
+    }
+
+    public  void showAchievements(GoogleSignInAccount account){
+        Games.getAchievementsClient(getApplicationContext(), account)
+                .getAchievementsIntent()
+                .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                    @Override
+                    public void onSuccess(Intent intent) {
+                        startActivityForResult(intent, RC_ACHIEVEMENT_UI);
+                    }
+                });
+    }
+    public void demanderJoueurConnexion(){
+        Toast.makeText(EcranAccueil.this, "Un compte Google Play est nécessaire", Toast.LENGTH_LONG).show();
+    }
 
     public boolean aJoueTousLesNiveauxDeverouille(int niveauMax){
 
@@ -347,7 +497,36 @@ public class EcranAccueil extends AppCompatActivity {
         }
 
     }
+    @Override
+    protected  void onStart(){
+        super.onStart();
 
+
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w("erreur_signin", "signInResult:failed code=" + e.getStatusCode());
+        
+        }
+    }
     @Override
     protected void onPause() {
         super.onPause();
@@ -416,6 +595,16 @@ public class EcranAccueil extends AppCompatActivity {
         mDetector.onTouchEvent(e);
 
         return super.dispatchTouchEvent(e);
+    }
+
+    @Override
+    public void onSignInFailed() {
+
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+
     }
 
     public class DepthTransformation implements ViewPager.PageTransformer{
