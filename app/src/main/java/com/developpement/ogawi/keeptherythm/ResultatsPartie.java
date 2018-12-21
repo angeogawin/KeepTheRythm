@@ -24,6 +24,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesClient;
 import com.plattysoft.leonids.ParticleSystem;
@@ -64,8 +65,12 @@ public class ResultatsPartie  extends BaseGameActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.fragment_resultats_partie);
-        GamesClient gamesClient = Games.getGamesClient(ResultatsPartie.this, GoogleSignIn.getLastSignedInAccount(this));
-        gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
+        GoogleSignInAccount googleAccount=GoogleSignIn.getLastSignedInAccount(this);
+        if(googleAccount!=null){
+            GamesClient gamesClient = Games.getGamesClient(ResultatsPartie.this, GoogleSignIn.getLastSignedInAccount(this));
+            gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
+
+        }
 
         playerResults= MediaPlayer.create(this, R.raw.airtone_nightrain);
         // float log1=(float)(Math.log(maxVolume-currVolume)/Math.log(maxVolume));
@@ -152,10 +157,11 @@ public class ResultatsPartie  extends BaseGameActivity {
                // Games.Achievements.unlock(getApiClient(),
                  //       getString(R.string.correct_guess_achievement));
 
-                Games.getLeaderboardsClient(this, GoogleSignIn.getLastSignedInAccount(this)).submitScore(
+            if(googleAccount!=null) {
+                Games.getLeaderboardsClient(this, googleAccount).submitScore(
                         getString(R.string.leaderboard_id),
-                        sharedPreferences.getInt("scorexp",0));
-
+                        sharedPreferences.getInt("scorexp", 0));
+            }
 
 
             //fonction pour debloquer si necessaire niveau suivant
@@ -188,55 +194,57 @@ public class ResultatsPartie  extends BaseGameActivity {
                     clap.setVisibility(View.VISIBLE);
 
                     //Reussite 100% niveau
-
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                    if(googleAccount!=null) {
+                        Games.getAchievementsClient(this, googleAccount).unlock(
                                 getString(R.string.obtenir_100pourcent));
-
+                    }
                 }
 
                 if(niveau==1){
                     //Reussite niveau1 avec or
-
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                    if(googleAccount!=null) {
+                        Games.getAchievementsClient(this, googleAccount).unlock(
                                 getString(R.string.terminer_niveau1_or));
-
+                    }
                 }
 
                 //Actualisation nombre total de trophées en or
                 int nbTotalTorpheesOr=nombreTotalTropheesOrDifferents(sharedPreferences.getInt("niveau_max_atteint",0));
 
+                if(googleAccount!=null) {
+                    //Reussites trophees or
+                    if(nbTotalTorpheesOr==3){
 
-                //Reussites trophees or
-                if(nbTotalTorpheesOr==3){
-
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                        Games.getAchievementsClient(this,googleAccount).unlock(
                                 getString(R.string.obtenir_3trophees_or));
 
-                }
-                else if(nbTotalTorpheesOr==6){
+                    }
+                    else if(nbTotalTorpheesOr==6){
 
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                        Games.getAchievementsClient(this,googleAccount).unlock(
                                 getString(R.string.obtenir_6trophees_or));
 
-                }
-                else if(nbTotalTorpheesOr==9){
+                    }
+                    else if(nbTotalTorpheesOr==9){
 
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                        Games.getAchievementsClient(this,googleAccount).unlock(
                                 getString(R.string.obtenir_9trophees_or));
 
-                }
-                else if(nbTotalTorpheesOr==15){
+                    }
+                    else if(nbTotalTorpheesOr==15){
 
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                        Games.getAchievementsClient(this,googleAccount).unlock(
                                 getString(R.string.obtenir_15trophees_or));
 
-                }
-                else if(nbTotalTorpheesOr==30){
+                    }
+                    else if(nbTotalTorpheesOr==30){
 
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                        Games.getAchievementsClient(this,googleAccount).unlock(
                                 getString(R.string.obtenir_30trophees_or));
 
+                    }
                 }
+
 
 
 
@@ -288,58 +296,55 @@ public class ResultatsPartie  extends BaseGameActivity {
                     .start();
 
             //Reussites XP
-            if(sharedPreferences.contains("scorexp")){
+            if(googleAccount!=null) {
+            if(sharedPreferences.contains("scorexp")) {
 
-                if(sharedPreferences.getInt("scorexp",0)>=50000){
+
+                if (sharedPreferences.getInt("scorexp", 0) >= 50000) {
                     //verifier que achievement non debloques
 
 
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
-                                getString(R.string.obtenir_50000XP));
+                    Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                            getString(R.string.obtenir_50000XP));
 
-                }
-                else if(sharedPreferences.getInt("scorexp",0)>=20000){
+                } else if (sharedPreferences.getInt("scorexp", 0) >= 20000) {
                     //verifier que achievement non debloques
 
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
-                                getString(R.string.obtenir_20000XP));
+                    Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                            getString(R.string.obtenir_20000XP));
 
-                }
-                else if(sharedPreferences.getInt("scorexp",0)>=10000){
+                } else if (sharedPreferences.getInt("scorexp", 0) >= 10000) {
                     //verifier que achievement non debloques
 
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
-                                getString(R.string.obtenir_10000XP));
+                    Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                            getString(R.string.obtenir_10000XP));
 
-                }
-                else if(sharedPreferences.getInt("scorexp",0)>=6000){
+                } else if (sharedPreferences.getInt("scorexp", 0) >= 6000) {
                     //verifier que achievement non debloques
 
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
-                                getString(R.string.obtenir_6000XP));
+                    Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                            getString(R.string.obtenir_6000XP));
 
-                }
-                else if(sharedPreferences.getInt("scorexp",0)>=4000){
+                } else if (sharedPreferences.getInt("scorexp", 0) >= 4000) {
                     //verifier que achievement non debloques
 
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
-                                getString(R.string.obtenir_4000XP));
+                    Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                            getString(R.string.obtenir_4000XP));
 
-                }
-                else if(sharedPreferences.getInt("scorexp",0)>=2000){
+                } else if (sharedPreferences.getInt("scorexp", 0) >= 2000) {
                     //verifier que achievement non debloques
 
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
-                                getString(R.string.obtenir_2000XP));
+                    Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                            getString(R.string.obtenir_2000XP));
 
-                }
-                else if(sharedPreferences.getInt("scorexp",0)>=1000){
+                } else if (sharedPreferences.getInt("scorexp", 0) >= 1000) {
                     //verifier que achievement non debloques
 
-                        Games.getAchievementsClient(this,GoogleSignIn.getLastSignedInAccount(this)).unlock(
-                                getString(R.string.obtenir_1000XP));
+                    Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this)).unlock(
+                            getString(R.string.obtenir_1000XP));
 
                 }
+            }
 
             }
 

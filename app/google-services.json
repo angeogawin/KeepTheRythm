@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "348108240700",
+    "firebase_url": "https://keep-the-rythm-75856887.firebaseio.com",
+    "project_id": "keep-the-rythm-75856887",
+    "storage_bucket": "keep-the-rythm-75856887.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348108240700:android:799c69ac00d911a4",
+        "android_client_info": {
+          "package_name": "com.developpement.ogawi.keeptherythm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "348108240700-aj8deuu8llppi5ms4cff9inhaplkm7r0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSogIRYFO8N5lXzOLwAKmeKPqmbFtriHA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

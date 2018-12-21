@@ -177,7 +177,7 @@
                 android:layout_marginBottom="15dp"
                 android:textAllCaps="false"
                 android:background="@drawable/jouer_shape"
-                android:visibility="invisible"/>
+                />
         <TextView
             android:id="@+id/messageVerrouille"
             android:layout_width="wrap_content"

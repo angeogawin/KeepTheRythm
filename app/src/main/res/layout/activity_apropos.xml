@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:https="http://schemas.android.com/tools">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -75,6 +76,40 @@ WeWishYouAMerryXmas,Whatdafunk, EpicSeries,Piledriver,LeavinTheLights,BigCarThef
 
 \n\n-Good Day by Alex (c) copyright 2012 Licensed under a Creative Commons Attribution (3.0) license. http://dig.ccmixter.org/files/AlexBeroza/36122 Ft: DonnieOzone
 \n\n-nightRain by airtone (c) copyright 2017 Licensed under a Creative Commons Attribution license. http://dig.ccmixter.org/files/airtone/55887
+\n\n-https://incompetech.com/music/royalty-free/mp3-royaltyfree/Arroz%20Con%20Pollo.mp3  (Latin)
+
+\n#Arroz Con Pollo Kevin MacLeod (incompetech.com)
+\nLicensed under Creative Commons: By Attribution 3.0 License
+\nhttp://creativecommons.org/licenses/by/3.0/
+
+\n\n-https://incompetech.com/music/royalty-free/mp3-royaltyfree/Tango%20de%20Manzana.mp3 (Latin)
+
+\n#Tango de Manzana Kevin MacLeod (incompetech.com)
+\nLicensed under Creative Commons: By Attribution 3.0 License
+\nhttp://creativecommons.org/licenses/by/3.0/
+
+\n\n-https://incompetech.com/music/royalty-free/mp3-royaltyfree/No%20Frills%20Salsa.mp3 (Latin)
+
+\n#No Frills Salsa Kevin MacLeod (incompetech.com)
+\nLicensed under Creative Commons: By Attribution 3.0 License
+\nhttp://creativecommons.org/licenses/by/3.0/
+
+\n\n-https://incompetech.com/music/royalty-free/mp3-royaltyfree/What%20Is%20Love.mp3 (Electronica)
+
+\n#What Is Love Kevin MacLeod (incompetech.com)
+\nLicensed under Creative Commons: By Attribution 3.0 License
+\nhttp://creativecommons.org/licenses/by/3.0/
+
+\n\n#Dolling ,Cybersdf :
+\nSource: https://soundcloud.com/cybersdf
+\nLicence: https://creativecommons.org/licenses/by/3.0/deed.fr
+
+\n\n#Tender Remains, Myuu
+\nSource: https://myuu.bandcamp.com
+\nLicence: https://creativecommons.org/licenses/by/3.0/deed.fr
+
+
+\n\n#Icons made by https://www.freepik.com  and www.flaticon.com is licensed by http://creativecommons.org/licenses/by/3.0/
 \n\n\n Les librairies suivantes ont été utilisées:
 \n\n-Flubber(Apache license):https://github.com/Appolica/Flubber
 \n\n-Konfetti(ISC Licence):https://github.com/DanielMartinus/Konfetti

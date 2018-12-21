@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -36,6 +37,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -89,6 +97,8 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
     MediaPlayer mPlayer;
 
     ArrayList<String> listeUrl;
+
+    String extensionFichier;
     int indicesequence;
     File gpxfile;
     int pos;
@@ -96,6 +106,8 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
     ArrayList<String> nom_txt;
     ProgressDialog mProgressDialog;
     GestureOverlayView vOverlay;
+
+    private StorageReference mStorageRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +115,8 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_ecran_ingame);
+
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         i = getIntent();
         pos = i.getExtras().getInt("niveau");
 
@@ -126,6 +140,23 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
         nom_txt.add("no_frills_salsa.txt");
         nom_txt.add("what_is_love.txt");
 
+        //ici new
+        nom_txt.add("airwaves.txt");
+        nom_txt.add("daybreak.txt");
+        nom_txt.add("canon_d_major.txt");
+        nom_txt.add("petit_pantin.txt");
+        nom_txt.add("what_i_know_about_you.txt");
+        nom_txt.add("furelise.txt");
+        nom_txt.add("night_life.txt");
+        nom_txt.add("greenleaves.txt");
+        nom_txt.add("moonlight_sonata.txt");
+        nom_txt.add("idunno.txt");
+        nom_txt.add("brightbrazil.txt");
+        nom_txt.add("smile_its_me.txt");
+        nom_txt.add("life_is_beautiful.txt");
+        nom_txt.add("shine_gold_light.txt");
+        nom_txt.add("sky_seed.txt");
+
         listeUrl = new ArrayList<>();
         // **** ajout des musiques
         listeUrl.add("https://www.auboutdufil.com/get.php?web=https://archive.org/download/auboutdufil-archives/502/Cybersdf-Dolling.mp3");
@@ -146,10 +177,27 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
         listeUrl.add("https://incompetech.com/music/royalty-free/mp3-royaltyfree/No%20Frills%20Salsa.mp3");
         listeUrl.add("https://incompetech.com/music/royalty-free/mp3-royaltyfree/What%20Is%20Love.mp3");
 
+        //ici news
+        listeUrl.add("https://www.auboutdufil.com/get.php?web=https://archive.org/download/auboutdufil-archives/491/Olivaw-Airwaves.mp3");
+        listeUrl.add("https://www.auboutdufil.com/get.php?web=https://archive.org/download/auboutdufil-archives/483/Jens_East_-_Daybreak_feat_Henk.mp3");
+        listeUrl.add("https://www.auboutdufil.com/get.php?web=https://archive.org/download/Classical_Sampler-9615/Kevin_MacLeod_-_Canon_in_D_Major.mp3");
+        listeUrl.add("firebase_petit-pantin.mp3");
+        listeUrl.add("https://www.auboutdufil.com/get.php?web=https://www.archive.org/download/NicolasFalcon-NicolasFalconaaahh011/09WhatIKnowAboutYou.mp3");
+        listeUrl.add("https://audionautix.com/Music/FurElise.mp3");
+        listeUrl.add("https://www.free-stock-music.com/music/twisterium-night-life.mp3");
+        listeUrl.add("https://audionautix.com/Music/GreenLeaves.mp3");
+        listeUrl.add("http://ccmixter.org/content/speck/speck_-_Moonlight_Sonata_(Shifting_Sun_Mix)_1.mp3");
+        listeUrl.add("http://ccmixter.org/content/grapes/grapes_-_I_dunno.mp3");
+        listeUrl.add("firebase_Danosongs - Bright Brazil.mp3");
+        listeUrl.add("firebase_Danosongs - Smile Its Me!.mp3");
+        listeUrl.add("firebase_life-is-beautiful.mp3");
+        listeUrl.add("firebase_Danosongs - Shine Gold Light - PIano Mix.mp3");
+        listeUrl.add("firebase_Danosongs - Sky Seeds - Brit Pop Mix.mp3");
 
         vOverlay = (GestureOverlayView) findViewById(R.id.gOverlay);
         vOverlay.setVisibility(View.VISIBLE);
         mDetector = new GestureDetector(this, new MyGestureListener());
+
 
         // Add a touch1 listener to the view
         // The touch1 listener passes all its events on to the gesture detector
@@ -157,8 +205,9 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
         vOverlay.setOnTouchListener(touchListener);
         //chargement musique
         File mFolder = new File(getFilesDir() + "/Music");
-        File file = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".mp3");
-        String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".mp3";
+        extensionFichier=obtenirExtensionFichier(listeUrl,pos);
+        File file = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier);
+        String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
         if (file.exists()) {
             //on recupère le fichier depuis le repertoire
 
@@ -185,24 +234,73 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
 
 // execute this when the downloader must be fired
             final DownloadTask downloadTask = new DownloadTask(InGameRec.this);
-            downloadTask.execute(listeUrl.get(pos - 1));
+            if(!listeUrl.get(pos - 1).contains("firebase")){
+                downloadTask.execute(listeUrl.get(pos - 1));
 
 
-            mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    downloadTask.cancel(true);
-                    File mFolder = new File(getFilesDir() + "/Music");
-                    File file = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".mp3");
-                    //  String filePath=mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+".mp3";
-                    file.delete();
-                    Intent i = new Intent(getApplicationContext(), EcranAccueil.class);
-                    startActivity(i);
-                    finish();
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        downloadTask.cancel(true);
+                        File mFolder = new File(getFilesDir() + "/Music");
+                        File file = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier);
+                        //  String filePath=mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+".mp3";
+                        file.delete();
+                        Intent i = new Intent(getApplicationContext(), EcranAccueil.class);
+                        startActivity(i);
+                        finish();
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-                }
-            });
+                    }
+                });
+            }
+            else if(listeUrl.get(pos - 1).contains("firebase")){
+                mProgressDialog.show();
+                //Le fichier doit etre telechargé en utilisant firebase
+                File mFolder2 = new File(getFilesDir() + "/Music");
+                File file2 = new File(mFolder2.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier);
+                String nomFichierSurFirebase=listeUrl.get(pos - 1).split("_")[1];
+                StorageReference refFichier=mStorageRef.child(nomFichierSurFirebase);
+
+                refFichier.getFile(file2)
+                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                // Successfully downloaded data to local file
+                                // ...
+                                File mFolder = new File(getFilesDir() + "/Music");
+                                String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
+                                mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
+                                mChronometer = new Chronometer(getApplicationContext());
+                                mChronometer.setBase(SystemClock.elapsedRealtime());
+
+
+                                mPlayer.start();
+                                mChronometer.start();
+                                mProgressDialog.dismiss();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle failed download
+                        // ...
+                        File mFolder = new File(getFilesDir() + "/Music");
+                        File file = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier);
+                        //  String filePath=mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+".mp3";
+                       file.delete();
+
+
+                        mProgressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Erreur téléchargement de la musique", Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(getApplicationContext(), EcranAccueil.class);
+                        startActivity(i);
+                        finish();
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+                    }
+                });
+            }
+
 
 
             // **** fin ajout des musiques
@@ -255,6 +353,18 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
 
         }
     }
+    public  String obtenirExtensionFichier(ArrayList<String> liste,int pos){
+
+        String extensionFichier="";
+        if(liste.get(pos-1).contains("_wav")){
+            extensionFichier=".wav";
+        }
+        else{
+            extensionFichier=".mp3";
+        }
+
+        return  extensionFichier;
+    }
 
 
     @Override
@@ -299,7 +409,7 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
                 HttpURLConnection connection = null;
 
                 File mFolder = new File(getFilesDir() + "/Music");
-                File file = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".mp3");
+                File file = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier);
                 if (!mFolder.exists()) {
                     mFolder.mkdir();
                 }
@@ -391,7 +501,7 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
                 if (result != null) {
                     Toast.makeText(context, "Erreur téléchargement de la musique", Toast.LENGTH_LONG).show();
                     File mFolder = new File(getFilesDir() + "/Music");
-                    File file = new File(mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+".mp3");
+                    File file = new File(mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+extensionFichier);
                     //  String filePath=mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+".mp3";
                     file.delete();
                     Handler handler = new Handler();
@@ -410,7 +520,7 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
 
 
                     File mFolder = new File(getFilesDir() + "/Music");
-                    String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".mp3";
+                    String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
                     mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
                     mChronometer = new Chronometer(getApplicationContext());
                     mChronometer.setBase(SystemClock.elapsedRealtime());

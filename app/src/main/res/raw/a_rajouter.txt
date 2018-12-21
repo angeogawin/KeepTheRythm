@@ -1,35 +1,89 @@
--https://incompetech.com/music/royalty-free/mp3-royaltyfree/Arroz%20Con%20Pollo.mp3  (Latin)
-
-#"Arroz Con Pollo" Kevin MacLeod (incompetech.com)
-Licensed under Creative Commons: By Attribution 3.0 License
-http://creativecommons.org/licenses/by/3.0/
-
--https://incompetech.com/music/royalty-free/mp3-royaltyfree/Tango%20de%20Manzana.mp3 (Latin)
-
-#"Tango de Manzana" Kevin MacLeod (incompetech.com)
-Licensed under Creative Commons: By Attribution 3.0 License
-http://creativecommons.org/licenses/by/3.0/
-
--https://incompetech.com/music/royalty-free/mp3-royaltyfree/No%20Frills%20Salsa.mp3 (Latin)
-
-#"No Frills Salsa" Kevin MacLeod (incompetech.com)
-Licensed under Creative Commons: By Attribution 3.0 License
-http://creativecommons.org/licenses/by/3.0/
-
--https://incompetech.com/music/royalty-free/mp3-royaltyfree/What%20Is%20Love.mp3 (Electronica)
-
-#"What Is Love" Kevin MacLeod (incompetech.com)
-Licensed under Creative Commons: By Attribution 3.0 License
-http://creativecommons.org/licenses/by/3.0/
-
-#Dolling ,Cybersdf :
-Source: https://soundcloud.com/cybersdf
+-https://www.auboutdufil.com/get.php?web=https://archive.org/download/auboutdufil-archives/491/Olivaw-Airwaves.mp3
+#electro
+Titre:  Airwaves
+Auteur: Olivaw
+Source: https://olivaw.bandcamp.com
 Licence: https://creativecommons.org/licenses/by/3.0/deed.fr
 
-#Tender Remains, Myuu
-Source: https://myuu.bandcamp.com
+-https://www.auboutdufil.com/get.php?web=https://archive.org/download/auboutdufil-archives/483/Jens_East_-_Daybreak_feat_Henk.mp3
+#electro house pop
+Titre:  Daybreak feat Henk
+Auteur: Jens East
+Source: http://www.jenseast.com
 Licence: https://creativecommons.org/licenses/by/3.0/deed.fr
 
+-https://www.auboutdufil.com/get.php?web=https://archive.org/download/Classical_Sampler-9615/Kevin_MacLeod_-_Canon_in_D_Major.mp3
+#Classique
+Titre:  Canon in D Major
+Auteur: Kevin MacLeod
+Source: http://incompetech.com
+Licence: http://creativecommons.org/licenses/by/3.0/deed.fr
 
-#Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/"  title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
-#Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+-https://www.auboutdufil.com/get.php?web=http://download.tuxfamily.org/lacrymosa/albums/eponymeI/04-petit_pantin_au_coeur_de_glace-eponyme_I-laei-copyleft.mp3
+#instrumental piano
+Titre:  Petit pantin au coeur de glace
+Auteur: Laei
+Source: http://lacrymosa.tuxfamily.org/
+Licence: http://artlibre.org/licence/lal
+
+-https://www.auboutdufil.com/get.php?web=https://www.archive.org/download/NicolasFalcon-NicolasFalconaaahh011/09WhatIKnowAboutYou.mp3
+#acoustique folk
+Titre:  What I Know About You
+Auteur: Nicolas Falcon
+Source: http://www.archive.org/details/NicolasFalcon-NicolasFalconaaahh011
+Licence: http://creativecommons.org/licenses/by/3.0/deed.fr
+
+-https://audionautix.com/Music/FurElise.mp3
+Titre:FurElise
+#Slow Relaxing
+
+-https://www.free-stock-music.com/music/twisterium-night-life.mp3
+#Electronica pop
+Night Life by Twisterium | https://www.twisterium.com
+Music promoted by https://www.free-stock-music.com
+Creative Commons Attribution 3.0 Unported License
+https://creativecommons.org/licenses/by/3.0/deed.en_US
+
+-https://audionautix.com/Music/GreenLeaves.mp3
+#Slow Relaxing
+
+-http://ccmixter.org/content/speck/speck_-_Moonlight_Sonata_(Shifting_Sun_Mix)_1.mp3
+#classical piano
+Moonlight Sonata (Shifting Sun Mix) by Speck (c) copyright 2018 Licensed under a Creative Commons Attribution (3.0) license. http://dig.ccmixter.org/files/speck/57884 Ft: Snowflake
+
+-http://ccmixter.org/content/grapes/grapes_-_I_dunno.mp3
+#hip hop instrumental
+I dunno by grapes (c) copyright 2008 Licensed under a Creative Commons Attribution (3.0) license. http://dig.ccmixter.org/files/grapes/16626 Ft: J Lang, Morusque
+
+
+WAV 
+
+-firebase
+#Electronic Upbeat
+Titre: Bright Brazil
+Auteur: Dan-O
+From: https://danosongs.com/
+
+-firebase
+#Electronic Upbeat
+Titre: Smile Its Me
+Auteur: Dan-O
+From: https://danosongs.com/
+
+-firebase
+#Piano
+Titre: Life is beautiful
+Auteur: Twisterium
+From: https://soundcloud.com/twisterium
+
+-firebase
+#Piano
+Titre:Shine Gold Light
+Auteur: Dan-O
+From: https://danosongs.com/
+
+-firebase
+#Rock
+Titre:Sky Seeds -Brit Pop Mix
+Auteur: Dan-O
+From: https://danosongs.com/
