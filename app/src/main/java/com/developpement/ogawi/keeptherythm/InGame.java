@@ -125,8 +125,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.jetradarmobile.snowfall.SnowfallView;
 import com.plattysoft.leonids.ParticleSystem;
+import com.sdsmdg.harjot.longshadows.LongShadowsImageView;
+import com.sdsmdg.harjot.longshadows.LongShadowsWrapper;
 import com.skyfishjy.library.RippleBackground;
+
+import jp.wasabeef.blurry.Blurry;
 
 import static android.view.View.OVER_SCROLL_NEVER;
 import static java.util.logging.Logger.global;
@@ -161,6 +166,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     int widthZoneJeu;
     int heightZoneJeu;
     RelativeLayout zoneJeu;
+
     Button go;
     int heightP;
     int widthP;
@@ -187,6 +193,9 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     View barreHorizontal2;
     View barreHorizontal3;
     View barreHorizontal4;
+    SnowfallView snowfallView;
+    RelativeLayout viewbarre1;
+    RelativeLayout viewbarre2;
     TextView nextPalierScore;
     ArrayList<Integer> listeIndicesActuels;
     ArrayList<Boolean> listePerfect;
@@ -327,19 +336,22 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 barreHorizontal2=findViewById(R.id.barreHorizontale2);
                 barreHorizontal3=findViewById(R.id.barreHorizontale3);
                 barreHorizontal4=findViewById(R.id.barreHorizontale4);
+                snowfallView=findViewById(R.id.snowfall_view);
+                viewbarre1=findViewById(R.id.viewBarre1);
+                viewbarre2=findViewById(R.id.viewBarre2);
                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)barregauche.getLayoutParams();
                 params.setMargins(70*widthZoneJeu/100, 0, 0, 0); //substitute parameters for left, top, right, bottom
-                RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams)barreHorizontal1.getLayoutParams();
+                RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams)viewbarre1.getLayoutParams();
                 params1.setMargins(0, 20*heightZoneJeu/100, 0, 0);
-                RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams)barreHorizontal2.getLayoutParams();
+                RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams)viewbarre2.getLayoutParams();
                 params2.setMargins(0, 40*heightZoneJeu/100, 0, 0);
                 RelativeLayout.LayoutParams params3 = (RelativeLayout.LayoutParams)barreHorizontal3.getLayoutParams();
                 params3.setMargins(0, 60*heightZoneJeu/100, 0, 0);
                 RelativeLayout.LayoutParams params4 = (RelativeLayout.LayoutParams)barreHorizontal4.getLayoutParams();
                 params4.setMargins(0, 80*heightZoneJeu/100, 0, 0);
                 barregauche.setLayoutParams(params);
-                barreHorizontal1.setLayoutParams(params1);
-                barreHorizontal2.setLayoutParams(params2);
+                viewbarre1.setLayoutParams(params1);
+                viewbarre2.setLayoutParams(params2);
                 barreHorizontal3.setLayoutParams(params3);
                 barregauche.getLayoutParams().width=10*widthZoneJeu/100;
                 barregauche.setVisibility(View.VISIBLE);
@@ -348,7 +360,30 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 barreHorizontal3.setVisibility(View.VISIBLE);
                 barreHorizontal4.setVisibility(View.VISIBLE);
 
+                barreHorizontal1.setBackgroundColor(Color.WHITE);
+                barreHorizontal2.setBackgroundColor(Color.WHITE);
+                barreHorizontal3.setBackgroundColor(Color.WHITE);
+                barreHorizontal4.setBackgroundColor(Color.WHITE);
 
+
+           //     for(int i=0;i<10;i++){
+                    Blurry.with(getApplicationContext())
+                            .radius(10)
+                            .sampling(8)
+                            .color(Color.argb(67, 255, 255, 255))
+                            .async()
+                            .animate(500)
+
+                            .onto(viewbarre1);
+                    Blurry.with(getApplicationContext())
+                            .radius(25)
+                            .sampling(2)
+                            .color(Color.argb(67, 255, 255, 255))
+                            .async()
+                            .animate(500)
+                            .onto(viewbarre2);
+
+               // }
 
                 //TODO: init MediaPlayer and play the audio
 
@@ -622,6 +657,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
         derniereAction.setValueChangeListener(new StringModified.onValueChangeListener() {
+            //derniere action non actualisee quand tap puis swipe rapidement
             @Override
             public void onChange() {
 
@@ -639,7 +675,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 //                } else {
 //                    elementActuelClickable = false;
 //                }
-
+           //     Toast.makeText(InGame.this, dernierSymbole, Toast.LENGTH_SHORT).show();
 
 
                     if (listeIndicesActuels.size()>0) {
@@ -654,7 +690,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                         dernierSymbole = ((sequences.get(pos - 1)).split(";")[listeIndicesActuels.get(0)]).split(":")[0];
 
-                        if (dernierSymbole.equals(derniereAction.getValeur())) {
+                        if (dernierSymbole.equals(derniereAction.valeur)) {
 
 
                             //  Toast.makeText(InGame.this, "Amaz", Toast.LENGTH_SHORT).show();
@@ -1092,6 +1128,11 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             return true;
         }
 
+       /* @Override
+        public boolean onSingleTapUp(MotionEvent e){
+            derniereAction.setVariable("tap");
+            return  true;
+        }*/
         @Override
         public void onLongPress(MotionEvent e) {
 
@@ -1475,6 +1516,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             String symbole = couples[j].split(":")[0];
             // Toast.makeText(InGame.this, symbole, Toast.LENGTH_LONG).show();
             final ImageView i = new ImageView(getApplicationContext());
+
+
 
 
             if (j == 0) {

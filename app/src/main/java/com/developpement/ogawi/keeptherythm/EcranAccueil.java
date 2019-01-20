@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -53,6 +54,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.plattysoft.leonids.ParticleSystem;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -83,8 +85,7 @@ public class EcranAccueil extends BaseGameActivity {
 
     private DrawerLayout intLayout;
     private AnimationDrawable animationDrawable;
-    ArrayList<Integer> listeMusiqueAccueil;
-    MediaPlayer playerAccueil;
+
     int media_length;
 
     DonutProgress donutProgress;
@@ -103,6 +104,10 @@ public class EcranAccueil extends BaseGameActivity {
     ImageView actionsettings;
 
     GoogleSignInClient mGoogleSignInClient;
+    static ArrayList<Integer> listeMusiqueAccueil;
+    static MediaPlayer playerAccueil;
+    ArrayList<String> nom_txt;
+    static int num_musique;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +143,15 @@ public class EcranAccueil extends BaseGameActivity {
 
 
         mgr=(AudioManager) getSystemService(getApplicationContext().AUDIO_SERVICE);
+
+        listeMusiqueAccueil=new ArrayList<>();
+        // **** ajout des musiques
+        listeMusiqueAccueil.add(R.raw.vj_memes_paint_the_sky);
+        listeMusiqueAccueil.add(R.raw.tobias_weber_rescue_me_instrumental);
+        listeMusiqueAccueil.add(R.raw.tobias_weber_the_parting_glass_instrumental);
+        Random alea = new Random();
+        num_musique = alea.nextInt(listeMusiqueAccueil.size()) ;
+
 
         donutProgress.setProgress(Math.round((int)(obtenirAvancement()*100/NUM_ITEMS)));
         btnJouer=(Button) findViewById(R.id.btnJouer);
@@ -244,6 +258,63 @@ public class EcranAccueil extends BaseGameActivity {
 
 
                 }*/
+
+
+                playerAccueil=getInstanceMediaplayer();
+                nom_txt = new ArrayList<>();
+
+                nom_txt.add("cybersdf_dolling.txt");
+                nom_txt.add("cdk_like_music_cdk_mix.txt");
+                nom_txt.add("alla_what_parody.txt");
+                nom_txt.add("carol_of_the_bells.txt");
+                nom_txt.add("jeffspeed68_two_pianos.txt");
+                nom_txt.add("adagioinc.txt");
+                nom_txt.add("tender_remains.txt");
+                nom_txt.add("rocker.txt");
+                nom_txt.add("hansatom_persephone.txt");
+                nom_txt.add("go_not_gently.txt");
+                nom_txt.add("triangle.txt");
+                nom_txt.add("bigcartheft.txt");
+
+                nom_txt.add("arroz_con_pollo.txt");
+                nom_txt.add("tango_de_manzana.txt");
+                nom_txt.add("no_frills_salsa.txt");
+                nom_txt.add("what_is_love.txt");
+
+                //ici new
+                nom_txt.add("airwaves.txt");
+                nom_txt.add("daybreak.txt");
+                nom_txt.add("canon_d_major.txt");
+                nom_txt.add("petit_pantin.txt");
+                nom_txt.add("what_i_know_about_you.txt");
+                nom_txt.add("furelise.txt");
+                nom_txt.add("night_life.txt");
+                nom_txt.add("greenleaves.txt");
+                nom_txt.add("moonlight_sonata.txt");
+                nom_txt.add("idunno.txt");
+                nom_txt.add("brightbrazil.txt");
+                nom_txt.add("smile_its_me.txt");
+                nom_txt.add("life_is_beautiful.txt");
+                nom_txt.add("shine_gold_light.txt");
+                nom_txt.add("sky_seed.txt");
+
+
+                File mFolder = new File(getFilesDir() + "/Music");
+
+
+                File file = new File(mFolder.getAbsolutePath()+"/" + nom_txt.get(position)+".mp3");
+                String filePath=mFolder.getAbsolutePath()+"/" + nom_txt.get(position)+".mp3";
+                if(file.exists()){
+                    //on recupère le fichier depuis le repertoire
+                    playerAccueil.stop();
+                 //   playerAccueil.reset();
+                    playerAccueil.release();
+
+                    playerAccueil = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
+
+                }
+                playerAccueil.setLooping(true);
+                playerAccueil.start();
             }
         });
 
@@ -308,24 +379,17 @@ public class EcranAccueil extends BaseGameActivity {
         });
 
 
-        listeMusiqueAccueil=new ArrayList<>();
-        // **** ajout des musiques
-        listeMusiqueAccueil.add(R.raw.vj_memes_paint_the_sky);
-        listeMusiqueAccueil.add(R.raw.tobias_weber_rescue_me_instrumental);
-        listeMusiqueAccueil.add(R.raw.tobias_weber_the_parting_glass_instrumental);
-        Random alea = new Random();
-        int num_musique = alea.nextInt(listeMusiqueAccueil.size()) ;
 
-        playerAccueil= MediaPlayer.create(this, listeMusiqueAccueil.get(num_musique));
        // float log1=(float)(Math.log(maxVolume-currVolume)/Math.log(maxVolume));
        // playerAccueil.setVolume(0.2f, 0.2f);
-        playerAccueil.setLooping(true);
-        playerAccueil.start();
+
+
+
 
         btnJouer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playerAccueil.stop();
+              // playerAccueil.stop();
                 startActivity(i);
                 finish();
 
@@ -334,7 +398,7 @@ public class EcranAccueil extends BaseGameActivity {
         btnRec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playerAccueil.stop();
+              //  playerAccueil.stop();
 
 
                 startActivity(j);
@@ -433,6 +497,13 @@ public class EcranAccueil extends BaseGameActivity {
         animationDrawable.setExitFadeDuration(2000);
 
     }
+
+    public  MediaPlayer getInstanceMediaplayer(){
+        if(playerAccueil==null){
+            playerAccueil= MediaPlayer.create(getApplicationContext(), listeMusiqueAccueil.get(num_musique));
+        }
+        return playerAccueil;
+    }
     View.OnTouchListener touchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -488,8 +559,8 @@ public class EcranAccueil extends BaseGameActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        playerAccueil.seekTo(media_length);
-        playerAccueil.start();
+        //playerAccueil.seekTo(media_length);
+       // playerAccueil.start();
         if (animationDrawable != null && !animationDrawable.isRunning()) {
             // start the animation
             animationDrawable.start();
@@ -530,8 +601,8 @@ public class EcranAccueil extends BaseGameActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        playerAccueil.pause();
-        media_length=playerAccueil.getCurrentPosition();
+       // playerAccueil.pause();
+        //media_length=playerAccueil.getCurrentPosition();
         if (animationDrawable != null && animationDrawable.isRunning()) {
             // stop the animation
             animationDrawable.stop();
@@ -654,7 +725,9 @@ public class EcranAccueil extends BaseGameActivity {
         @Override
         public Fragment getItem(int position) {
             SwipeFragment fragment = new SwipeFragment();
+
             return SwipeFragment.newInstance(position);
+
         }
     }
 
@@ -665,7 +738,10 @@ public class EcranAccueil extends BaseGameActivity {
         ArrayList<String> sequences;
         ArrayList<String> listehashtags;
 
+
         String[] couples;
+
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -685,6 +761,7 @@ public class EcranAccueil extends BaseGameActivity {
 
             //Initialisation bdd
             final ScoreDAO scoreDAO=new ScoreDAO(getContext());
+
 
             liste_titre=new ArrayList<>();
 
@@ -860,6 +937,8 @@ public class EcranAccueil extends BaseGameActivity {
           /*  String imageFileName = IMAGE_NAME[position];
             int imgResId = getResources().getIdentifier(imageFileName, "drawable", "com.developpement.ogawi.scrollyourlife");
             imageView.setImageResource(imgResId);*/
+
+
             return swipeView;
         }
 
