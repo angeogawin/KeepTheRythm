@@ -117,12 +117,22 @@ WeWishYouAMerryXmas,Whatdafunk, EpicSeries,Piledriver,LeavinTheLights,BigCarThef
 \n\n-Snowfall(Apache License):https://github.com/JetradarMobile/android-snowfall
 \n\n-RippleBackground(MIT License) :https://github.com/skyfishjy/android-ripple-background
 \n\n-Leonids(Apache License):https://github.com/plattysoft/Leonids
-\n\n-BarVisualizer:https://github.com/gauravk95/audio-visualizer-android"
+\n\n-BarVisualizer:https://github.com/gauravk95/audio-visualizer-android
+\n\n\n "
+
         android:textColor="@color/white"
         android:textSize="15sp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/white"
+        android:text="Identification des notes:https://bitbucket.org/dorienh/musicxmlparserdh/overview"/>
 
 
 </LinearLayout>

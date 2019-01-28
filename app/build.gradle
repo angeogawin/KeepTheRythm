@@ -49,6 +49,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:16.0.1'
     implementation 'jp.wasabeef:blurry:3.0.0'
     implementation 'com.sdsmdg.harjot:longshadows:1.0.1'
+
+    implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'rb.popview:popview:0.1.0'
 }
 
 configurations {

@@ -162,6 +162,10 @@ public class EcranAccueil extends BaseGameActivity {
         j.putExtra("niveau",1);
         int maxVolume = 50;
 
+        if(sharedPreferences.contains("dernier_niveau_joue")){
+            i.putExtra("niveau",sharedPreferences.getInt("dernier_niveau_joue",0));
+            j.putExtra("niveau",sharedPreferences.getInt("dernier_niveau_joue",0));
+        }
         imageFragmentPagerAdapter = new ImageFragmentPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setAdapter(imageFragmentPagerAdapter);
@@ -176,7 +180,7 @@ public class EcranAccueil extends BaseGameActivity {
         }
 
         if(sharedPreferences.contains("niveau_max_atteint")){
-            viewPager.setCurrentItem(sharedPreferences.getInt("niveau_max_atteint",0)-1);
+            viewPager.setCurrentItem(sharedPreferences.getInt("dernier_niveau_joue",0)-1);
           //  Toast.makeText(EcranAccueil.this, String.valueOf(aJoueTousLesNiveauxDeverouille(sharedPreferences.getInt("niveau_max_atteint",0))), Toast.LENGTH_SHORT).show();
             if(sharedPreferences.getInt("niveau_max_atteint",0)>=sharedPreferences.getInt("niveau_max_jouable",0) && aJoueTousLesNiveauxDeverouille(sharedPreferences.getInt("niveau_max_atteint",0))){
 
@@ -187,8 +191,8 @@ public class EcranAccueil extends BaseGameActivity {
                         .apply();
             }
 
-            i.putExtra("niveau",sharedPreferences.getInt("niveau_max_atteint",0));
-            j.putExtra("niveau",sharedPreferences.getInt("niveau_max_atteint",0));
+           // i.putExtra("niveau",sharedPreferences.getInt("niveau_max_atteint",0));
+          //  j.putExtra("niveau",sharedPreferences.getInt("niveau_max_atteint",0));
         }
         //Gestion du deverrouillage des 100 % du jeu
         if(!sharedPreferences.contains("confetti_jeu_termine")){
@@ -389,7 +393,7 @@ public class EcranAccueil extends BaseGameActivity {
         btnJouer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              // playerAccueil.stop();
+               playerAccueil.stop();
                 startActivity(i);
                 finish();
 
@@ -398,7 +402,7 @@ public class EcranAccueil extends BaseGameActivity {
         btnRec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  playerAccueil.stop();
+                playerAccueil.stop();
 
 
                 startActivity(j);
@@ -559,8 +563,8 @@ public class EcranAccueil extends BaseGameActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //playerAccueil.seekTo(media_length);
-       // playerAccueil.start();
+        getInstanceMediaplayer().seekTo(media_length);
+        getInstanceMediaplayer().start();
         if (animationDrawable != null && !animationDrawable.isRunning()) {
             // start the animation
             animationDrawable.start();
@@ -601,8 +605,8 @@ public class EcranAccueil extends BaseGameActivity {
     @Override
     protected void onPause() {
         super.onPause();
-       // playerAccueil.pause();
-        //media_length=playerAccueil.getCurrentPosition();
+        getInstanceMediaplayer().pause();
+        media_length=getInstanceMediaplayer().getCurrentPosition();
         if (animationDrawable != null && animationDrawable.isRunning()) {
             // stop the animation
             animationDrawable.stop();

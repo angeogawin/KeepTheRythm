@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KeepTheRythm</string>
+    <string name="app_name">KeepTheRhythm</string>
     <string-array name="menusettings">
         <item>Supprimer les pubs</item>
         <item>Règles du jeu</item>

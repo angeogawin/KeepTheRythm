@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.gesture.Gesture;
 import android.gesture.Prediction;
 import android.graphics.Bitmap;
@@ -46,6 +47,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -116,6 +118,8 @@ import com.appolica.flubber.Flubber;
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
 
 
+import com.developpement.ogawi.keeptherythm.generateur_note.Note;
+import com.developpement.ogawi.keeptherythm.generateur_note.musicXMLparserDH;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import com.google.android.gms.ads.AdListener;
@@ -132,6 +136,8 @@ import com.sdsmdg.harjot.longshadows.LongShadowsWrapper;
 import com.skyfishjy.library.RippleBackground;
 
 import jp.wasabeef.blurry.Blurry;
+import rb.popview.PopField;
+
 
 import static android.view.View.OVER_SCROLL_NEVER;
 import static java.util.logging.Logger.global;
@@ -154,7 +160,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     int score;
 
     //View v;
-    GestureOverlayView vOverlay;
+   // GestureOverlayView vOverlay;
 
     private GestureDetector mDetector;
     TextView scoreT;
@@ -215,10 +221,21 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
     private StorageReference mStorageRef;
     private final int MY_PERMISSIONS_RECORD_AUDIO = 1;
-    RelativeLayout carre;
+    //RelativeLayout carre;
     Runnable stopperPartie_vieTerminee;
     Handler handler_stopperPartie_vieTerminee;
     Boolean aQuitteJeu;
+
+    File gpxfile;
+    musicXMLparserDH parser;
+
+    ArrayList<String> listeXmlSurFirebase;
+    Boolean presenceMusic;
+    Boolean presenceXml;
+    PopField popField;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -229,11 +246,19 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         animBounce.setAnimationListener(listener1);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_ecran_ingame);
+        setContentView(R.layout.activity_ecran_ingame1);
+
+        presenceMusic=false;
+        presenceXml=false;
+
+
+         popField = PopField.attach2Window(this);
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        carre=findViewById(R.id.carreCentre);
+        //String experiment="D:289;A:289;F:289;F:289;A:724;D:869;F:869;A:869;F:1159;A:1159;D:1449;A:1449;A:1449;F:1884;G:2318;B:2608;F:2608;D:2753;F:3043;A:3188;B:3478;F:3478;D:3478;G:3768;D:3913;D:4202;B:4347;D:4347;B:4637;A:4637;A:4927;D:4927;F:4927;D:5217;A:5362;A:5362;D:5507;A:5797;A:5942;A:6086;A:6231;D:6231;A:6521;F:6521;A:6666;A:6956;E:6956;A:7246;C:7246;C:7391;A:7826;A:7826;C:8115;E:8405;C:8695;C:8840;A:8985;A:9275;A:9275;A:9565;F:9565;A:9855;A:10000;D:10144;A:10724;F:11159;D:12028;A:12463;D:12753;G:13043;D:13478;D:13623;D:13768;B:13913;A:13913;F:14202;A:14492;A:14637;D:14782;A:15072;D:15072;A:15217;A:15362;A:15507;F:15797;A:15942;A:16231;E:16231;A:16521;C:16521;A:16521;C:16666;C:16811;C:17391;C:17971;C:18115;F:18840;B:19130;B:19565;F:20000;A:20000;B:20289;B:20434;G:21449;A:21739;G:22028;G:22318;G:22463;G:22753;G:23188;A:23188;D:23478;A:23478;A:23478;F:23478;D:23768;D:23913;D:24057;D:24202;F:24637;A:24637;D:24927;A:25072;F:25072;F:26086;F:26521;C:26666;E:26956;F:27101;C:27391;A:27826;B:28115;F:28115;B:28260;B:28405;D:28695;B:28840;A:29275;B:29565;B:29710;B:30000;B:30144;G:30144;G:30434;G:30579;D:30579;A:31014;G:31159;G:31304;G:31594;G:31739;G:32028;A:32318;G:32463;A:32753;A:32753;D:33043;A:33043;D:33333;D:33478;A:33913;F:34347;D:34782;E:34782;C:35217;F:35362;F:35797;C:35942;E:36231;F:36376;F:36666;C:36666;A:37101;F:37391;F:37971;B:38115;A:38550;B:38985;F:38985;B:39420;B:39420;D:39855;D:39855;G:40000;G:40434;G:40869;G:40869;G:41014;G:41304;D:42028;F:42028;D:42318;D:42463;D:42753;A:43188;D:43623;F:43623;D:44057;E:44057;E:44057;F:44347;C:44492;F:45072;F:45217;C:45217;E:45507;F:45652;F:45942;C:45942;F:46086;F:46376;D:46666;F:46666;B:46811;B:47101;B:47391;B:47536;A:47826;A:47826;B:48115;B:48260;F:48260;B:48550;G:48695;G:49130;D:49130;G:49275;G:49710;G:50289;G:50724;A:51014;F:51304;D:51449;D:51594;D:51739;D:52028;A:52463;D:52898;F:52898;F:52898;E:53333;C:53768;F:53913;F:54057;F:54347;C:54492;E:54782;F:54927;F:55217;C:55217;B:56231;B:56376;B:56666;B:57391;D:57391;B:57681;B:57826;G:58405;G:58550;G:58985;G:59565;G:60144;G:60289;D:60869;D:61014;D:61304;D:62028;D:62463;D:62608;D:63478;F:63623;F:63768;G:64202;G:64782;F:64927;B:65507;B:65942;B:66666;B:66956;B:67246;G:67681;G:68260;G:68840;D:69420;G:69565;G:70434;D:70579;D:71304;D:71739;D:71884;F:72318;F:72463;F:72608;F:72898;G:73043;F:73478;G:73478;F:73913;F:74202;B:74492;B:74782;B:74927;B:75217;B:75942;B:76376;B:76521;G:76811;G:77101;D:77101;G:77536;D:78260;D:79420;D:79565;D:79855;D:80579;D:81014;F:81739;F:81884;F:82608;F:82753;G:82753;F:83043;F:83478;F:84347;B:84492;B:85217;B:85652;B:85797;D:85797;G:86376;D:86376;G:86811;D:86811;G:87391;G:87681;G:88115;A:88405;D:88550;D:88695;D:89855;D:90144;D:90289;F:90724;F:90869;F:91014;F:91159;F:91449;F:91594;F:92028;F:92318;C:92608;F:92753;B:93043;B:93333;D:93623;B:93768;B:93913;A:94202;A:94782;B:94927;G:95072;G:95507;G:95652;A:95942;G:96086;D:96231;G:96521;G:96666;G:96956;D:96956;A:97391;A:97681;F:97681;D:97826;D:98405;F:98840;D:99275;D:99565;C:100144;F:100289;F:100724;E:101159;F:101304;F:101594;F:101739;B:102318;F:102318;B:102608;D:102898;B:103043;B:103913;F:103913;B:104347;G:104347;G:104782;G:104927;G:105072;A:105217;G:105362;D:105507;G:105797;G:105942;F:105942;G:106231;D:106231;G:106666;D:106956;A:106956;A:106956;D:107246;D:107536;D:107536;D:107681;D:108405;D:108550;F:108550;D:108840;C:109420;F:109565;F:110000;F:110144;C:110144;E:110434;F:110579;C:110869;F:111014;B:111884;B:112463;A:112753;A:112753;B:113188;F:113188;B:113333;B:113478;G:113623;G:113913;F:113913;D:114057;G:114202;G:114637;G:114782;D:114782;G:115072;G:115217;G:115507;D:115507;G:115942;A:115942;D:116231;D:116231;F:116231;D:116521;D:116956;A:117391;A:117391;D:117681;F:117826;D:118260;E:118260;F:118840;F:119275;C:119420;E:119710;F:119855;F:120144;C:120144;F:120289;A:120579;F:120869;B:121159;D:121449;B:121594;A:122028;B:122318;B:122753;B:122898;G:122898;G:123333;D:123333;G:123478;G:123913;D:124057;G:124347;G:124492;G:124782;D:124782;F:125507;D:125797;D:126231;A:126666;D:126956;A:126956;D:127391;E:127536;F:127826;F:127971;C:127971;F:128550;E:128985;F:129130;C:129420;B:130144;B:130434;B:130869;G:131449;B:131594;G:131739;B:131884;B:132028;B:132173;G:132463;G:132753;G:133188;G:133768;D:134347;G:134492;D:134927;D:135072;D:135217;D:136666;D:136811;F:137391;F:137536;F:137826;G:137971;G:138840;C:138985;B:139710;B:140144;B:140869;B:141449;G:141884;G:142463;G:143333;D:143623;G:143768;D:144202;D:144782;D:145507;D:145942;D:146086;F:146376;F:146666;F:147101;F:147246;F:147681;F:148260;D:149565;B:150434;B:150724;G:151014;G:151304;G:151739;G:151884;G:152318;G:152608;D:152898;G:153043;A:153333;C:153333;D:153623;D:154057;D:154782;D:155072;D:155217;F:155652;F:155942;F:156376;F:156956;F:157246;C:157536;F:157681;B:157971;A:157971;C:157971;B:158260;B:158695;B:159420;B:159855;B:160000;G:160579;G:160724;G:161014;G:161594;G:161884;G:162318;D:162608;D:163188;D:163333;D:163478;D:164057;D:164637;D:165217;F:165362;F:165652;F:165797;F:166231;F:166521;C:166811;F:166956;B:167536;D:167826;B:167971;B:168115;F:168405;A:168405;B:168695;B:168840;B:168840;B:168985;B:169130;B:169275;G:169275;G:169275;D:169710;G:169855;A:170144;G:170289;G:170869;G:171159;A:171594;A:171884;A:171884;D:172028;D:172463;A:173043;D:173478;A:173478;F:173478;D:173768;D:173913;E:173913;F:174347;C:174347;F:174637;F:174927;F:175072;C:175072;E:175362;F:175507;F:175797;C:175797;F:176231;D:176521;F:176521;B:176666;B:176811;D:177101;B:177246;B:177391;B:177971;B:178550;G:178550;G:178550;G:178985;D:178985;G:179130;G:179565;G:180000;G:180144;G:180434;D:180434;A:180869;A:181159;D:181159;A:181159;F:181159;D:181449;D:181884;F:182318;A:182318;D:182608;D:182753;A:182753;D:183043;D:183188;F:183478;F:183768;F:183913;F:184202;F:184782;C:185072;F:185797;B:185942;B:186086;A:186956;B:187391;F:187391;G:187826;G:188115;G:188260;G:188405;G:188840;D:188985;G:189275;G:189420;G:189710;D:189710;D:190000;A:190144;D:190434;F:190434;D:190579;D:190869;D:191159;A:191594;D:191884;F:192028;D:192463;C:192898;C:192898;F:193043;F:193478;C:193623;E:193913;F:194057;F:194347;C:194347;F:194492;F:195072;B:195362;B:195507;A:196231;F:196666;B:196956;B:197101;G:197101;G:197391;D:197536;G:197681;G:198115;G:198260;G:198550;G:198695;G:198985;D:198985;D:199710;F:199710;D:200000;D:200144;D:200434;A:200869;A:200869;D:201159;F:201304;D:201594;D:201739;E:201739;C:202173;F:202318;F:202753;E:203188;F:203333;F:203623;C:203623;F:203768;F:203913;F:204057;F:204637;B:204782;B:205072;B:205217;D:205217;";
+        //seqLifeIsBeautiful=transformerPitchEnGeste(experiment);
+      //  carre=findViewById(R.id.carreCentre);
 
        // imageFragmentPagerAdapter = new ImageFragmentPagerAdapter(getSupportFragmentManager());
         //viewPager = (ViewPager) findViewById(R.id.pager);
@@ -248,7 +273,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         listeImagesAnimationsActives = new ArrayList<>();
         listeIndicesActuels=new ArrayList<>();
         listePerfect=new ArrayList<>();
-        vOverlay = (GestureOverlayView) findViewById(R.id.gOverlay);
+      //  vOverlay = (GestureOverlayView) findViewById(R.id.gOverlay);
         // rondCentral=(ImageView) findViewById(R.id.rondCentral);
         //progress = findViewById(R.id.progress);
         progress=findViewById(R.id.progress1);
@@ -340,20 +365,20 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 viewbarre1=findViewById(R.id.viewBarre1);
                 viewbarre2=findViewById(R.id.viewBarre2);
                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)barregauche.getLayoutParams();
-                params.setMargins(70*widthZoneJeu/100, 0, 0, 0); //substitute parameters for left, top, right, bottom
+                params.setMargins(0, 70*heightZoneJeu/100, 0, 0); //substitute parameters for left, top, right, bottom
                 RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams)viewbarre1.getLayoutParams();
-                params1.setMargins(0, 20*heightZoneJeu/100, 0, 0);
+                params1.setMargins(20*widthZoneJeu/100, 0, 0, 0);
                 RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams)viewbarre2.getLayoutParams();
-                params2.setMargins(0, 40*heightZoneJeu/100, 0, 0);
+                params2.setMargins(40*widthZoneJeu/100, 0, 0, 0);
                 RelativeLayout.LayoutParams params3 = (RelativeLayout.LayoutParams)barreHorizontal3.getLayoutParams();
-                params3.setMargins(0, 60*heightZoneJeu/100, 0, 0);
+                params3.setMargins(60*widthZoneJeu/100, 0, 0, 0);
                 RelativeLayout.LayoutParams params4 = (RelativeLayout.LayoutParams)barreHorizontal4.getLayoutParams();
-                params4.setMargins(0, 80*heightZoneJeu/100, 0, 0);
+                params4.setMargins(80*widthZoneJeu/100, 0, 0, 0);
                 barregauche.setLayoutParams(params);
                 viewbarre1.setLayoutParams(params1);
                 viewbarre2.setLayoutParams(params2);
                 barreHorizontal3.setLayoutParams(params3);
-                barregauche.getLayoutParams().width=10*widthZoneJeu/100;
+                barregauche.getLayoutParams().height=10*heightZoneJeu/100;
                 barregauche.setVisibility(View.VISIBLE);
                 barreHorizontal1.setVisibility(View.VISIBLE);
                 barreHorizontal2.setVisibility(View.VISIBLE);
@@ -424,22 +449,22 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 // Check if the runtime version is at least Lollipop
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     // get the center for the clipping circle
-                    int cx =vOverlay.getWidth() / 2;
-                    int cy = vOverlay.getHeight() / 2;
+                 //   int cx =vOverlay.getWidth() / 2;
+                 //   int cy = vOverlay.getHeight() / 2;
 
                     // get the final radius for the clipping circle
-                    float finalRadius = (float) Math.hypot(cx, cy);
+                   // float finalRadius = (float) Math.hypot(cx, cy);
 
                     // create the animator for this view (the start radius is zero)
-                    Animator anim =
-                            ViewAnimationUtils.createCircularReveal(vOverlay, cx, cy, 0, finalRadius);
+                   /* Animator anim =
+                            ViewAnimationUtils.createCircularReveal(vOverlay, cx, cy, 0, finalRadius);*/
 
                     // make the view visible and start the animation
-                    vOverlay.setVisibility(View.VISIBLE);
-                    anim.start();
+                 //   vOverlay.setVisibility(View.VISIBLE);
+                   // anim.start();
                 } else {
                     // set the view to visible without a circular reveal animation below Lollipop
-                    vOverlay.setVisibility(View.VISIBLE);
+                //    vOverlay.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -520,16 +545,56 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         listeUrl.add("firebase_Danosongs - Shine Gold Light - PIano Mix.mp3");
         listeUrl.add("firebase_Danosongs - Sky Seeds - Brit Pop Mix.mp3");
 
+
+        listeXmlSurFirebase=new ArrayList<>();
+        listeXmlSurFirebase.add("Cybersdf-Dolling.xml");
+        listeXmlSurFirebase.add("cdk_like_music_cdk_mix.xml");
+        listeXmlSurFirebase.add("alla_what_parody.xml");
+        listeXmlSurFirebase.add("carol_of_the_bells.xml");
+        listeXmlSurFirebase.add("jeffspeed68_two_pianos.xml");
+        listeXmlSurFirebase.add("adagioinc.xml");
+        listeXmlSurFirebase.add("Myuu-TenderRemains.xml");
+        listeXmlSurFirebase.add("Rocker.xml");
+        listeXmlSurFirebase.add("hansatom_persephone.xml");
+        listeXmlSurFirebase.add("GoNotGently.xml");
+        listeXmlSurFirebase.add("Triangle.xml");
+        listeXmlSurFirebase.add("bigcartheft.xml");
+        listeXmlSurFirebase.add("Arroz Con Pollo.xml");
+        listeXmlSurFirebase.add("Tango de Manzana.xml");
+        listeXmlSurFirebase.add("No Frills Salsa.xml");
+        listeXmlSurFirebase.add("What Is Love.xml");
+        listeXmlSurFirebase.add("Olivaw-Airwaves.xml");
+        listeXmlSurFirebase.add("Jens_East_-_Daybreak_feat_Henk.xml");
+        listeXmlSurFirebase.add("Kevin_MacLeod_-_Canon_in_D_Major.xml");
+        listeXmlSurFirebase.add("petit-pantin.xml");
+        listeXmlSurFirebase.add("09WhatIKnowAboutYou.xml");
+        listeXmlSurFirebase.add("FurElise.xml");
+        listeXmlSurFirebase.add("night_life2.xml");
+        listeXmlSurFirebase.add("GreenLeaves.xml");
+        listeXmlSurFirebase.add("speck_moonlight_sonata_shifting_sun_mix.xml");
+        listeXmlSurFirebase.add("grapes_-_I_dunno.xml");
+        listeXmlSurFirebase.add("Danosongs - Bright Brazil.xml");
+        listeXmlSurFirebase.add("Danosongs - Smile Its Me!.xml");
+        listeXmlSurFirebase.add("life-is-beautiful.xml");
+        listeXmlSurFirebase.add("Danosongs - Shine Gold Light - PIano Mix.xml");
+        listeXmlSurFirebase.add("Danosongs - Sky Seeds - Brit Pop Mix.xml");
+
+
         //chargement musique
-        File mFolder = new File(getFilesDir() + "/Music");
+        File mFolderMusic = new File(getFilesDir() + "/Music");
         extensionFichier=obtenirExtensionFichier(listeUrl,pos);
 
-        File file = new File(mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+extensionFichier);
-        String filePath=mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+extensionFichier;
-       if(file.exists()){
-           //on recupère le fichier depuis le repertoire
-           go.setVisibility(View.VISIBLE);
+        File fileMusic = new File(mFolderMusic.getAbsolutePath()+"/" + nom_txt.get(pos-1)+extensionFichier);
+        String filePath=mFolderMusic.getAbsolutePath()+"/" + nom_txt.get(pos-1)+extensionFichier;
 
+
+       if(fileMusic.exists()){
+           //on recupère le fichier depuis le repertoire
+           presenceMusic=true;
+          // go.setVisibility(View.VISIBLE);
+           if(presenceXml){
+               go.setVisibility(View.VISIBLE);
+           }
            mPlayer = MediaPlayer.create(this, Uri.parse(filePath));
 
        }
@@ -576,7 +641,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                mProgressDialog.show();
                //Le fichier doit etre telechargé en utilisant firebase
                File mFolder2 = new File(getFilesDir() + "/Music");
-               File file2 = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier);
+               File file2 = new File(mFolderMusic.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier);
                String nomFichierSurFirebase=listeUrl.get(pos - 1).split("_")[1];
                StorageReference refFichier=mStorageRef.child(nomFichierSurFirebase);
 
@@ -586,10 +651,15 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                // Successfully downloaded data to local file
                                // ...
-                               go.setVisibility(View.VISIBLE);
+                              // go.setVisibility(View.VISIBLE);
 
-                               File mFolder = new File(getFilesDir() + "/Music");
-                               String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
+                               presenceMusic=true;
+
+                               if(presenceXml){
+                                   go.setVisibility(View.VISIBLE);
+                               }
+                               File mFolderMusic = new File(getFilesDir() + "/Music");
+                               String filePath = mFolderMusic.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
                                mProgressDialog.dismiss();
                                mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
                            }
@@ -598,8 +668,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                    public void onFailure(@NonNull Exception exception) {
                        // Handle failed download
                        // ...
-                       File mFolder = new File(getFilesDir() + "/Music");
-                       File file = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier);
+                       File mFolderMusic = new File(getFilesDir() + "/Music");
+                       File file = new File(mFolderMusic.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier);
                        //  String filePath=mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+".mp3";
                        file.delete();
                        mProgressDialog.dismiss();
@@ -617,6 +687,89 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
            // **** fin ajout des musiques
 
        }
+
+        File mFolderXml = new File(getFilesDir() + "/XML");
+        File fileXml = new File(mFolderXml.getAbsolutePath()+"/" + nom_txt.get(pos-1)+".xml");
+
+        if(fileXml.exists()){
+            //on recupère le fichier depuis le repertoire
+            presenceXml=true;
+            if(presenceMusic){
+                go.setVisibility(View.VISIBLE);
+            }
+
+
+
+
+        }
+
+        else {
+
+            //on télécharge
+// instantiate it within the onCreate method
+
+
+            mProgressDialog = new ProgressDialog(InGame.this);
+
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mProgressDialog.setMessage("Téléchargement de la musique");
+            mProgressDialog.setIndeterminate(true);
+
+            mProgressDialog.setCancelable(true);
+
+// execute this when the downloader must be fired
+            final DownloadTask downloadTask = new DownloadTask(InGame.this);
+
+
+                mProgressDialog.show();
+                //Le fichier doit etre telechargé en utilisant firebase
+
+                File file2 = new File(mFolderXml.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".xml");
+                String nomFichierSurFirebase=listeXmlSurFirebase.get(pos - 1);
+                StorageReference refFichier=mStorageRef.child("XML").child(nomFichierSurFirebase);
+
+                refFichier.getFile(file2)
+                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                // Successfully downloaded data to local file
+                                // ...
+                                // go.setVisibility(View.VISIBLE);
+
+                                presenceXml=true;
+                                if(presenceMusic){
+                                    go.setVisibility(View.VISIBLE);
+                                }
+
+                                mProgressDialog.dismiss();
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle failed download
+                        // ...
+                        File mFolderXml = new File(getFilesDir() + "/XML");
+                        File file = new File(mFolderXml.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + ".xml");
+
+                        file.delete();
+                        mProgressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Erreur téléchargement des données", Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(getApplicationContext(), EcranAccueil.class);
+                        startActivity(i);
+                        finish();
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+                    }
+                });
+
+
+
+            // **** fin ajout des musiques
+
+        }
+
+
 
         indiceActuelSequence = -1;
         indicesequence=0;
@@ -639,7 +792,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         //dernierSymbole = actualiserSymbole(flecheactuelle, sequence, indiceActuelSequence);
 
         //dernierSymbole=sequence.get(0);
-        dernierSymbole = ((sequences.get(pos - 1)).split(";")[0]).split(":")[0];
+    ////*    dernierSymbole = ((sequences.get(pos - 1)).split(";")[0]).split(":")[0];
+
        // dernierSymbole = (sequences.get(pos - 1).split(";")[0]).split(":")[0];
 
         //isDrawerOpen = false;
@@ -657,6 +811,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
         derniereAction.setValueChangeListener(new StringModified.onValueChangeListener() {
+
             //derniere action non actualisee quand tap puis swipe rapidement
             @Override
             public void onChange() {
@@ -683,20 +838,21 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     } else {
                         elementActuelClickable = false;
                     }
-                    if (elementActuelClickable) {
+                    if (elementActuelClickable ) {
 
 
                         //Toast.makeText(InGame.this, String.valueOf(elementActuelClickable), Toast.LENGTH_SHORT).show();
 
-                        dernierSymbole = ((sequences.get(pos - 1)).split(";")[listeIndicesActuels.get(0)]).split(":")[0];
-
+                       /////* dernierSymbole = ((sequences.get(pos - 1)).split(";")[listeIndicesActuels.get(0)]).split(":")[0];
+                        dernierSymbole = ((sequenceARealiser).split(";")[listeIndicesActuels.get(0)]).split(":")[0];
+                        int indiceActuel=listeIndicesActuels.get(0);
                         if (dernierSymbole.equals(derniereAction.valeur)) {
 
 
                             //  Toast.makeText(InGame.this, "Amaz", Toast.LENGTH_SHORT).show();
 
 
-                            if (listeIndicesActuels.get(0)<= couples.length - 1) {
+                            if (indiceActuel<= couples.length - 1) {
 
                                 int precision=0;//1 correspond à perfect, 2 à normal et 0 à aucun rythme
                                 precision=verifierBonRythmeJoueur();
@@ -707,7 +863,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                                     }
                                     actualiserScore(precision);
-                                   // progress.setProgress(score * 100 / (2*couples.length));
+
                                     progress.setProgress(barreVie*100/10);
                                     //actualiser score en conséquence
 
@@ -729,10 +885,6 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
                                 //Toast.makeText(InGame.this, dernierSymbole, Toast.LENGTH_SHORT).show();
 
-                            } else if (listeIndicesActuels.get(0) > couples.length - 1) {
-                                //    Toast.makeText(InGame.this, "Jeu terminé", Toast.LENGTH_SHORT).show();
-                                //  zoneJeu.removeAllViews();
-                                //  mPlayer.stop();
                             }
                         } else {
 
@@ -761,8 +913,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                             listeIndicesActuels.remove(0);
 
                         }
-                } else {
-                    //   Toast.makeText(InGame.this, "Jeu terminé", Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
@@ -773,9 +924,9 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         // Add a touch1 listener to the view
         // The touch1 listener passes all its events on to the gesture detector
 
-        vOverlay.setOnTouchListener(touchListener);
+      //  vOverlay.setOnTouchListener(touchListener);
 
-
+/*
         vOverlay.post(new Runnable() {
             @Override
             public void run() {
@@ -784,7 +935,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 // widthZoneJeu = zoneJeu.getWidth();
                 //   heightZoneJeu = zoneJeu.getHeight();
             }
-        });
+        });*/
 
         widthZoneJeu = zoneJeu.getWidth();
         heightZoneJeu = zoneJeu.getHeight();
@@ -801,6 +952,9 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         });
 
         mImageView = new ImageView(getApplicationContext());
+
+
+
 
 
     }
@@ -1047,8 +1201,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             mProgressDialog.dismiss();
             if (result != null) {
                 Toast.makeText(context, "Erreur téléchargement de la musique", Toast.LENGTH_LONG).show();
-                File mFolder = new File(getFilesDir() + "/Music");
-                File file = new File(mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+extensionFichier);
+                File mFolderMusic = new File(getFilesDir() + "/Music");
+                File file = new File(mFolderMusic.getAbsolutePath()+"/" + nom_txt.get(pos-1)+extensionFichier);
                 //  String filePath=mFolder.getAbsolutePath()+"/" + nom_txt.get(pos-1)+".mp3";
                 file.delete();
                 Handler handler = new Handler();
@@ -1064,12 +1218,14 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
             } else {
                 //Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
-                go.setVisibility(View.VISIBLE);
+               // go.setVisibility(View.VISIBLE);
 
-                File mFolder = new File(getFilesDir() + "/Music");
-                String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
+                presenceMusic=true;
+                File mFolderMusic = new File(getFilesDir() + "/Music");
+                String filePath = mFolderMusic.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
 
                 mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
+
 
             }
         }
@@ -1095,12 +1251,12 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         }
 
         @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
+        public boolean onSingleTapUp(MotionEvent e) {
 
-            new ParticleSystem(InGame.this, 20, R.drawable.notemusique, 30000)
+          /*  new ParticleSystem(InGame.this, 20, R.drawable.notemusique, 30000)
                     .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
 //                        .setAcceleration(0.00005f, 45)
-                    .oneShot(findViewById(R.id.gOverlay), 5);
+                    .oneShot(findViewById(R.id.gOverlay), 5);*/
             rippleBackground=(RippleBackground)findViewById(R.id.content);
            // rippleBackground.clearAnimation();
             rippleBackground.startRippleAnimation();
@@ -1117,13 +1273,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             // .emit(x,y,5,1000);
 
             derniereAction.setVariable("tap");
-            Flubber.with()
+           /* Flubber.with()
                     .animation(Flubber.AnimationPreset.POP) // Slide up animation
 
                   //  .repeatCount(1)                              // Repeat once
                     .duration(300)                              // Last for 1000 milliseconds(1 second)
                     .createFor(carre)                             // Apply it to the view
-                    .start();
+                    .start();*/
             //  Toast.makeText(InGame.this, "tap", Toast.LENGTH_SHORT).show();
             return true;
         }
@@ -1141,7 +1297,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             //  Toast.makeText(InGame.this, "touch1", Toast.LENGTH_SHORT).show();
         }
 
-        @Override
+       /* @Override
         public boolean onDoubleTap(MotionEvent e) {
             new ParticleSystem(InGame.this, 20, R.drawable.notemusique, 30000)
                     .setSpeedByComponentsRange(-0.5f, 0.5f, 0f, 0.5f)
@@ -1176,9 +1332,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             }, 200);
 
             return true;
-        }
-
-        @Override
+        }*/
+       @Override
         public boolean onFling(MotionEvent event1, MotionEvent event2,
                                float velocityX, float velocityY) {
 
@@ -1189,38 +1344,38 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     derniereAction.setVariable("g");
 
                     //   Toast.makeText(InGame.this, "left", Toast.LENGTH_SHORT).show();
-                    new ParticleSystem(InGame.this, 5, R.drawable.notemusique2, 1000,R.id.gOverlay)
+                   /* new ParticleSystem(InGame.this, 5, R.drawable.notemusique2, 1000,R.id.gOverlay)
                             .setSpeedByComponentsRange(0.5f, 0.5f, 0f, 0.0f)
 
 //                        .setAcceleration(0.00005f, 45)
-                            .oneShot(findViewById(R.id.gOverlay), 5);
-                    vOverlay.setBackgroundColor(getResources().getColor(R.color.colorPurple_900));
+                            .oneShot(findViewById(R.id.gOverlay), 5);*/
+                   // vOverlay.setBackgroundColor(getResources().getColor(R.color.colorPurple_900));
 
-                    Flubber.with()
+                   /* Flubber.with()
                             .animation(Flubber.AnimationPreset.FADE_IN_LEFT) // Slide up animation
 
                             //  .repeatCount(1)                              // Repeat once
                             .duration(300)                              // Last for 1000 milliseconds(1 second)
                             .createFor(carre)                             // Apply it to the view
-                            .start();
+                            .start();*/
                 } else if (event2.getX() - event1.getX() < 0) {
                     derniereAction.setVariable("d");
 
                     // Toast.makeText(InGame.this, "right", Toast.LENGTH_SHORT).show();
-                    new ParticleSystem(InGame.this, 5, R.drawable.notemusique2, 1000,R.id.gOverlay)
+                /*    new ParticleSystem(InGame.this, 5, R.drawable.notemusique2, 1000,R.id.gOverlay)
                             .setSpeedByComponentsRange(-0.5f, -0.5f, 0f, 0.0f)
 
 //                        .setAcceleration(0.00005f, 45)
-                            .oneShot(findViewById(R.id.gOverlay), 5);
-                    vOverlay.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                            .oneShot(findViewById(R.id.gOverlay), 5);*/
+                //    vOverlay.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
-                    Flubber.with()
+                /*    Flubber.with()
                             .animation(Flubber.AnimationPreset.FADE_IN_RIGHT) // Slide up animation
 
                             //  .repeatCount(1)                              // Repeat once
                             .duration(300)                              // Last for 1000 milliseconds(1 second)
                             .createFor(carre)                             // Apply it to the view
-                            .start();
+                            .start();*/
                 }
             } else if (Math.abs(event2.getX() - event1.getX()) < Math.abs(event2.getY() - event1.getY())) {
 
@@ -1230,39 +1385,39 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     derniereAction.setVariable("h");
 
                     //    Toast.makeText(InGame.this, "up", Toast.LENGTH_SHORT).show();
-                    new ParticleSystem(InGame.this, 5, R.drawable.notemusique2, 1000,R.id.gOverlay)
+                  /*  new ParticleSystem(InGame.this, 5, R.drawable.notemusique2, 1000,R.id.gOverlay)
                             .setSpeedByComponentsRange(-0.0f, 0.0f, 0.5f, 0.5f)
 //                        .setAcceleration(0.00005f, 45)
-                            .oneShot(findViewById(R.id.gOverlay), 5);
+                            .oneShot(findViewById(R.id.gOverlay), 5);*/
                   //  vOverlay.setBackgroundColor(getResources().getColor(R.color.cyan));
 
-                    Flubber.with()
+                   /* Flubber.with()
                             .animation(Flubber.AnimationPreset.FADE_IN_UP) // Slide up animation
 
                             //  .repeatCount(1)                              // Repeat once
                             .duration(200)                              // Last for 1000 milliseconds(1 second)
                             .createFor(carre)                             // Apply it to the view
-                            .start();
+                            .start();*/
 
                 } else if (event2.getY() - event1.getY() < 0) {
 
                     derniereAction.setVariable("b");
 
                     //   Toast.makeText(InGame.this, "down", Toast.LENGTH_SHORT).show();
-                    new ParticleSystem(InGame.this, 5, R.drawable.notemusique2, 1000,R.id.gOverlay)
+                  /*  new ParticleSystem(InGame.this, 5, R.drawable.notemusique2, 1000,R.id.gOverlay)
                             .setSpeedByComponentsRange(-0.0f, 0.0f, -0.5f, -0.5f)
 
 //                        .setAcceleration(0.00005f, 45)
-                            .oneShot(findViewById(R.id.gOverlay), 5);
+                            .oneShot(findViewById(R.id.gOverlay), 5);*/
                   //  vOverlay.setBackgroundColor(getResources().getColor(R.color.bleu1));
-
+/*
                     Flubber.with()
                             .animation(Flubber.AnimationPreset.FADE_IN_DOWN) // Slide up animation
 
                             //  .repeatCount(1)                              // Repeat once
                             .duration(200)                              // Last for 1000 milliseconds(1 second)
                             .createFor(carre)                             // Apply it to the view
-                            .start();
+                            .start();*/
 
                 }
             }
@@ -1317,13 +1472,20 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
     public void actualiserScore(int precision) {
         //actualise int score
+        if(barreVie!=10 && barreVie!=0){
+            barreVie+=1;
 
-        final int indiceActuel=listeIndicesActuels.get(0);
+        }
+
+
+        progress.setProgress(barreVie*100/10);
+
+     //   final int indiceActuel=listeIndicesActuels.get(0);
         if(precision==1){
             //perfect
             score+=2;
           //  if(textPerfect.getVisibility()==View.INVISIBLE) {
-                textPerfect.setText("Parfait!");
+                textPerfect.setText("Parfait!\n   +2");
                 textPerfect.setTextColor(getResources().getColor(R.color.colorPurple_A400));
                 textPerfect.setVisibility(View.VISIBLE);
           //  }
@@ -1331,41 +1493,50 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             textPerfect.startAnimation(animBounce);
           //  zoneJeu.getChildAt(listeIndicesActuels.get(0)).setBackground(getDrawable(R.drawable.emoji_muscle));
 
-            if (listeIndicesActuels.size() > 0) {
-                ((ImageView)zoneJeu.getChildAt(listeIndicesActuels.get(0))).setImageDrawable(getDrawable(R.drawable.plusdeux2));
-             //   zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
+           // if (listeIndicesActuels.size() > 0) {
 
+              /*  ImageView newView=new ImageView( getApplicationContext());
+                        newView.setImageDrawable(getDrawable(R.drawable.achievements));*/
+               // ((ImageView)zoneJeu.getChildAt(indiceActuel)).setImageDrawable(getDrawable(R.drawable.cercle_exp));
+            //    popField.popView(zoneJeu.getChildAt(indiceActuel));
+             //   ((ImageView)zoneJeu.getChildAt(indiceActuel)).setImageDrawable(getDrawable(R.drawable.plusdeux2));
+             //   zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
                 Handler handler = new Handler();
+
+
                 handler.postDelayed(new Runnable() {
                     public void run() {
-                        zoneJeu.getChildAt(indiceActuel).setVisibility(View.GONE);
+
+                    //    zoneJeu.getChildAt(indiceActuel).setVisibility(View.GONE);
                     }
                 }, 600);
-            }
+          //  }
 
 
         }
         else if(precision==2){
             score += 1;
          //   if(textPerfect.getVisibility()==View.INVISIBLE) {
-                textPerfect.setText("Cool!");
+                textPerfect.setText("Cool! \n  +1");
                 textPerfect.setTextColor(getResources().getColor(R.color.colorAccent));
                 textPerfect.setVisibility(View.VISIBLE);
 
         //    }
 
             textPerfect.startAnimation(animBounce);
-            if (listeIndicesActuels.size() > 0) {
-                ((ImageView)zoneJeu.getChildAt(listeIndicesActuels.get(0))).setImageDrawable(getDrawable(R.drawable.plusun));
+           // if (listeIndicesActuels.size() > 0) {
+                //((ImageView)zoneJeu.getChildAt(indiceActuel)).setImageDrawable(getDrawable(R.drawable.cercle_exp1));
+            //    popField.popView(zoneJeu.getChildAt(indiceActuel));
+               // ((ImageView)zoneJeu.getChildAt(listeIndicesActuels.get(0))).setImageDrawable(getDrawable(R.drawable.plusun));
                 //  zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
 
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
-                          zoneJeu.getChildAt(indiceActuel).setVisibility(View.GONE);
+                        // zoneJeu.getChildAt(indiceActuel).setVisibility(View.GONE);
                     }
                 }, 600);
-            }
+        //    }
  //zoneJeu.getChildAt(listeIndicesActuels.get(0)).setBackground(getDrawable(R.drawable.emoji_langue));
 
 
@@ -1480,13 +1651,17 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
     public void lancerAnimation(ArrayList<String> sequence) {
-
+        sequenceARealiser=(sequences.get(pos-1));
+       // sequenceARealiser=transformerPitchEnGeste(generateNoteFromXmlOnSD(getApplicationContext(),nom_txt.get(pos-1)+".xml"));
+        dernierSymbole = ((sequenceARealiser).split(";")[0]).split(":")[0];
         indiceActuelSequence=0;
-        vOverlay.setOnTouchListener(touchListener);
+      //  vOverlay.setOnTouchListener(touchListener);
 
         zoneJeu.clearAnimation();
 
-        sequenceARealiser = ( sequences.get(pos - 1));
+       // sequenceARealiser = ( sequences.get(pos - 1));
+
+
        // sequenceARealiser = traiterSequences( sequences.get(pos - 1));
         couples = sequenceARealiser.split(";");
         nextPalierScore.setText(String.valueOf (Math.round((int)(0.75*2*couples.length))));
@@ -1494,7 +1669,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         //   Toast.makeText(InGame.this, s, Toast.LENGTH_LONG).show();
         listeTminToClick = new ArrayList<>();
 
-        int sommeduration = 4000;
+        int sommeduration = 5000;
         listeTminToClick.add(sommeduration);
 
 
@@ -1503,8 +1678,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         Point size = new Point();
         display.getSize(size);
 
-        int widthZoneJeu = zoneJeu.getWidth();
-        int heightZoneJeu = zoneJeu.getHeight();
+        int widthZoneJeu = zoneJeu.getMeasuredWidth();
+        int heightZoneJeu = zoneJeu.getMeasuredHeight();
 
 
         int tempsDemarrageMusique=(int)((0.7*5000)-Integer.valueOf(couples[0].split(":")[1]));
@@ -1513,38 +1688,111 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         for (int j = 0; j < couples.length; j++) {
             listePerfect.add(j,false);
             indicesequence = j;
+            indiceActuelSequence=j;
             String symbole = couples[j].split(":")[0];
             // Toast.makeText(InGame.this, symbole, Toast.LENGTH_LONG).show();
-            final ImageView i = new ImageView(getApplicationContext());
+          //  final ImageView i = new ImageView(getApplicationContext());
+             Button i=new Button(getApplicationContext());
 
 
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.height =15*widthZoneJeu/100 ;
+            params.width = 20*widthZoneJeu/100;
+            i.setLayoutParams(params);
 
+            i.setOnClickListener(new View.OnClickListener() {
+
+
+                public void onClick(View v) {
+                    int[] coord=new int[]{0,0};
+                    v.getLocationOnScreen(coord);
+                    int x=coord[0];
+                    int y=coord[1];
+
+                    if(y>=0.90*heightZoneJeu){
+                        actualiserScore(2);
+                        popField.popView(v);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                               v.setVisibility(View.GONE);
+                            }
+                        }, 600);
+                    }
+                    else if(y>=0.68*heightZoneJeu){
+                        actualiserScore(1);
+                        popField.popView(v);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                               v.setVisibility(View.GONE);
+                            }
+                        }, 600);
+                    }
+                  /*  if(symbole.equals("tap")){
+                        derniereAction.setVariable("tap");
+                    }
+                    if(symbole.equals("g")){
+                        derniereAction.setVariable("g");
+                    }
+                    if(symbole.equals("d")){
+                        derniereAction.setVariable("d");
+                    }
+                    if(symbole.equals("h")){
+                        derniereAction.setVariable("h");
+                    }
+                    if(symbole.equals("b")){
+                        derniereAction.setVariable("b");
+                    }
+*/
+                }
+            });
 
             if (j == 0) {
-                i.setImageDrawable(trouverSymbole(symbole, "vert"));
+                i.setBackgroundColor(trouverCouleur(symbole));
+                //i.setImageDrawable(trouverSymbole(symbole, "vert"));
 
             } else {
-                i.setImageDrawable(trouverSymbole(symbole, "vert"));
+                i.setBackgroundColor(trouverCouleur(symbole));
+              //  i.setImageDrawable(trouverSymbole(symbole, "vert"));
             }
 
-            if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_bas4_vert))){
-               i.setY(5*heightZoneJeu/100);
+            if(symbole.equals("b")){
+                i.setX(0*widthZoneJeu/100);
+
+            }
+
+            else if(symbole.equals("g")){
+                i.setX(20*widthZoneJeu/100);
+            }
+            else if(symbole.equals("tap")){
+                i.setX(40*widthZoneJeu/100);
+            }
+            else if(symbole.equals("d")){
+                i.setX(60*widthZoneJeu/100);
+            }
+            else if(symbole.equals("h")){
+                i.setX(80*widthZoneJeu/100);
+
+            }
+           /* if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_bas4_vert))){
+               i.setX(5*widthZoneJeu/100);
 
             }
 
             else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_gauche4_vert))){
-                i.setY(24*heightZoneJeu/100);
+                i.setX(24*widthZoneJeu/100);
             }
             else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.cercle_vert))){
-                i.setY(46*heightZoneJeu/100);
+                i.setX(46*widthZoneJeu/100);
             }
             else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_droite5_sombre))){
-                i.setY(64*heightZoneJeu/100);
+                i.setX(64*widthZoneJeu/100);
             }
             else if(areDrawablesIdentical(i.getDrawable(),getDrawable(R.drawable.fleche_haut4_vert))){
-               i.setY(85*heightZoneJeu/100);
+               i.setX(85*widthZoneJeu/100);
 
-            }
+            }*/
             // Toast.makeText(this, String.valueOf(width), Toast.LENGTH_SHORT).show();
 
             // Génération des trajectoires des images
@@ -1559,13 +1807,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
 
-            ValueAnimator va = ValueAnimator.ofFloat(0f, zoneJeu.getWidth());
+            ValueAnimator va = ValueAnimator.ofFloat(0f, zoneJeu.getHeight());
             int mDuration = 5000; //in millis
             va.setDuration(mDuration);
             MyValueAnimatorListener listener = new MyValueAnimatorListener();
 
             listener.setIndice(j);
-            listener.setDrawable(i.getDrawable());
+            //listener.setDrawable(i.getDrawable());
             va.addUpdateListener(listener);
 
             if(tempsDemarrageMusique>=0){
@@ -1629,6 +1877,39 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
 
+    }
+    public int trouverCouleur(String symbole) {
+        int retour;
+        retour = getColor(R.color.vert);
+
+            if (symbole.equals("g")) {
+                retour =  getColor(R.color.colorPurple_900);
+
+
+            } else if (symbole.equals("d")) {
+                retour =  getColor(R.color.colorPurple_A400);
+
+            } else if (symbole.equals("h")) {
+                retour = getColor(R.color.vert);
+
+            } else if (symbole.equals("b")) {
+                retour =  getColor(R.color.orange);
+
+            } else if (symbole.equals("cr")) {
+             //   retour = getDrawable(R.drawable.cr2);
+
+            } else if (symbole.equals("cl")) {
+              //  retour = getDrawable(R.drawable.cl);
+
+            } else if (symbole.equals("tap")) {
+                retour =  getColor(R.color.bleu1);
+
+            }
+
+
+
+
+        return retour;
     }
 
     public Drawable trouverSymbole(String symbole, String couleur) {
@@ -1728,6 +2009,128 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         return result;
     }
 
+    public ArrayList<Note> findNotesFromMusic(String filename){
+        System.out.println("Reading in file... ");
+        String[] songSequence = null;
+        String[] songSequenceParsed = null;
+       // String filename = "C:\\Users\\ogawi\\Desktop\\tobias_weber_rescue_me_instrumental";
+
+
+        System.out.print("You did not specify any filename as on option.");
+       // System.exit(0);
+
+        //filename = "./data/test.xml";
+
+         parser = null;
+        try {
+            parser = new musicXMLparserDH(filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        //prints out the note sounding at the same slice (each division of the musicxml file
+        String[] flatSong = parser.parseMusicXML();
+        ArrayList<Note> retour=parser.getNotesOfSongNoRests();
+
+
+        return retour;
+    }
+
+    public String generateNoteFromXmlOnSD(Context context,String sFileNameEntree) {
+
+        String couplePitchTempsenMs="";
+        File root = new File(getFilesDir().getAbsolutePath(), "XML");
+        if (!root.exists()) {
+            root.mkdirs();
+        }
+
+
+        File fichierXml=new File(root,sFileNameEntree);
+        ArrayList<Note> lesNotes=findNotesFromMusic(fichierXml.getAbsolutePath());
+
+        String sBody="";
+        int bpm=parser.getBpm();
+        int divisions=parser.divisions;
+        //temps en s: note.getStarTime*bpm/division
+
+        for (Note note:lesNotes){
+            double tempsEnMs=note.getStartTime()*((double)60/bpm)*1000/divisions;
+            sBody+=note.getPitch()+":"+(int)tempsEnMs+";";
+        }
+        //sBody+=60/bpm;
+
+
+        couplePitchTempsenMs=sBody;
+        //   Toast.makeText(context, "notes Saved", Toast.LENGTH_SHORT).show();
+        return  couplePitchTempsenMs;
+    }
+
+    public String transformerPitchNotesEspacees(String entree){
+        //permet de selectionner des notes ayant un ecart sup à 300 ms
+        String retour="";
+
+        String couples[] = entree.split(";");
+        int i=0;
+        int lastTime=0;
+        for(String couple:couples){
+            String pitch=couple.split(":")[0];
+            String time=couple.split(":")[1];
+          //  String geste="";//tap ,g,...
+
+            if(i==0){
+                lastTime=Integer.valueOf(time);
+                retour+=pitch+":"+time+";";
+            }
+            if(i>0){
+                if(Integer.valueOf(time)-lastTime>=300 ){
+                    retour+=pitch+":"+time+";";
+
+                    lastTime=Integer.valueOf(time);
+                }
+            }
+
+            i++;
+
+
+
+        }
+
+        return retour;
+    }
+
+    public String transformerPitchEnGeste(String entree){
+        entree=transformerPitchNotesEspacees(entree);//on supprime les notes trop proches
+        //transforme A:1000;E:1060 en tap:1000;g;1060 ...
+        String retour="";
+
+        String couples[] = entree.split(";");
+        for(String couple:couples){
+            String pitch=couple.split(":")[0];
+            String time=couple.split(":")[1];
+            String geste="";//tap ,g,...
+
+            if("A".equals(pitch) || "B".equals(pitch)){
+                geste="tap";
+
+            }
+            else if("C".equals(pitch)){
+                geste="g";
+            }
+            else if("D".equals(pitch) || "G".equals(pitch)){
+                geste="d";
+            }
+            else if("E".equals(pitch)){
+                geste="h";
+            }
+            else if("F".equals(pitch) ){
+                geste="b";
+            }
+            retour+=geste+":"+time+";";
+        }
+
+        return retour;
+    }
 
 
     public class MyValueAnimatorListener implements ValueAnimator.AnimatorUpdateListener{
@@ -1737,6 +2140,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         boolean dejaSupprime=false;
         boolean vueRendueVisible=false;
         boolean dejaPasseNormal=false;
+
 
         public void setDrawable(Drawable d){
             this.d=d;
@@ -1750,14 +2154,14 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 vueRendueVisible=true;
             }
 
-            zoneJeu.getChildAt(indiceVue).setTranslationX((float)animation.getAnimatedValue());
-            if((float)animation.getAnimatedValue()>=0.97*zoneJeu.getWidth()){
+            zoneJeu.getChildAt(indiceVue).setTranslationY((float)animation.getAnimatedValue());
+            if((float)animation.getAnimatedValue()>=0.97*zoneJeu.getHeight()){
                 if(!dejaSupprime) {
                     if (listeIndicesActuels.size() > 0 ) {
                         listeIndicesActuels.remove(Integer.valueOf(indiceVue));
                         dejaSupprime = true;
-
-                         if(!(areDrawablesIdentical(((ImageView)  zoneJeu.getChildAt(indiceVue)).getDrawable(),getDrawable(R.drawable.plusun))) && !(areDrawablesIdentical(((ImageView)  zoneJeu.getChildAt(indiceVue)).getDrawable(),getDrawable(R.drawable.plusdeux))) && zoneJeu.getChildAt(indiceVue).getVisibility()==View.VISIBLE){
+//!(areDrawablesIdentical(((ImageView)  zoneJeu.getChildAt(indiceVue)).getDrawable(),getDrawable(R.drawable.plusun))) && !(areDrawablesIdentical(((ImageView)  zoneJeu.getChildAt(indiceVue)).getDrawable(),getDrawable(R.drawable.plusdeux))) &&
+                         if( zoneJeu.getChildAt(indiceVue).getVisibility()==View.VISIBLE){
                              if(barreVie>1 && aQuitteJeu==false){
                                  barreVie-=1;
                                  progress.setProgress(barreVie*100/10);
@@ -1809,7 +2213,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
             }
 
-            else if((float)animation.getAnimatedValue()>=0.80*zoneJeu.getWidth()){
+            else if((float)animation.getAnimatedValue()>=0.80*zoneJeu.getHeight()){
                 if(!dejaPasseNormal){
 
                     listePerfect.set(indiceVue,false);
@@ -1817,14 +2221,14 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 }
             }
 
-            else if((float)animation.getAnimatedValue()>=0.66*zoneJeu.getWidth()){
+            else if((float)animation.getAnimatedValue()>=0.66*zoneJeu.getHeight()){
                 if(!dejaActualise) {
 
 
 
 
-                           Drawable d = ((ImageView) (zoneJeu.getChildAt(indiceVue))).getDrawable();
-                           ((ImageView) (zoneJeu.getChildAt(indiceVue))).setImageDrawable(trouverSymbole2(d));
+                        //   Drawable d = ((ImageView) (zoneJeu.getChildAt(indiceVue))).getDrawable();
+                       //    ((ImageView) (zoneJeu.getChildAt(indiceVue))).setImageDrawable(trouverSymbole2(d));
                            //dernierSymbole = (traiterSequences(sequences.get(pos - 1)).split(";")[indiceVue]).split(":")[0];
 
                            listeIndicesActuels.add(indiceVue);
@@ -2017,6 +2421,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
     }
+
 
 
 }

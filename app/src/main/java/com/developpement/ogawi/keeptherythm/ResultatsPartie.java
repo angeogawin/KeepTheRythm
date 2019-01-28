@@ -117,6 +117,16 @@ public class ResultatsPartie  extends BaseGameActivity {
 
         sharedPreferences = getBaseContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
 
+
+
+        sharedPreferences
+                .edit()
+                .putInt("dernier_niveau_joue",niveau)
+                .apply();
+
+
+
+
         if(score>=sBr){
             //on actualise le niveau maximum atteint
             if(sharedPreferences.contains("niveau_max_atteint")){
