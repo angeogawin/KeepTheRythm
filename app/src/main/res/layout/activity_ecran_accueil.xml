@@ -56,6 +56,17 @@
            >
 
             <ImageView
+                android:id="@+id/mute_unmute"
+                android:layout_width="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+              />
+
+            <ImageView
                 android:id="@+id/show_achievements"
                 android:layout_width="wrap_content"
                 android:layout_toLeftOf="@id/show_leaderboard"

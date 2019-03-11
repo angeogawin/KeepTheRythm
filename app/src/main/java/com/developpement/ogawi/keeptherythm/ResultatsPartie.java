@@ -71,11 +71,18 @@ public class ResultatsPartie  extends BaseGameActivity {
             gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
 
         }
+        sharedPreferences = getBaseContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
 
         playerResults= MediaPlayer.create(this, R.raw.airtone_nightrain);
         // float log1=(float)(Math.log(maxVolume-currVolume)/Math.log(maxVolume));
       //  playerResults.setVolume(0.8f, 0.8f);
         playerResults.setLooping(true);
+        if(sharedPreferences.contains("mute")){
+            Boolean mute=sharedPreferences.getBoolean("mute",false);
+            if(mute){
+                playerResults.setVolume(0,0);
+            }
+        }
         playerResults.start();
         i=getIntent();
         niveau=i.getExtras().getInt("niveau");
@@ -115,7 +122,6 @@ public class ResultatsPartie  extends BaseGameActivity {
         int sAr=Math.round( (80*nbTotalMvts/100));
         int sBr=Math.round ( (75*nbTotalMvts/100));
 
-        sharedPreferences = getBaseContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
 
 
 
