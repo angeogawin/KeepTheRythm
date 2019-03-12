@@ -173,6 +173,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     int heightZoneJeu;
     RelativeLayout zoneJeu;
 
+
     Button go;
     int heightP;
     int widthP;
@@ -1046,6 +1047,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     @Override
     protected void onPause() {
         super.onPause();
+
         if(mPlayer!=null ) {
 
             try {
@@ -1086,6 +1088,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
         }
+
+
         return super.onKeyDown(keyCode, event);
     }
 
@@ -2214,11 +2218,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                          // mPlayer.reset();
                                          mPlayer.release();
 
+                                         if(hasWindowFocus()){
+                                             startActivity(j);
+                                             finish();
+                                             toast.cancel();
+                                             return;
+                                         }
 
-                                         startActivity(j);
-                                         finish();
-                                         toast.cancel();
-                                         return;
                                      }
                                  };
                                  handler_stopperPartie_vieTerminee.postDelayed(stopperPartie_vieTerminee, 1000);
