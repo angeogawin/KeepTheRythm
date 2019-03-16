@@ -215,6 +215,42 @@
                     android:background="#6f6f6f"
                     />
 
+                <Button
+                    android:id="@+id/tuile1"
+                    android:layout_width="0dp"
+                    android:background="@drawable/tuilebutton"
+                    android:layout_height="match_parent"
+                  />
+                <Button
+                    android:id="@+id/tuile2"
+                    android:layout_toRightOf="@id/tuile1"
+                    android:layout_width="0dp"
+                    android:background="@drawable/tuilebutton"
+                    android:layout_height="match_parent"
+                    />
+                <Button
+                    android:id="@+id/tuile3"
+                    android:layout_toRightOf="@id/tuile2"
+                    android:layout_width="0dp"
+                    android:background="@drawable/tuilebutton"
+                    android:layout_height="match_parent"
+                   />
+                <Button
+                    android:id="@+id/tuile4"
+                    android:layout_toRightOf="@id/tuile3"
+                    android:background="@drawable/tuilebutton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                   />
+                <Button
+                    android:id="@+id/tuile5"
+                    android:layout_toRightOf="@id/tuile4"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+
+                    android:background="@drawable/tuilebutton"
+                   />
+
             </RelativeLayout>
 
 

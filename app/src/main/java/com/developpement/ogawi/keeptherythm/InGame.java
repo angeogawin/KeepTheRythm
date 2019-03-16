@@ -235,6 +235,19 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     Boolean presenceXml;
     PopField popField;
 
+    Button tuile_1;
+    Button tuile_2;
+    Button tuile_3;
+    Button tuile_4;
+    Button tuile_5;
+
+    ArrayList<Integer> listeBasClickable;
+    ArrayList<Integer> listeGaucheClickable;
+    ArrayList<Integer> listeTapClickable;
+    ArrayList<Integer> listeDroitClickable;
+    ArrayList<Integer> listeHautClickable;
+
+
 
 
     @Override
@@ -251,6 +264,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
         presenceMusic=false;
         presenceXml=false;
+
+        listeBasClickable=new ArrayList<>();
+        listeGaucheClickable=new ArrayList<>();
+        listeHautClickable=new ArrayList<>();
+        listeTapClickable=new ArrayList<>();
+        listeDroitClickable=new ArrayList<>();
+
 
 
          popField = PopField.attach2Window(this);
@@ -290,6 +310,12 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         textPerfect.setTextSize(18);
         bestScore=findViewById(R.id.bestScoreIngame);
         textBestScore=findViewById(R.id.textBestScore);
+
+        tuile_1=findViewById(R.id.tuile1);
+        tuile_2=findViewById(R.id.tuile2);
+        tuile_3=findViewById(R.id.tuile3);
+        tuile_4=findViewById(R.id.tuile4);
+        tuile_5=findViewById(R.id.tuile5);
         actualiserTrophy=false;
 
         bestScore.setVisibility(View.INVISIBLE);
@@ -359,6 +385,86 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 animationEstLancee = true;
                 go.setVisibility(View.INVISIBLE);
                 // rondCentral.setVisibility(View.VISIBLE);
+                tuile_1.setWidth(20*widthZoneJeu/100);
+                tuile_2.setWidth(20*widthZoneJeu/100);
+                tuile_3.setWidth(20*widthZoneJeu/100);
+                tuile_4.setWidth(20*widthZoneJeu/100);
+                tuile_5.setWidth(20*widthZoneJeu/100);
+
+                RelativeLayout.LayoutParams paramsTuile1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams paramsTuile2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams paramsTuile3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams paramsTuile4 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams paramsTuile5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                paramsTuile1.width = 20*widthZoneJeu/100;
+                paramsTuile2.width = 20*widthZoneJeu/100;
+                paramsTuile3.width = 20*widthZoneJeu/100;
+                paramsTuile4.width = 20*widthZoneJeu/100;
+                paramsTuile5.width = 20*widthZoneJeu/100;
+
+                paramsTuile2.addRule(RelativeLayout.RIGHT_OF, tuile_1.getId());
+                paramsTuile3.addRule(RelativeLayout.RIGHT_OF, tuile_2.getId());
+                paramsTuile4.addRule(RelativeLayout.RIGHT_OF, tuile_3.getId());
+                paramsTuile5.addRule(RelativeLayout.RIGHT_OF, tuile_4.getId());
+
+              //  tuile_1.setElevation(-2);
+                //tuile_2.setElevation(-2);
+                //tuile_3.setElevation(-2);
+                //tuile_4.setElevation(-2);
+                //tuile_5.setElevation(-2);
+
+
+                tuile_1.setLayoutParams(paramsTuile1);
+                tuile_2.setLayoutParams(paramsTuile2);
+                tuile_3.setLayoutParams(paramsTuile3);
+                tuile_4.setLayoutParams(paramsTuile4);
+                tuile_5.setLayoutParams(paramsTuile5);
+
+
+
+                tuile_1.setOnClickListener(new View.OnClickListener() {
+
+
+                    public void onClick(View v) {
+                      derniereAction.setVariable("b");
+                    }
+
+                });
+                tuile_2.setOnClickListener(new View.OnClickListener() {
+
+
+                    public void onClick(View v) {
+                        derniereAction.setVariable("g");
+                    }
+
+                });
+                tuile_3.setOnClickListener(new View.OnClickListener() {
+
+
+                    public void onClick(View v) {
+                        derniereAction.setVariable("tap");
+                    }
+
+                });
+                tuile_4.setOnClickListener(new View.OnClickListener() {
+
+
+                    public void onClick(View v) {
+                        derniereAction.setVariable("d");
+                    }
+
+                });
+                tuile_5.setOnClickListener(new View.OnClickListener() {
+
+
+                    public void onClick(View v) {
+                        derniereAction.setVariable("h");
+                    }
+
+                });
+
+
+
                 barregauche=findViewById(R.id.barrelimitegauche);
                 barreHorizontal1=findViewById(R.id.barreHorizontale1);
                 barreHorizontal2=findViewById(R.id.barreHorizontale2);
@@ -392,6 +498,12 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 barreHorizontal2.setBackgroundColor(Color.WHITE);
                 barreHorizontal3.setBackgroundColor(Color.WHITE);
                 barreHorizontal4.setBackgroundColor(Color.WHITE);
+
+                barreHorizontal1.setElevation(2);
+                barreHorizontal2.setElevation(2);
+                barreHorizontal3.setElevation(2);
+                barreHorizontal4.setElevation(2);
+
 
 
            //     for(int i=0;i<10;i++){
@@ -878,6 +990,42 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                         if (dernierSymbole.equals(derniereAction.valeur)) {
 
 
+                            if("tap".equals(derniereAction.valeur)){
+                                if(listeTapClickable.size()!=0) {
+                                    popField.popView( zoneJeu.getChildAt(listeTapClickable.get(0)));
+                                  //  zoneJeu.getChildAt(listeTapClickable.get(0)).setVisibility(View.GONE);
+
+                                    listeTapClickable.remove(0);
+                                }
+                            }
+                            if("b".equals(derniereAction.valeur)){
+                                if(listeBasClickable.size()!=0) {
+                                    popField.popView( zoneJeu.getChildAt(listeBasClickable.get(0)));
+                                   // zoneJeu.getChildAt(listeBasClickable.get(0)).setVisibility(View.GONE);
+                                    listeBasClickable.remove(0);
+                                }
+                            }
+                            if("g".equals(derniereAction.valeur)){
+                                if(listeGaucheClickable.size()!=0) {
+                                    popField.popView( zoneJeu.getChildAt(listeGaucheClickable.get(0)));
+                                 //   zoneJeu.getChildAt(listeGaucheClickable.get(0)).setVisibility(View.GONE);
+                                    listeGaucheClickable.remove(0);
+                                }
+                            }
+                            if("d".equals(derniereAction.valeur)){
+                                if(listeDroitClickable.size()!=0) {
+                                    popField.popView( zoneJeu.getChildAt(listeDroitClickable.get(0)));
+                                   // zoneJeu.getChildAt(listeDroitClickable.get(0)).setVisibility(View.GONE);
+                                    listeDroitClickable.remove(0);
+                                }
+                            }
+                            if("h".equals(derniereAction.valeur)){
+                                if(listeHautClickable.size()!=0) {
+                                    popField.popView( zoneJeu.getChildAt(listeHautClickable.get(0)));
+                                    zoneJeu.getChildAt(listeHautClickable.get(0)).setVisibility(View.GONE);
+                                    listeHautClickable.remove(0);
+                                }
+                            }
                             //  Toast.makeText(InGame.this, "Amaz", Toast.LENGTH_SHORT).show();
 
 
@@ -900,7 +1048,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                 else{
                                     if (listeIndicesActuels.size() > 0) {
 
-                                          zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
+                                        //  zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
                                         textPerfect.setText("Mauvais timing!");
                                         textPerfect.setTextColor(getResources().getColor(R.color.colorRed_A400));
                                         textPerfect.setVisibility(View.VISIBLE);
@@ -927,7 +1075,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                             //   Toast.makeText(InGame.this, "Erreur mouvement", Toast.LENGTH_SHORT).show();
                             if (listeIndicesActuels.size() > 0) {
 
-                                zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
+                               // zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
 
 
                             }
@@ -1724,15 +1872,18 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             String symbole = couples[j].split(":")[0];
             // Toast.makeText(InGame.this, symbole, Toast.LENGTH_LONG).show();
           //  final ImageView i = new ImageView(getApplicationContext());
-             Button i=new Button(getApplicationContext());
+             ImageView i=new ImageView(getApplicationContext());
 
 
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.height =15*widthZoneJeu/100 ;
+            params.height =10*widthZoneJeu/100 ;
             params.width = 20*widthZoneJeu/100;
             i.setLayoutParams(params);
 
-            i.setOnClickListener(new View.OnClickListener() {
+            i.setElevation(2);
+           // i.setImageDrawable(getDrawable(R.drawable.notemusique2));
+
+          /*  i.setOnClickListener(new View.OnClickListener() {
 
 
                 public void onClick(View v) {
@@ -1761,7 +1912,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                             }
                         }, 600);
                     }
-                  /*  if(symbole.equals("tap")){
+                  *//*  if(symbole.equals("tap")){
                         derniereAction.setVariable("tap");
                     }
                     if(symbole.equals("g")){
@@ -1776,18 +1927,16 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                     if(symbole.equals("b")){
                         derniereAction.setVariable("b");
                     }
-*/
+*//*
                 }
-            });
+            });*/
 
-            if (j == 0) {
-                i.setBackgroundColor(trouverCouleur(symbole));
+
+               // i.setBackgroundColor(trouverCouleur(symbole));
+                i.setImageDrawable(trouverNoteColoree(symbole));
                 //i.setImageDrawable(trouverSymbole(symbole, "vert"));
 
-            } else {
-                i.setBackgroundColor(trouverCouleur(symbole));
-              //  i.setImageDrawable(trouverSymbole(symbole, "vert"));
-            }
+
 
             if(symbole.equals("b")){
                 i.setX(0*widthZoneJeu/100);
@@ -1845,6 +1994,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             MyValueAnimatorListener listener = new MyValueAnimatorListener();
 
             listener.setIndice(j);
+            listener.setTypeAction(symbole);
             //listener.setDrawable(i.getDrawable());
             va.addUpdateListener(listener);
 
@@ -1910,22 +2060,56 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
     }
+
     public int trouverCouleur(String symbole) {
         int retour;
         retour = getColor(R.color.vert);
 
+        if (symbole.equals("g")) {
+            retour =  getColor(R.color.colorPurple_900);
+
+
+        } else if (symbole.equals("d")) {
+            retour =  getColor(R.color.colorPurple_A400);
+
+        } else if (symbole.equals("h")) {
+            retour = getColor(R.color.vert);
+
+        } else if (symbole.equals("b")) {
+            retour =  getColor(R.color.orange);
+
+        } else if (symbole.equals("cr")) {
+            //   retour = getDrawable(R.drawable.cr2);
+
+        } else if (symbole.equals("cl")) {
+            //  retour = getDrawable(R.drawable.cl);
+
+        } else if (symbole.equals("tap")) {
+            retour =  getColor(R.color.bleu1);
+
+        }
+
+
+
+
+        return retour;
+    }
+    public Drawable trouverNoteColoree(String symbole) {
+        Drawable retour;
+        retour = getDrawable(R.drawable.notebleu);
+
             if (symbole.equals("g")) {
-                retour =  getColor(R.color.colorPurple_900);
+                retour =  getDrawable(R.drawable.notepurple900);
 
 
             } else if (symbole.equals("d")) {
-                retour =  getColor(R.color.colorPurple_A400);
+                retour = getDrawable(R.drawable.notepurple400);
 
             } else if (symbole.equals("h")) {
-                retour = getColor(R.color.vert);
+                retour =  getDrawable(R.drawable.notevert);
 
             } else if (symbole.equals("b")) {
-                retour =  getColor(R.color.orange);
+                retour = getDrawable(R.drawable.noteorange);
 
             } else if (symbole.equals("cr")) {
              //   retour = getDrawable(R.drawable.cr2);
@@ -1934,7 +2118,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
               //  retour = getDrawable(R.drawable.cl);
 
             } else if (symbole.equals("tap")) {
-                retour =  getColor(R.color.bleu1);
+                retour =  getDrawable(R.drawable.notebleu);
 
             }
 
@@ -2172,10 +2356,14 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         boolean dejaSupprime=false;
         boolean vueRendueVisible=false;
         boolean dejaPasseNormal=false;
+        String typeAction;//peut etre tap, d,g,h,b
 
 
         public void setDrawable(Drawable d){
             this.d=d;
+        }
+        public void setTypeAction(String s){
+            this.typeAction=s;
         }
         public void setIndice(int indice) {
             this.indiceVue = indice;
@@ -2236,7 +2424,45 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
                              textPerfect.startAnimation(animBounce);
+
+                             if("tap".equals(typeAction)){
+
+                                 if(listeTapClickable.size()!=0) {
+
+                                     listeTapClickable.remove(0);
+                                 }
+                             }
+                             if("b".equals(typeAction)){
+                                 if(listeBasClickable.size()!=0) {
+
+                                     listeBasClickable.remove(0);
+                                 }
+                             }
+                             if("g".equals(typeAction)){
+
+                                 if(listeGaucheClickable.size()!=0) {
+
+                                     listeGaucheClickable.remove(0);
+                                 }
+                             }
+                             if("d".equals(typeAction)){
+                                 if(listeDroitClickable.size()!=0){
+                                     listeDroitClickable.remove(0);
+                                 }
+
+
+                             }
+                             if("h".equals(typeAction)){
+                                 if(listeHautClickable.size()!=0) {
+
+                                     listeHautClickable.remove(0);
+                                 }
+                             }
                          }
+
+
+
+
 
 
 
@@ -2257,6 +2483,23 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
             else if((float)animation.getAnimatedValue()>=0.66*zoneJeu.getHeight()){
                 if(!dejaActualise) {
+
+                    if("tap".equals(typeAction)){
+                        listeTapClickable.add(indiceVue);
+                    }
+                    if("b".equals(typeAction)){
+                        listeBasClickable.add(indiceVue);
+                    }
+                    if("g".equals(typeAction)){
+                        listeGaucheClickable.add(indiceVue);
+                    }
+                    if("d".equals(typeAction)){
+                        listeDroitClickable.add(indiceVue);
+                    }
+                    if("h".equals(typeAction)){
+                        listeHautClickable.add(indiceVue);
+                    }
+
 
 
 
