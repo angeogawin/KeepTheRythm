@@ -247,6 +247,12 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     ArrayList<Integer> listeDroitClickable;
     ArrayList<Integer> listeHautClickable;
 
+    ArrayList<Integer> listeBasClickableLastChance;//contient les indices des images clickable mais qui rapportent peu de points
+    ArrayList<Integer> listeGaucheClickableLastChance;
+    ArrayList<Integer> listeTapClickableLastChance;
+    ArrayList<Integer> listeDroitClickableLastChance;
+    ArrayList<Integer> listeHautClickableLastChance;
+
 
 
 
@@ -271,9 +277,15 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         listeTapClickable=new ArrayList<>();
         listeDroitClickable=new ArrayList<>();
 
+        listeBasClickableLastChance=new ArrayList<>();
+        listeGaucheClickableLastChance=new ArrayList<>();
+        listeHautClickableLastChance=new ArrayList<>();
+        listeTapClickableLastChance=new ArrayList<>();
+        listeDroitClickableLastChance=new ArrayList<>();
 
 
-         popField = PopField.attach2Window(this);
+
+        popField = PopField.attach2Window(this);
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
@@ -421,47 +433,99 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 tuile_5.setLayoutParams(paramsTuile5);
 
 
+                tuile_1.setOnTouchListener(new View.OnTouchListener() {
 
-                tuile_1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // TODO Auto-generated method stub
+                       // derniereAction.setVariable("b");
+                        if(event.getAction() == MotionEvent.ACTION_DOWN){
+                            analyserActionJoueur(listeBasClickable,listeBasClickableLastChance);
+                            // Do what you want
+                            tuile_1.setForeground(getDrawable(R.drawable.tuilepressed));
+                            return true;
+                        }
+                        else if(event.getAction() == MotionEvent.ACTION_UP) {
+                            tuile_1.setForeground(getDrawable(R.drawable.tuilenormale));
+                        }
 
-
-                    public void onClick(View v) {
-                      derniereAction.setVariable("b");
+                        return false;
                     }
-
                 });
-                tuile_2.setOnClickListener(new View.OnClickListener() {
+                tuile_2.setOnTouchListener(new View.OnTouchListener() {
 
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // TODO Auto-generated method stub
+                        //derniereAction.setVariable("g");
+                        if(event.getAction() == MotionEvent.ACTION_DOWN){
+                            analyserActionJoueur(listeGaucheClickable,listeGaucheClickableLastChance);
+                            tuile_2.setForeground(getDrawable(R.drawable.tuilepressed));
+                            // Do what you want
+                            return true;
+                        }
+                        else if(event.getAction() == MotionEvent.ACTION_UP) {
+                            tuile_2.setForeground(getDrawable(R.drawable.tuilenormale));
+                        }
 
-                    public void onClick(View v) {
-                        derniereAction.setVariable("g");
+                        return false;
                     }
-
                 });
-                tuile_3.setOnClickListener(new View.OnClickListener() {
+                tuile_3.setOnTouchListener(new View.OnTouchListener() {
 
-
-                    public void onClick(View v) {
-                        derniereAction.setVariable("tap");
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // TODO Auto-generated method stub
+                       // derniereAction.setVariable("tap");
+                        if(event.getAction() == MotionEvent.ACTION_DOWN){
+                            analyserActionJoueur(listeTapClickable,listeTapClickableLastChance);
+                            tuile_3.setForeground(getDrawable(R.drawable.tuilepressed));
+                            // Do what you want
+                            return true;
+                        }
+                        else if(event.getAction() == MotionEvent.ACTION_UP) {
+                            tuile_3.setForeground(getDrawable(R.drawable.tuilenormale));
+                        }
+                        return false;
                     }
-
                 });
-                tuile_4.setOnClickListener(new View.OnClickListener() {
+                tuile_4.setOnTouchListener(new View.OnTouchListener() {
 
-
-                    public void onClick(View v) {
-                        derniereAction.setVariable("d");
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // TODO Auto-generated method stub
+                       // derniereAction.setVariable("d");
+                        if(event.getAction() == MotionEvent.ACTION_DOWN){
+                            analyserActionJoueur(listeDroitClickable,listeDroitClickableLastChance);
+                            tuile_4.setForeground(getDrawable(R.drawable.tuilepressed));
+                            // Do what you want
+                            return true;
+                        }
+                        else if(event.getAction() == MotionEvent.ACTION_UP) {
+                            tuile_4.setForeground(getDrawable(R.drawable.tuilenormale));
+                        }
+                        return false;
                     }
-
                 });
-                tuile_5.setOnClickListener(new View.OnClickListener() {
+                tuile_5.setOnTouchListener(new View.OnTouchListener() {
 
-
-                    public void onClick(View v) {
-                        derniereAction.setVariable("h");
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // TODO Auto-generated method stub
+                       // derniereAction.setVariable("h");
+                        if(event.getAction() == MotionEvent.ACTION_DOWN){
+                            analyserActionJoueur(listeHautClickable,listeHautClickableLastChance);
+                            tuile_5.setForeground(getDrawable(R.drawable.tuilepressed));
+                            // Do what you want
+                            return true;
+                        }
+                        else if(event.getAction() == MotionEvent.ACTION_UP) {
+                            tuile_5.setForeground(getDrawable(R.drawable.tuilenormale));
+                        }
+                        return false;
                     }
-
                 });
+
 
 
 
@@ -957,141 +1021,22 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             @Override
             public void onChange() {
 
-                LinearLayout layout = new LinearLayout(InGame.this);
-                //  layout.setBackgroundResource(R.color.orange);
-
-
-                // indiceActuelSequence += 1;
-                timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
-                //tmin=listeTminToClick.get(indiceActuelSequence);
-                // elementActuelClickable = false;
-//                if (listeImagesAnimationsActives.contains(derniereAction.getValeur())) {
-//                    elementActuelClickable = true;
-//
-//                } else {
-//                    elementActuelClickable = false;
-//                }
-           //     Toast.makeText(InGame.this, dernierSymbole, Toast.LENGTH_SHORT).show();
-
-
-                    if (listeIndicesActuels.size()>0) {
-                        elementActuelClickable = true;
-                    } else {
-                        elementActuelClickable = false;
-                    }
-                    if (elementActuelClickable ) {
-
-
-                        //Toast.makeText(InGame.this, String.valueOf(elementActuelClickable), Toast.LENGTH_SHORT).show();
-
-                       /////* dernierSymbole = ((sequences.get(pos - 1)).split(";")[listeIndicesActuels.get(0)]).split(":")[0];
-                        dernierSymbole = ((sequenceARealiser).split(";")[listeIndicesActuels.get(0)]).split(":")[0];
-                        int indiceActuel=listeIndicesActuels.get(0);
-                        if (dernierSymbole.equals(derniereAction.valeur)) {
-
-
-                            if("tap".equals(derniereAction.valeur)){
-                                if(listeTapClickable.size()!=0) {
-                                    popField.popView( zoneJeu.getChildAt(listeTapClickable.get(0)));
-                                  //  zoneJeu.getChildAt(listeTapClickable.get(0)).setVisibility(View.GONE);
-
-                                    listeTapClickable.remove(0);
-                                }
-                            }
-                            if("b".equals(derniereAction.valeur)){
-                                if(listeBasClickable.size()!=0) {
-                                    popField.popView( zoneJeu.getChildAt(listeBasClickable.get(0)));
-                                   // zoneJeu.getChildAt(listeBasClickable.get(0)).setVisibility(View.GONE);
-                                    listeBasClickable.remove(0);
-                                }
-                            }
-                            if("g".equals(derniereAction.valeur)){
-                                if(listeGaucheClickable.size()!=0) {
-                                    popField.popView( zoneJeu.getChildAt(listeGaucheClickable.get(0)));
-                                 //   zoneJeu.getChildAt(listeGaucheClickable.get(0)).setVisibility(View.GONE);
-                                    listeGaucheClickable.remove(0);
-                                }
-                            }
-                            if("d".equals(derniereAction.valeur)){
-                                if(listeDroitClickable.size()!=0) {
-                                    popField.popView( zoneJeu.getChildAt(listeDroitClickable.get(0)));
-                                   // zoneJeu.getChildAt(listeDroitClickable.get(0)).setVisibility(View.GONE);
-                                    listeDroitClickable.remove(0);
-                                }
-                            }
-                            if("h".equals(derniereAction.valeur)){
-                                if(listeHautClickable.size()!=0) {
-                                    popField.popView( zoneJeu.getChildAt(listeHautClickable.get(0)));
-                                    zoneJeu.getChildAt(listeHautClickable.get(0)).setVisibility(View.GONE);
-                                    listeHautClickable.remove(0);
-                                }
-                            }
-                            //  Toast.makeText(InGame.this, "Amaz", Toast.LENGTH_SHORT).show();
-
-
-                            if (indiceActuel<= couples.length - 1) {
-
-                                int precision=0;//1 correspond à perfect, 2 à normal et 0 à aucun rythme
-                                precision=verifierBonRythmeJoueur();
-                                if (precision!=0) {
-
-                                    if(barreVie!=10 && barreVie!=0){
-                                        barreVie+=1;
-
-                                    }
-                                    actualiserScore(precision);
-
-                                    progress.setProgress(barreVie*100/10);
-                                    //actualiser score en conséquence
-
-                                }
-                                else{
-                                    if (listeIndicesActuels.size() > 0) {
-
-                                        //  zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
-                                        textPerfect.setText("Mauvais timing!");
-                                        textPerfect.setTextColor(getResources().getColor(R.color.colorRed_A400));
-                                        textPerfect.setVisibility(View.VISIBLE);
-
-
-                                        textPerfect.startAnimation(animBounce);
-
-                                    }
-                                }
-                                // dernierSymbole = sequence.get(indiceActuelSequence);
-
-                                //Toast.makeText(InGame.this, dernierSymbole, Toast.LENGTH_SHORT).show();
-
-                            }
-                        } else {
-
-                            textPerfect.setText("Nope!");
-                            textPerfect.setTextColor(getResources().getColor(R.color.colorRed_A400));
-                            textPerfect.setVisibility(View.VISIBLE);
-
-
-                            textPerfect.startAnimation(animBounce);
-
-                            //   Toast.makeText(InGame.this, "Erreur mouvement", Toast.LENGTH_SHORT).show();
-                            if (listeIndicesActuels.size() > 0) {
-
-                               // zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
-
-
-                            }
-
-
-                        }
-
-
-
-                        if (listeIndicesActuels.size() > 0) {
-
-                            listeIndicesActuels.remove(0);
-
-                        }
-
+                if("tap".equals(derniereAction.valeur)){
+                    analyserActionJoueur(listeTapClickable,listeTapClickableLastChance);
                 }
+                if("b".equals(derniereAction.valeur)){
+                    analyserActionJoueur(listeBasClickable,listeBasClickableLastChance);
+                }
+                if("g".equals(derniereAction.valeur)){
+                    analyserActionJoueur(listeGaucheClickable,listeGaucheClickableLastChance);
+                }
+                if("d".equals(derniereAction.valeur)){
+                    analyserActionJoueur(listeDroitClickable,listeDroitClickableLastChance);
+                }
+                if("h".equals(derniereAction.valeur)){
+                    analyserActionJoueur(listeHautClickable,listeHautClickableLastChance);
+                }
+
             }
         });
 
@@ -1175,6 +1120,72 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             }
 
         return precision;
+    }
+
+    public void analyserActionJoueur(ArrayList<Integer> listeClickable,ArrayList<Integer> listeClickableLastChance){
+
+
+        if(listeClickableLastChance.size()!=0) {
+
+            popField.popView( zoneJeu.getChildAt(listeClickableLastChance.get(0)));
+            zoneJeu.getChildAt(listeClickableLastChance.get(0)).setVisibility(View.GONE);
+
+
+            listeClickableLastChance.remove(0);
+
+
+
+
+            int precision=0;//1 correspond à perfect, 2 à normal et 0 à aucun rythme
+            precision=2;
+
+
+            if(barreVie!=10 && barreVie!=0){
+                barreVie+=1;
+            }
+            actualiserScore(precision);
+            progress.setProgress(barreVie*100/10);
+            //actualiser score en conséquence
+
+
+        }
+
+        else if(listeClickable.size()!=0){
+            popField.popView( zoneJeu.getChildAt(listeClickable.get(0)));
+            zoneJeu.getChildAt(listeClickable.get(0)).setVisibility(View.GONE);
+
+
+
+                listeClickable.remove(0);
+
+
+            //Toast.makeText(getApplicationContext(), String.valueOf(listeTapClickable.size()), Toast.LENGTH_SHORT).show();
+            int precision=0;//1 correspond à perfect, 2 à normal et 0 à aucun rythme
+            precision=1;
+
+
+            if(barreVie!=10 && barreVie!=0){
+                barreVie+=1;
+            }
+            actualiserScore(precision);
+            progress.setProgress(barreVie*100/10);
+            //actualiser score en conséquence
+
+
+        }
+
+        else{
+
+
+            //  zoneJeu.getChildAt(listeIndicesActuels.get(0)).setVisibility(View.GONE);
+            textPerfect.setText("Nope");
+            textPerfect.setTextColor(getResources().getColor(R.color.colorRed_A400));
+            textPerfect.setVisibility(View.VISIBLE);
+            textPerfect.startAnimation(animBounce);
+
+
+        }
+
     }
 
     @Override
@@ -1757,75 +1768,6 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     }
 
 
-    public ArrayList<String> genererSequenceAleatoire(int niveau) {
-        ArrayList<String> sequence = new ArrayList<>();
-        //g: gauche d:droite, h:haut , b:bas tap: toucher bref, touch1:toucher long, cl:circleleft,cr:circle right
-
-        if (niveau <= 5) {
-            int longueur = 25;
-            for (int i = 0; i < longueur; i++) {
-                String[] chars = {"g", "d", "tap"};
-                double aleatoire = (Math.random());
-                if (aleatoire < 0.3) {
-                    sequence.add(chars[0]);
-                } else if (aleatoire <= 0.6) {
-                    sequence.add(chars[1]);
-                } else if (aleatoire <= 1) {
-                    sequence.add(chars[2]);
-                }
-
-            }
-        } else if (niveau <= 10) {
-            int longueur = 35;
-            for (int i = 0; i < longueur; i++) {
-                String[] chars = {"g", "d", "tap", "touch1", "h", "b"};
-                double aleatoire = (Math.random());
-                if (aleatoire < 0.15) {
-                    sequence.add(chars[0]);
-                } else if (aleatoire < 0.30) {
-                    sequence.add(chars[1]);
-                } else if (aleatoire < 0.45) {
-                    sequence.add(chars[2]);
-                } else if (aleatoire < 0.60) {
-                    sequence.add(chars[3]);
-                } else if (aleatoire < 0.75) {
-                    sequence.add(chars[4]);
-                } else if (aleatoire <= 1) {
-                    sequence.add(chars[5]);
-                }
-
-            }
-        } else if (niveau <= 15) {
-            int longueur = 55;
-            for (int i = 0; i < longueur; i++) {
-                String[] chars = {"g", "d", "tap", "touch1", "h", "b", "cr", "cl"};
-                double aleatoire = (Math.random());
-                if (aleatoire < 0.12) {
-                    sequence.add(chars[0]);
-                } else if (aleatoire < 0.24) {
-                    sequence.add(chars[1]);
-                } else if (aleatoire < 0.36) {
-                    sequence.add(chars[2]);
-                } else if (aleatoire < 0.48) {
-                    sequence.add(chars[3]);
-                } else if (aleatoire < 0.60) {
-                    sequence.add(chars[4]);
-                } else if (aleatoire < 0.72) {
-                    sequence.add(chars[5]);
-                } else if (aleatoire < 0.84) {
-                    sequence.add(chars[6]);
-                } else if (aleatoire <= 1) {
-                    sequence.add(chars[7]);
-                }
-
-
-            }
-
-        }
-
-
-        return sequence;
-    }
 
 
 
@@ -2376,7 +2318,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
             zoneJeu.getChildAt(indiceVue).setTranslationY((float)animation.getAnimatedValue());
             if((float)animation.getAnimatedValue()>=0.97*zoneJeu.getHeight()){
-                if(!dejaSupprime) {
+                if(dejaSupprime==false) {
                     if (listeIndicesActuels.size() > 0 ) {
                         listeIndicesActuels.remove(Integer.valueOf(indiceVue));
                         dejaSupprime = true;
@@ -2424,38 +2366,35 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
                              textPerfect.startAnimation(animBounce);
-
+                             zoneJeu.getChildAt(indiceVue).setVisibility(View.GONE);
                              if("tap".equals(typeAction)){
 
-                                 if(listeTapClickable.size()!=0) {
+                                 if(listeTapClickableLastChance.size()!=0) {
 
-                                     listeTapClickable.remove(0);
+                                    listeTapClickableLastChance.remove(Integer.valueOf(indiceVue));
                                  }
                              }
                              if("b".equals(typeAction)){
-                                 if(listeBasClickable.size()!=0) {
-
-                                     listeBasClickable.remove(0);
+                                 if(listeBasClickableLastChance.size()!=0) {
+                                     listeBasClickableLastChance.remove(Integer.valueOf(indiceVue));
                                  }
                              }
                              if("g".equals(typeAction)){
 
-                                 if(listeGaucheClickable.size()!=0) {
-
-                                     listeGaucheClickable.remove(0);
+                                 if(listeGaucheClickableLastChance.size()!=0) {
+                                    listeGaucheClickableLastChance.remove(Integer.valueOf(indiceVue));
                                  }
                              }
                              if("d".equals(typeAction)){
-                                 if(listeDroitClickable.size()!=0){
-                                     listeDroitClickable.remove(0);
+                                 if(listeDroitClickableLastChance.size()!=0){
+                                    listeDroitClickableLastChance.remove(Integer.valueOf(indiceVue));
                                  }
 
 
                              }
                              if("h".equals(typeAction)){
-                                 if(listeHautClickable.size()!=0) {
-
-                                     listeHautClickable.remove(0);
+                                 if(listeHautClickableLastChance.size()!=0) {
+                                    listeHautClickableLastChance.remove(Integer.valueOf(indiceVue));
                                  }
                              }
                          }
@@ -2474,15 +2413,62 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             }
 
             else if((float)animation.getAnimatedValue()>=0.80*zoneJeu.getHeight()){
-                if(!dejaPasseNormal){
+                if(dejaPasseNormal==false){
 
                     listePerfect.set(indiceVue,false);
+
                     dejaPasseNormal=true;
+
+                    //on deplace lesindices de listexxxClickable vers listexxxClickableLastChance
+                    if("tap".equals(typeAction)){
+
+                        if(listeTapClickable.size()!=0) {
+                            listeTapClickableLastChance.add(indiceVue);
+
+                            listeTapClickable.remove(Integer.valueOf(indiceVue));
+
+                        }
+                    }
+                    if("b".equals(typeAction)){
+                        if(listeBasClickable.size()!=0) {
+                            listeBasClickableLastChance.add(indiceVue);
+
+                            listeBasClickable.remove(Integer.valueOf(indiceVue));
+
+                        }
+                    }
+                    if("g".equals(typeAction)){
+
+                        if(listeGaucheClickable.size()!=0) {
+                            listeGaucheClickableLastChance.add(indiceVue);
+
+                            listeGaucheClickable.remove(Integer.valueOf(indiceVue));
+
+                        }
+                    }
+                    if("d".equals(typeAction)){
+                        if(listeDroitClickable.size()!=0){
+                            listeDroitClickableLastChance.add(indiceVue);
+
+                             listeDroitClickable.remove(Integer.valueOf(indiceVue));
+
+                        }
+
+
+                    }
+                    if("h".equals(typeAction)){
+                        if(listeHautClickable.size()!=0) {
+                            listeHautClickableLastChance.add(indiceVue);
+
+                            listeHautClickable.remove(Integer.valueOf(indiceVue));
+
+                        }
+                    }
                 }
             }
 
             else if((float)animation.getAnimatedValue()>=0.66*zoneJeu.getHeight()){
-                if(!dejaActualise) {
+                if(dejaActualise==false) {
 
                     if("tap".equals(typeAction)){
                         listeTapClickable.add(indiceVue);
@@ -2527,90 +2513,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
     }
 
-/*    public static class CardView extends Fragment {
-        private static float CARDS_SWIPE_LENGTH = 250;
-        private float originalX = 0;
-        private float originalY = 0;
-        private float startMoveX = 0;
-        private float startMoveY = 0;
 
-        public CardView() {
-            super();
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.swipe_fragment_ingame, container, false);
-
-            rootView.setOnTouchListener(new View.OnTouchListener() {
-                public boolean onTouch(View view, MotionEvent event) {
-                    derniereAction.setVariable("d");
-                    final float X = event.getRawX();
-                    final float Y =  event.getRawY();
-                    float deltaX = X - startMoveX;
-                    float deltaY = Y - startMoveY;
-                    switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                        case MotionEvent.ACTION_DOWN:
-                            startMoveX = X;
-                            startMoveY = Y;
-                            break;
-                        case MotionEvent.ACTION_UP:
-                         //   childView.getBackground().setColorFilter(R.color.color_card_background, PorterDuff.Mode.DST);
-                            if ( Math.abs(deltaY) < CARDS_SWIPE_LENGTH ) {
-                                rootView.setX(originalX);
-                                rootView.setY(originalY);
-                            } else if ( deltaY > 0 ) {
-                                onCardSwipeDown();
-                            } else {
-                                onCardSwipeUp();
-                            }
-                            break;
-                        case MotionEvent.ACTION_POINTER_DOWN:
-                            break;
-                        case MotionEvent.ACTION_POINTER_UP:
-                            break;
-                        case MotionEvent.ACTION_MOVE:
-                            int newColor = 0;
-                            if ( deltaY < 0 ) {
-                                int rb = (int)(255+deltaY/10);
-                                newColor = Color.argb(170, rb, 255, rb);
-                            } else {
-                                int gb = (int)(255-deltaY/10);
-                                newColor = Color.argb(170, 255, gb, gb);
-                            }
-                            rootView.getBackground().setColorFilter(newColor, PorterDuff.Mode.DARKEN);
-                            rootView.setTranslationY(deltaY);
-                            break;
-                    }
-                    rootView.invalidate();
-                    return true;
-                }
-            });
-            return rootView;
-        }
-
-
-
-        static CardView newInstance(int position) {
-            CardView swipeFragment = new CardView();
-            Bundle bundle = new Bundle();
-            bundle.putInt("position", position);
-            swipeFragment.setArguments(bundle);
-            return swipeFragment;
-        }
-        protected void onCardSwipeUp() {
-            Log.i("infoKtr", "Swiped Up");
-        }
-
-        protected void onCardSwipeDown() {
-            Log.i("infoKtr", "Swiped Down");
-        }
-        *//**
-         * Swaps the X and Y coordinates of your touch event.
-         *//*
-
-
-    }*/
 
 
 
