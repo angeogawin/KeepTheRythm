@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -26,11 +27,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -44,6 +47,7 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.jetradarmobile.snowfall.SnowfallView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,6 +58,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+
+import jp.wasabeef.blurry.Blurry;
 
 public class InGameRec extends AppCompatActivity {//implements OnGesturePerformedListener{
     Intent i;
@@ -84,8 +90,8 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
     long timeOfDerniereAction;
     int score;
     //View v;
-    GestureOverlayView v;
-    private GestureDetector mDetector;
+   // GestureOverlayView v;
+    //private GestureDetector mDetector;
     TextView scoreT;
     int widthView;
     int heightView;
@@ -105,16 +111,38 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
     String coupleMvtTemps;
     ArrayList<String> nom_txt;
     ProgressDialog mProgressDialog;
-    GestureOverlayView vOverlay;
+   // GestureOverlayView vOverlay;
 
     private StorageReference mStorageRef;
+
+
+    Button tuile_1;
+    Button tuile_2;
+    Button tuile_3;
+    Button tuile_4;
+    Button tuile_5;
+    RelativeLayout zoneJeu;
+    int widthZoneJeu;
+    int heightZoneJeu;
+    Button go;
+
+    View barregauche;
+    View barreHorizontal1;
+    View barreHorizontal2;
+    View barreHorizontal3;
+    View barreHorizontal4;
+    SnowfallView snowfallView;
+    RelativeLayout viewbarre1;
+    RelativeLayout viewbarre2;
+
+    String filePath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_ecran_ingame);
+        setContentView(R.layout.activity_ecran_ingame1);
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
         i = getIntent();
@@ -194,31 +222,260 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
         listeUrl.add("firebase_Danosongs - Shine Gold Light - PIano Mix.mp3");
         listeUrl.add("firebase_Danosongs - Sky Seeds - Brit Pop Mix.mp3");
 
-        vOverlay = (GestureOverlayView) findViewById(R.id.gOverlay);
-        vOverlay.setVisibility(View.VISIBLE);
-        mDetector = new GestureDetector(this, new MyGestureListener());
+        //vOverlay = (GestureOverlayView) findViewById(R.id.gOverlay);
+        //vOverlay.setVisibility(View.VISIBLE);
+       // mDetector = new GestureDetector(this, new MyGestureListener());
 
 
         // Add a touch1 listener to the view
         // The touch1 listener passes all its events on to the gesture detector
 
-        vOverlay.setOnTouchListener(touchListener);
+       // vOverlay.setOnTouchListener(touchListener);
         //chargement musique
+
+
+
+        tuile_1=findViewById(R.id.tuile1);
+        tuile_2=findViewById(R.id.tuile2);
+        tuile_3=findViewById(R.id.tuile3);
+        tuile_4=findViewById(R.id.tuile4);
+        tuile_5=findViewById(R.id.tuile5);
+
+        zoneJeu = findViewById(R.id.zonejeu);
+
+        go = findViewById(R.id.go);
+        ViewTreeObserver vto = zoneJeu.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                //  zoneJeu.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                widthZoneJeu = zoneJeu.getMeasuredWidth();
+                heightZoneJeu = zoneJeu.getMeasuredHeight();
+
+
+            }
+        });
+        go.setVisibility(View.INVISIBLE);
+        go.setOnClickListener(new View.OnClickListener() {
+
+
+            public void onClick(View v) {
+                mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
+                mChronometer = new Chronometer(getApplicationContext());
+                mChronometer.setBase(SystemClock.elapsedRealtime());
+
+
+                mPlayer.start();
+                mChronometer.start();
+
+                go.setVisibility(View.INVISIBLE);
+                tuile_1.setWidth(20*widthZoneJeu/100);
+                tuile_2.setWidth(20*widthZoneJeu/100);
+                tuile_3.setWidth(20*widthZoneJeu/100);
+                tuile_4.setWidth(20*widthZoneJeu/100);
+                tuile_5.setWidth(20*widthZoneJeu/100);
+
+                RelativeLayout.LayoutParams paramsTuile1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams paramsTuile2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams paramsTuile3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams paramsTuile4 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams paramsTuile5 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                paramsTuile1.width = 20*widthZoneJeu/100;
+                paramsTuile2.width = 20*widthZoneJeu/100;
+                paramsTuile3.width = 20*widthZoneJeu/100;
+                paramsTuile4.width = 20*widthZoneJeu/100;
+                paramsTuile5.width = 20*widthZoneJeu/100;
+
+                paramsTuile2.addRule(RelativeLayout.RIGHT_OF, tuile_1.getId());
+                paramsTuile3.addRule(RelativeLayout.RIGHT_OF, tuile_2.getId());
+                paramsTuile4.addRule(RelativeLayout.RIGHT_OF, tuile_3.getId());
+                paramsTuile5.addRule(RelativeLayout.RIGHT_OF, tuile_4.getId());
+
+                //  tuile_1.setElevation(-2);
+                //tuile_2.setElevation(-2);
+                //tuile_3.setElevation(-2);
+                //tuile_4.setElevation(-2);
+                //tuile_5.setElevation(-2);
+
+
+                tuile_1.setLayoutParams(paramsTuile1);
+                tuile_2.setLayoutParams(paramsTuile2);
+                tuile_3.setLayoutParams(paramsTuile3);
+                tuile_4.setLayoutParams(paramsTuile4);
+                tuile_5.setLayoutParams(paramsTuile5);
+
+
+                tuile_1.setOnTouchListener(new View.OnTouchListener() {
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // TODO Auto-generated method stub
+                        // derniereAction.setVariable("b");
+                        if(event.getAction() == MotionEvent.ACTION_DOWN){
+                            timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
+                            coupleMvtTemps+="b:" + String.valueOf(timeOfDerniereAction)+";";
+                            // Do what you want
+                            tuile_1.setForeground(getDrawable(R.drawable.tuilepressed));
+                            return true;
+                        }
+                        else if(event.getAction() == MotionEvent.ACTION_UP) {
+                            tuile_1.setForeground(getDrawable(R.drawable.tuilenormale));
+                        }
+
+                        return false;
+                    }
+                });
+                tuile_2.setOnTouchListener(new View.OnTouchListener() {
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // TODO Auto-generated method stub
+                        //derniereAction.setVariable("g");
+                        if(event.getAction() == MotionEvent.ACTION_DOWN){
+                            timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
+                            coupleMvtTemps+="g:" + String.valueOf(timeOfDerniereAction)+";";
+                            tuile_2.setForeground(getDrawable(R.drawable.tuilepressed));
+                            // Do what you want
+                            return true;
+                        }
+                        else if(event.getAction() == MotionEvent.ACTION_UP) {
+                            tuile_2.setForeground(getDrawable(R.drawable.tuilenormale));
+                        }
+
+                        return false;
+                    }
+                });
+                tuile_3.setOnTouchListener(new View.OnTouchListener() {
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // TODO Auto-generated method stub
+                        // derniereAction.setVariable("tap");
+                        if(event.getAction() == MotionEvent.ACTION_DOWN){
+                            timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
+                            coupleMvtTemps+="tap:" + String.valueOf(timeOfDerniereAction)+";";
+                            tuile_3.setForeground(getDrawable(R.drawable.tuilepressed));
+                            // Do what you want
+                            return true;
+                        }
+                        else if(event.getAction() == MotionEvent.ACTION_UP) {
+                            tuile_3.setForeground(getDrawable(R.drawable.tuilenormale));
+                        }
+                        return false;
+                    }
+                });
+                tuile_4.setOnTouchListener(new View.OnTouchListener() {
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // TODO Auto-generated method stub
+                        // derniereAction.setVariable("d");
+                        if(event.getAction() == MotionEvent.ACTION_DOWN){
+                            timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
+                            coupleMvtTemps+="d:" + String.valueOf(timeOfDerniereAction)+";";
+                            tuile_4.setForeground(getDrawable(R.drawable.tuilepressed));
+                            // Do what you want
+                            return true;
+                        }
+                        else if(event.getAction() == MotionEvent.ACTION_UP) {
+                            tuile_4.setForeground(getDrawable(R.drawable.tuilenormale));
+                        }
+                        return false;
+                    }
+                });
+                tuile_5.setOnTouchListener(new View.OnTouchListener() {
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // TODO Auto-generated method stub
+                        // derniereAction.setVariable("h");
+                        if(event.getAction() == MotionEvent.ACTION_DOWN){
+                            timeOfDerniereAction = SystemClock.elapsedRealtime() - mChronometer.getBase();
+                            coupleMvtTemps+="h:" + String.valueOf(timeOfDerniereAction)+";";
+                            tuile_5.setForeground(getDrawable(R.drawable.tuilepressed));
+                            // Do what you want
+                            return true;
+                        }
+                        else if(event.getAction() == MotionEvent.ACTION_UP) {
+                            tuile_5.setForeground(getDrawable(R.drawable.tuilenormale));
+                        }
+                        return false;
+                    }
+                });
+
+                barregauche=findViewById(R.id.barrelimitegauche);
+                barreHorizontal1=findViewById(R.id.barreHorizontale1);
+                barreHorizontal2=findViewById(R.id.barreHorizontale2);
+                barreHorizontal3=findViewById(R.id.barreHorizontale3);
+                barreHorizontal4=findViewById(R.id.barreHorizontale4);
+                snowfallView=findViewById(R.id.snowfall_view);
+                viewbarre1=findViewById(R.id.viewBarre1);
+                viewbarre2=findViewById(R.id.viewBarre2);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)barregauche.getLayoutParams();
+                params.setMargins(0, 70*heightZoneJeu/100, 0, 0); //substitute parameters for left, top, right, bottom
+                RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams)viewbarre1.getLayoutParams();
+                params1.setMargins(20*widthZoneJeu/100, 0, 0, 0);
+                RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams)viewbarre2.getLayoutParams();
+                params2.setMargins(40*widthZoneJeu/100, 0, 0, 0);
+                RelativeLayout.LayoutParams params3 = (RelativeLayout.LayoutParams)barreHorizontal3.getLayoutParams();
+                params3.setMargins(60*widthZoneJeu/100, 0, 0, 0);
+                RelativeLayout.LayoutParams params4 = (RelativeLayout.LayoutParams)barreHorizontal4.getLayoutParams();
+                params4.setMargins(80*widthZoneJeu/100, 0, 0, 0);
+                barregauche.setLayoutParams(params);
+                viewbarre1.setLayoutParams(params1);
+                viewbarre2.setLayoutParams(params2);
+                barreHorizontal3.setLayoutParams(params3);
+                barregauche.getLayoutParams().height=10*heightZoneJeu/100;
+                barregauche.setVisibility(View.VISIBLE);
+                barreHorizontal1.setVisibility(View.VISIBLE);
+                barreHorizontal2.setVisibility(View.VISIBLE);
+                barreHorizontal3.setVisibility(View.VISIBLE);
+                barreHorizontal4.setVisibility(View.VISIBLE);
+
+                barreHorizontal1.setBackgroundColor(Color.WHITE);
+                barreHorizontal2.setBackgroundColor(Color.WHITE);
+                barreHorizontal3.setBackgroundColor(Color.WHITE);
+                barreHorizontal4.setBackgroundColor(Color.WHITE);
+
+                barreHorizontal1.setElevation(2);
+                barreHorizontal2.setElevation(2);
+                barreHorizontal3.setElevation(2);
+                barreHorizontal4.setElevation(2);
+
+
+
+                //     for(int i=0;i<10;i++){
+                Blurry.with(getApplicationContext())
+                        .radius(10)
+                        .sampling(8)
+                        .color(Color.argb(67, 255, 255, 255))
+                        .async()
+                        .animate(500)
+
+                        .onto(viewbarre1);
+                Blurry.with(getApplicationContext())
+                        .radius(25)
+                        .sampling(2)
+                        .color(Color.argb(67, 255, 255, 255))
+                        .async()
+                        .animate(500)
+                        .onto(viewbarre2);
+                                  }
+                              });
+
+
+
         File mFolder = new File(getFilesDir() + "/Music");
         extensionFichier=obtenirExtensionFichier(listeUrl,pos);
         File file = new File(mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier);
-        String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
+         filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
         if (file.exists()) {
             //on recupère le fichier depuis le repertoire
+            go.setVisibility(View.VISIBLE);
 
 
-            mPlayer = MediaPlayer.create(this, Uri.parse(filePath));
-            mChronometer = new Chronometer(this);
-            mChronometer.setBase(SystemClock.elapsedRealtime());
-
-
-            mPlayer.start();
-            mChronometer.start();
         } else {
             //on télécharge
 // instantiate it within the onCreate method
@@ -269,14 +526,8 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
                                 // Successfully downloaded data to local file
                                 // ...
                                 File mFolder = new File(getFilesDir() + "/Music");
-                                String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
-                                mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
-                                mChronometer = new Chronometer(getApplicationContext());
-                                mChronometer.setBase(SystemClock.elapsedRealtime());
-
-
-                                mPlayer.start();
-                                mChronometer.start();
+                                filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
+                                go.setVisibility(View.VISIBLE);
                                 mProgressDialog.dismiss();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -314,7 +565,7 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
             timeOfDerniereAction = 0;
             //symboleT = (RelativeLayout) findViewById(R.id.symbole);
             // symboleUtilisateur = (RelativeLayout) findViewById(R.id.symboleMis);
-            v = (GestureOverlayView) findViewById(R.id.gOverlay);
+         //   v = (GestureOverlayView) findViewById(R.id.gOverlay);
             scoreT = (TextView) findViewById(R.id.score);
             scoreT.setText(String.valueOf(score));
             elementActuelClickable = false;
@@ -337,19 +588,20 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
 //            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-            mDetector = new GestureDetector(this, new MyGestureListener());
+          //  mDetector = new GestureDetector(this, new MyGestureListener());
 
             // Add a touch1 listener to the view
             // The touch1 listener passes all its events on to the gesture detector
-            v.setOnTouchListener(touchListener);
-            v.post(new Runnable() {
+          //  v.setOnTouchListener(touchListener);
+           /* v.post(new Runnable() {
                 @Override
                 public void run() {
                     widthView = v.getWidth(); //height is ready
                 }
-            });
+            });*/
 
             //  lancerAnimation(sequence);
+
 
         }
     }
@@ -380,7 +632,7 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
     // This touch1 listener passes everything on to the gesture detector.
     // That saves us the trouble of interpreting the raw touch1 events
     // ourselves.
-    View.OnTouchListener touchListener = new View.OnTouchListener() {
+   /* View.OnTouchListener touchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             // pass the events to the gesture detector
@@ -392,7 +644,7 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
 
         }
     };
-
+*/
         private class DownloadTask extends AsyncTask<String, Integer, String> {
 
             private Context context;
@@ -520,14 +772,8 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
 
 
                     File mFolder = new File(getFilesDir() + "/Music");
-                    String filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
-                    mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
-                    mChronometer = new Chronometer(getApplicationContext());
-                    mChronometer.setBase(SystemClock.elapsedRealtime());
-
-
-                    mPlayer.start();
-                    mChronometer.start();
+                    filePath = mFolder.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
+                    go.setVisibility(View.VISIBLE);
 
                 }
             }
@@ -535,7 +781,7 @@ public class InGameRec extends AppCompatActivity {//implements OnGesturePerforme
 
     // In the SimpleOnGestureListener subclass you should override
 // onDown and any other gesture that you want to detect.
-    class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+   /* class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
         ImageView i = new ImageView(getApplicationContext());
 
         @Override
@@ -716,7 +962,7 @@ if (Math.abs(e2.getX() - e1.getX()) < Math.abs(e2.getY() - e1.getY())) {
             return true;
         }
     }
-
+*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
