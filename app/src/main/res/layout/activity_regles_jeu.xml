@@ -25,8 +25,8 @@
         android:textColor="@color/white"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="15dp"
-        android:textSize="15sp"
-        android:text="Le jeu consiste à effectuer des mouvements(Swipes) au rythme de la musique.Il existe divers types de mouvements réalisables:Swipe gauche,Swipe droit,Swipe haut,Swipe bas,Touche rapide"/>
+        android:textSize="17sp"
+        android:text="Le jeu consiste à appuyer sur l'une des 5 touches de l'interface lorsque les notes passent dans la zone grise. +2 points si l'appui se fait lorsque la note est encore dans la zone grise. +1 si l'appui se fait après, mais que la note est toujours visible à l'écran."/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,103 +38,16 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textSwipeGauche"
-        android:text="Swipe gauche"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:textSize="15sp"
-        android:textColor="@color/white"
-
-        />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/textSwipeGauche"
-            android:background="@drawable/fleche_gauche4_vert"
-            android:layout_marginLeft="15dp"/>
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textSwipeGauche"
-        android:text="Geste"
-        android:id="@+id/textGeste"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:textSize="15sp"
-        android:textColor="@color/white"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textGeste"
-            android:background="@drawable/swipegauche"
-            android:layout_marginLeft="10dp"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textSwipeHaut"
-            android:text="Swipe haut"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:textSize="15sp"
-            android:textColor="@color/white"
-
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/textSwipeHaut"
-            android:background="@drawable/fleche_haut4_vert"
-            android:layout_marginLeft="15dp"/>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textSwipeHaut"
-            android:text="Geste"
-            android:id="@+id/textGeste2"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:textSize="15sp"
-            android:textColor="@color/white"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textGeste2"
-            android:background="@drawable/swipehaut"
-            android:layout_marginLeft="10dp"/>
     </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="17sp"
-        android:text="Scores"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/orange"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:text="A chaque mouvement correctement effectué, on gagne un ou 2 points supplémentaires selon que le geste est effectué au dernier moment, où dès que le symbole passe dans la zone verte.Pour qu'un mouvement réalisé soit comptabilisé comme correct, il faut que le geste intervienne au moment où le marqueur est rouge.Pas avant.Il faut aussi que l'ordre des mouvements effectués soit correct."
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/white"/>
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/image_plusdeux"
+        android:src="@drawable/image_parfait"
         android:layout_marginTop="10dp"
         android:adjustViewBounds="true"
         android:cropToPadding="false"
@@ -142,7 +55,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/image_plusun"
+        android:src="@drawable/image_cool"
         android:layout_marginTop="10dp"
         android:adjustViewBounds="true"
         android:cropToPadding="false"

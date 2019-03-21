@@ -2484,7 +2484,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 }
             }
 
-            else if((float)animation.getAnimatedValue()>=0.60*zoneJeu.getHeight()){
+            else if((float)animation.getAnimatedValue()>=0.64*zoneJeu.getHeight()){
                 if(dejaActualise==false) {
 
                     if("tap".equals(typeAction)){

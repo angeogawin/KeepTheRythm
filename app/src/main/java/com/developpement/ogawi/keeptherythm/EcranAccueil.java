@@ -96,7 +96,7 @@ public class EcranAccueil extends BaseGameActivity {
     private AudioManager mgr;
     GestureOverlayView detecteurGeste;
     private GestureDetector mDetector;
-    final static int NIV_MAX_ATTEIGNABLE=16;
+    final static int NIV_MAX_ATTEIGNABLE=31;
 
 
     ImageView showachievement;
@@ -458,6 +458,7 @@ public class EcranAccueil extends BaseGameActivity {
                         .apply();
             }
         });
+        btnRec.setVisibility(View.INVISIBLE);
         btnRec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
