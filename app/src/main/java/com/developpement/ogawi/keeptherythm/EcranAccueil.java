@@ -401,7 +401,7 @@ public class EcranAccueil extends BaseGameActivity {
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
                     sendIntent.putExtra(Intent.EXTRA_TEXT,
-                            "https://play.google.com/store/apps/details?id=com.google.android.apps.plus");
+                            "http://play.google.com/store/apps/details?id=com.developpement.ogawi.keeptherythm");
                     sendIntent.setType("text/plain");
                     startActivity(sendIntent);
                 }

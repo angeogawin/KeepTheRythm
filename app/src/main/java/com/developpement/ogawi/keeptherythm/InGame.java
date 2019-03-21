@@ -1424,7 +1424,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
             } else {
                 //Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
-               // go.setVisibility(View.VISIBLE);
+                go.setVisibility(View.VISIBLE);
 
                 presenceMusic=true;
                 File mFolderMusic = new File(getFilesDir() + "/Music");

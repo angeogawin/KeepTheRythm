@@ -37,7 +37,8 @@
             <item>RotateDown</item>
             <item>Accordion</item>
         </string-array>
-    <string name="ad_id_interstitial">ca-app-pub-3940256099942544/1033173712</string>
+    <!--<string name="ad_id_interstitial">ca-app-pub-3940256099942544/1033173712</string>-->
+    <string name="ad_id_interstitial">ca-app-pub-5514654676308803/6145519063</string>
 
     <string name="app_id">348108240700</string>
     <string name="leaderboard_id">CgkIvO745pAKEAIQAQ</string>
