@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.gesture.GestureOverlayView;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -35,7 +36,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +66,7 @@ import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
 
 import com.google.android.gms.games.Games;
+import com.skyfishjy.library.RippleBackground;
 
 public class EcranAccueil extends BaseGameActivity {
     private static final int RC_LEADERBOARD_UI = 9004;
@@ -104,6 +108,8 @@ public class EcranAccueil extends BaseGameActivity {
     ImageView actionsettings;
     ImageView muteUnmute;
     Boolean mute;
+    ImageView vibrate;
+    Boolean vibrateState;
 
     GoogleSignInClient mGoogleSignInClient;
     static ArrayList<Integer> listeMusiqueAccueil;
@@ -132,6 +138,8 @@ public class EcranAccueil extends BaseGameActivity {
         showachievement=findViewById(R.id.show_achievements);
         actionsettings=findViewById(R.id.action_settings);
         muteUnmute = findViewById(R.id.mute_unmute);
+        vibrate=findViewById(R.id.vibrate_button);
+
         AppRater.app_launched(this);
 
         final TextView messageVerrou=findViewById(R.id.messageVerrouille);
@@ -157,6 +165,7 @@ public class EcranAccueil extends BaseGameActivity {
         num_musique = alea.nextInt(listeMusiqueAccueil.size()) ;
 
         mute=false;
+        vibrateState=false;
         if(sharedPreferences.contains("mute")){
             mute=sharedPreferences.getBoolean("mute",false);
 
@@ -166,6 +175,18 @@ public class EcranAccueil extends BaseGameActivity {
             sharedPreferences
                     .edit()
                     .putBoolean("mute",false)
+                    .apply();
+        }
+
+        if(sharedPreferences.contains("vibrate")){
+            vibrateState=sharedPreferences.getBoolean("vibrate",false);
+
+        }
+
+        else{
+            sharedPreferences
+                    .edit()
+                    .putBoolean("vibrate",false)
                     .apply();
         }
 
@@ -258,6 +279,21 @@ public class EcranAccueil extends BaseGameActivity {
             muteUnmute.setImageDrawable(getDrawable(R.drawable.unmuted2));
 
         }
+
+        if(vibrateState==true){
+            vibrate.setImageDrawable(getDrawable(R.drawable.vibratejaune));
+           //animation glow
+
+        }
+        else{
+            vibrate.setImageDrawable(getDrawable(R.drawable.vibratenoir));
+
+
+        //stop animation
+
+        }
+
+
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {}
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -458,6 +494,43 @@ public class EcranAccueil extends BaseGameActivity {
                         .apply();
             }
         });
+
+        vibrate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(vibrateState==false){
+                    //vibrate est actualisee a true
+                   //glow anim
+                    vibrateState=true;
+                    vibrate.setImageDrawable(getDrawable(R.drawable.vibratejaune));
+
+                    if(!sharedPreferences.contains("tutoaccueildejapresente")){
+
+                        showPopup(v);
+                        sharedPreferences
+                                .edit()
+                                .putBoolean("tutoaccueildejapresente",true)
+                                .apply();
+
+
+                    }
+
+
+
+                }
+                else{
+                   //stop glow anim
+                    vibrateState=false;
+                    vibrate.setImageDrawable(getDrawable(R.drawable.vibratenoir));
+                //    vibrate.backg
+
+                }
+                sharedPreferences
+                        .edit()
+                        .putBoolean("vibrate",vibrateState)
+                        .apply();
+            }
+        });
         btnRec.setVisibility(View.INVISIBLE);
         btnRec.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -562,6 +635,46 @@ public class EcranAccueil extends BaseGameActivity {
 
     }
 
+    public void showPopup(View anchorView) {
+
+        View popupView = getLayoutInflater().inflate(R.layout.popup_tutoaccueil, null);
+
+        PopupWindow popupWindow = new PopupWindow(popupView,
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+
+        // Initialize more widgets from `popup_layout.xml`
+
+        Button ok=popupView.findViewById(R.id.oktutoaccueil);
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+
+
+
+
+
+            }
+
+        });
+        // If the PopupWindow should be focusable
+        popupWindow.setFocusable(true);
+
+        // If you need the PopupWindow to dismiss when when touched outside
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+
+        int location[] = new int[2];
+
+        // Get the View's(the one that was clicked in the Fragment) location
+        anchorView.getLocationOnScreen(location);
+
+        // Using location, the PopupWindow will be displayed right under anchorView
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER,
+                0,0);
+
+    }
     public  MediaPlayer getInstanceMediaplayer(){
         if(playerAccueil==null){
             playerAccueil= MediaPlayer.create(getApplicationContext(), listeMusiqueAccueil.get(num_musique));

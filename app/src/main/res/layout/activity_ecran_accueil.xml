@@ -67,6 +67,19 @@
               />
 
             <ImageView
+                android:id="@+id/vibrate_button"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/mute_unmute"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="10dp"
+
+
+
+                />
+
+            <ImageView
                 android:id="@+id/show_achievements"
                 android:layout_width="wrap_content"
                 android:layout_toLeftOf="@id/show_leaderboard"

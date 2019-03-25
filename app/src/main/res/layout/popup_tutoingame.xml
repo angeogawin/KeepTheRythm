@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_centerInParent="true"
+    android:layout_height="wrap_content"
+    android:background="@drawable/fragment_accueil_shape">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/question"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:id="@+id/texttutoingame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:padding="20dp"
+        android:layout_centerInParent="true"
+
+        android:text="Le jeu consiste à appuyer sur l'une des 5 touches de l'interface lorsque les notes passent dans la zone grise. +2 points si l'appui se fait lorsque la note est encore dans la zone grise. +1 si l'appui se fait après, mais que la note est toujours visible à l'écran."/>
+
+    <Button
+        android:id="@+id/oktutoingame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ok"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/jouer_shape"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/texttutoingame"
+        />
+</RelativeLayout>
+

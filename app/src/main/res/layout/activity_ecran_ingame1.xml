@@ -19,101 +19,94 @@
 
 
         <!-- This LinearLayout will be displayed below the Toolbar and contain our "main" views -->
-
-
         <RelativeLayout
-            android:id="@+id/bandeaupourfleche"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:id="@+id/zoneScore"
 
-           >
-            <RelativeLayout
+            android:background="#6f6f6f">
+
+            <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:id="@+id/zoneScore"
-                android:background="#6f6f6f">
+                android:layout_height="wrap_content"
+                android:id="@+id/nextTrophy"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="5dp"
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/nextTrophy"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="5dp"
-
-                    android:layout_centerVertical="true"
+                android:layout_centerVertical="true"
 
 
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/nextPalierScore"
-                    android:textColor="@color/white"
-                    android:textSize="25sp"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/nextTrophy"
-                    android:layout_marginTop="5dp"/>
-                <TextView
-                    android:id="@+id/textBestScore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Meilleur score"
-                    android:layout_toLeftOf="@id/bestScoreIngame"
-                    android:textColor="@color/white"
-                    android:textSize="13sp"
-                    android:layout_alignBaseline="@id/score"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/nextPalierScore"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/nextTrophy"
+                android:layout_marginTop="5dp"/>
+            <TextView
+                android:id="@+id/textBestScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Meilleur score"
+                android:layout_toLeftOf="@id/bestScoreIngame"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:layout_alignBaseline="@id/score"
 
-                    android:layout_marginRight="5dp"/>
-                <TextView
-                    android:id="@+id/bestScoreIngame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:layout_toLeftOf="@id/textScore"
-                    android:textColor="@color/white"
-                    android:textSize="13sp"
-                    android:layout_alignBaseline="@id/score"
-                    android:layout_marginBottom="2dp"
+                android:layout_marginRight="5dp"/>
+            <TextView
+                android:id="@+id/bestScoreIngame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_toLeftOf="@id/textScore"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:layout_alignBaseline="@id/score"
+                android:layout_marginBottom="2dp"
 
-                    android:layout_marginRight="10dp"/>
-             <TextView
-                 android:id="@+id/textScore"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:text="Score"
-                 android:layout_toLeftOf="@id/score"
-                 android:textColor="@color/white"
-                 android:textSize="25sp"
-                 android:layout_centerVertical="true"
-                 android:layout_marginRight="5dp"/>
+                android:layout_marginRight="10dp"/>
+            <TextView
+                android:id="@+id/textScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Score"
+                android:layout_toLeftOf="@id/score"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"/>
 
-                <TextView
-                    android:id="@+id/score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="5dp"
-                    android:gravity="center"
-                    android:textSize="25sp"
-                    android:textColor="@color/vert"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:textColor="@color/vert"
 
 
-                    />
+                />
 
 
 
 
-            </RelativeLayout>
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="6dp"
+        </RelativeLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
 
-                android:background="@drawable/progress_bar_background"
-                android:layout_below="@id/zoneScore"
-                android:id="@+id/frameProgress"
-                >
+            android:background="@drawable/progress_bar_background"
+            android:layout_below="@id/zoneScore"
+            android:id="@+id/frameProgress"
+            >
             <ProgressBar
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="fill_parent"
@@ -125,7 +118,15 @@
                 android:progressDrawable="@drawable/curved_progress_bar"
                 android:max="100"
                 android:progress="0"/>
-            </FrameLayout>
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/bandeaupourfleche"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+           >
+
 
             <com.jetradarmobile.snowfall.SnowfallView
                 android:id="@+id/snowfall_view"
@@ -135,15 +136,17 @@
                 app:snowflakesNum="50"
                 android:elevation="2dp"/>
 
+
+
             <RelativeLayout
                 android:id="@+id/zonejeu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@id/gOverlay"
-                android:layout_below="@id/frameProgress"
+
                 android:background="@drawable/drawable_gradient_animation"
                 >
-
+                <!-- android:layout_below="@id/frameProgress"-->
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -152,7 +155,8 @@
                     android:textSize="13sp"
                     android:textColor="#a55fc1"
                     android:elevation="2dp"
-                    android:layout_marginTop="10dp"
+
+                    android:layout_marginTop="210dp"
                     android:layout_centerHorizontal="true"
                     android:text="Parfait!"
                     android:visibility="invisible"
@@ -276,6 +280,8 @@
 
 
         </RelativeLayout>
+
+
 
     </LinearLayout>
 
