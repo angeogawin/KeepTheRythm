@@ -255,8 +255,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     ArrayList<Integer> listeTapClickableLastChance;
     ArrayList<Integer> listeDroitClickableLastChance;
     ArrayList<Integer> listeHautClickableLastChance;
-
-
+    float speed = 1f;
 
 
     @Override
@@ -307,6 +306,10 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         i = getIntent();
         pos = i.getExtras().getInt("niveau");
         zoneJeu = findViewById(R.id.zonejeu);
+
+        if(i.getExtras().containsKey("vitesselecture")){
+            speed=i.getExtras().getFloat("vitesselecture");
+        }
         listeImagesAnimationsActives = new ArrayList<>();
         listeIndicesActuels=new ArrayList<>();
         listePerfect=new ArrayList<>();
@@ -670,6 +673,8 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                 j.putExtra("score", score);
                                 j.putExtra("nbTotalMvts", 2*couples.length);
                                 j.putExtra("manques", 2*couples.length - score);
+
+                                j.putExtra("vitesselecture",speed);
                                 mPlayer.reset();
                                 //  mPlayer.release();
 
@@ -816,6 +821,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             //on recupère le fichier depuis le repertoire
             presenceMusic=true;
             mPlayer = MediaPlayer.create(this, Uri.parse(filePath));
+
             go.setVisibility(View.VISIBLE);
             if(sharedPreferences.contains("mute")){
                 Boolean mute=sharedPreferences.getBoolean("mute",false);
@@ -888,6 +894,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                 File mFolderMusic = new File(getFilesDir() + "/Music");
                                 String filePath = mFolderMusic.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
                                 mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
+
                                 go.setVisibility(View.VISIBLE);
 
                                 mProgressDialog.dismiss();
@@ -947,6 +954,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
         //   Toast.makeText(InGame.this, getApplicationContext().getFilesDir().getAbsolutePath(), Toast.LENGTH_SHORT).show();
+
 
 
 
@@ -1378,6 +1386,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 File mFolderMusic = new File(getFilesDir() + "/Music");
                 String filePath = mFolderMusic.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
                 mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
+
                 go.setVisibility(View.VISIBLE);
                 if(sharedPreferences.contains("mute")){
                     Boolean mute=sharedPreferences.getBoolean("mute",false);
@@ -1587,7 +1596,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
         int heightZoneJeu = zoneJeu.getMeasuredHeight();
 
 
-        int tempsDemarrageMusique=(int)((0.7*5000)-Integer.valueOf(couples[0].split(":")[1]));
+        int tempsDemarrageMusique=(int)(((0.7*5000)-Integer.valueOf(couples[0].split(":")[1]))/speed);
 
 
         for (int j = 0; j < couples.length; j++) {
@@ -1669,12 +1678,13 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                             mChronometer.start();
                             //    mPlayer.setVolume(0.3f,0.3f);
 
-                            mPlayer.start();
+                           // mPlayer.start();
+                            mPlayer.setPlaybackParams(mPlayer.getPlaybackParams().setSpeed(speed));
                         }
                     }, tempsDemarrageMusique);
                 }
                 else{
-                    va.setStartDelay(Integer.valueOf(couples[j].split(":")[1])-Integer.valueOf(couples[0].split(":")[1]));
+                    va.setStartDelay((long)((Integer.valueOf(couples[j].split(":")[1])-Integer.valueOf(couples[0].split(":")[1]))/speed));
                 }
 
 
@@ -1694,13 +1704,14 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                             mChronometer.start();
                             //    mPlayer.setVolume(0.3f,0.3f);
 
-                            mPlayer.start();
+                           // mPlayer.start();
+                            mPlayer.setPlaybackParams(mPlayer.getPlaybackParams().setSpeed(speed));
                         }
                     }, 0);
                 }
 
                 else{
-                    va.setStartDelay(-tempsDemarrageMusique+(Integer.valueOf(couples[j].split(":")[1])-Integer.valueOf(couples[0].split(":")[1])));
+                    va.setStartDelay((long)((-tempsDemarrageMusique+(Integer.valueOf(couples[j].split(":")[1])-Integer.valueOf(couples[0].split(":")[1])))/speed));
                 }
 
             }
@@ -1971,7 +1982,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                     j.putExtra("score", score);
                                     j.putExtra("nbTotalMvts", 2*couples.length);
                                     j.putExtra("manques", 2*couples.length - score);
-
+                                    j.putExtra("vitesselecture",speed);
                                     //  mPlayer.stop();
                                     // mPlayer.reset();
                                     mPlayer.release();

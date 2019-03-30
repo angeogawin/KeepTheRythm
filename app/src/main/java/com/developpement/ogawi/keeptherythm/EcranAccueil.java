@@ -116,6 +116,8 @@ public class EcranAccueil extends BaseGameActivity {
     static MediaPlayer playerAccueil;
     ArrayList<String> nom_txt;
     static int num_musique;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,7 +216,7 @@ public class EcranAccueil extends BaseGameActivity {
         if(!sharedPreferences.contains("niveau_max_jouable")){
             sharedPreferences
                     .edit()
-                    .putInt("niveau_max_jouable",3)
+                    .putInt("niveau_max_jouable",5)
                     .apply();
         }
 
@@ -226,7 +228,7 @@ public class EcranAccueil extends BaseGameActivity {
 
                 sharedPreferences
                         .edit()
-                        .putInt("niveau_max_jouable",sharedPreferences.getInt("niveau_max_atteint",0)+2)
+                        .putInt("niveau_max_jouable",sharedPreferences.getInt("niveau_max_atteint",0)+5)
                         .apply();
             }
 
@@ -307,7 +309,7 @@ public class EcranAccueil extends BaseGameActivity {
                 i.putExtra("niveau",position+1);
                 j.putExtra("niveau",position+1);
                 sharedPreferences = getApplicationContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
-     /*           if(sharedPreferences.contains("niveau_max_jouable")) {
+                if(sharedPreferences.contains("niveau_max_jouable")) {
                     if (position + 1 > sharedPreferences.getInt("niveau_max_jouable", 0)) {
                         if (btnJouer.isClickable()) {
                             btnJouer.setClickable(false);
@@ -324,7 +326,7 @@ public class EcranAccueil extends BaseGameActivity {
                     }
 
 
-                }*/
+                }
 
 
                 playerAccueil=getInstanceMediaplayer();
@@ -918,7 +920,7 @@ public class EcranAccueil extends BaseGameActivity {
 
         String[] couples;
 
-
+        ImageView star;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -927,6 +929,7 @@ public class EcranAccueil extends BaseGameActivity {
             final Bundle bundle = getArguments();
             final int position = bundle.getInt("position");
            TextView numeroNiveau=swipeView.findViewById(R.id.numeroNiveau);
+           star=swipeView.findViewById(R.id.etoile);
             Flubber.with()
                     .animation(Flubber.AnimationPreset.MORPH) // Slide up animation
 
@@ -1111,6 +1114,9 @@ public class EcranAccueil extends BaseGameActivity {
                 scoreBr.setText(String.valueOf(sBr));
             }
             sharedPreferences = getActivity().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
+            if(sharedPreferences.contains("etoile"+String.valueOf(position+1))){
+                star.setVisibility(View.VISIBLE);
+            }
             if(sharedPreferences.contains("trophy_niveau"+String.valueOf(position+1))){
                 ImageView trophee;
                 trophee=swipeView.findViewById(R.id.trophy);

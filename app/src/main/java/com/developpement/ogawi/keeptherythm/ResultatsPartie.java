@@ -55,23 +55,27 @@ public class ResultatsPartie  extends BaseGameActivity {
     SharedPreferences sharedPreferences;
     MediaPlayer playerResults;
     int media_length;
+    GamesClient gamesClient;
+    Float vitesseLecture;
 
+    ImageView star;
 
     private InterstitialAd mInterstitialAd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-
+        vitesseLecture=0.f;
 
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.fragment_resultats_partie);
         GoogleSignInAccount googleAccount=GoogleSignIn.getLastSignedInAccount(this);
         if(googleAccount!=null){
-            GamesClient gamesClient = Games.getGamesClient(ResultatsPartie.this, GoogleSignIn.getLastSignedInAccount(this));
-            gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
+             gamesClient = Games.getGamesClient(ResultatsPartie.this, GoogleSignIn.getLastSignedInAccount(this));
+            gamesClient.setViewForPopups(findViewById(R.id.content));
 
         }
+        star=findViewById(R.id.etoile);
         sharedPreferences = getBaseContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
 
         playerResults= MediaPlayer.create(this, R.raw.airtone_nightrain);
@@ -131,10 +135,31 @@ public class ResultatsPartie  extends BaseGameActivity {
                 .putInt("dernier_niveau_joue",niveau)
                 .apply();
 
-
+       if(i.getExtras().containsKey("vitesselecture")){
+           if(i.getExtras().getFloat("vitesselecture")==1.2f){
+               rejouer.setText("Vitesse rapide");
+               vitesseLecture=1.2f;
+           }
+       }
 
 
         if(score>=sBr){
+            if(vitesseLecture==1.2f){
+                //etoile debloquee
+               star.setVisibility(View.VISIBLE);
+                Flubber.with()
+                        .animation(Flubber.AnimationPreset.ZOOM_IN) // Slide up animation
+                        .repeatCount(0)                              // Repeat once
+                        .duration(1000)                              // Last for 1000 milliseconds(1 second)
+                        .createFor(star)                             // Apply it to the view
+                        .start();
+
+                sharedPreferences
+                        .edit()
+                        .putString("etoile"+String.valueOf(niveau),"yes")
+                        .apply();
+            }
+            rejouer.setText("Vitesse rapide");
             //on actualise le niveau maximum atteint
             if(sharedPreferences.contains("niveau_max_atteint")){
                 if(niveau>sharedPreferences.getInt("niveau_max_atteint",0)) {
@@ -339,6 +364,7 @@ public class ResultatsPartie  extends BaseGameActivity {
                 } else if (sharedPreferences.getInt("scorexp", 0) >= 6000) {
                     //verifier que achievement non debloques
 
+
                     Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this)).unlock(
                             getString(R.string.obtenir_6000XP));
 
@@ -447,6 +473,13 @@ public class ResultatsPartie  extends BaseGameActivity {
 
                 Intent i=new Intent(getApplicationContext(),InGame.class);
                i.putExtra("niveau",niveau);
+               if(score>=sBr || vitesseLecture==1.2f ){
+                   i.putExtra("vitesselecture",1.2f);
+               }
+               else{
+                   i.putExtra("vitesselecture",1.0f);
+               }
+
                startActivity(i);
                finish();
 
