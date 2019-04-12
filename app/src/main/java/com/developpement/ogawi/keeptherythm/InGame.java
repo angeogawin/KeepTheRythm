@@ -1168,9 +1168,12 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
     @Override
     protected void onResume() {
         super.onResume();
-        if (animationEstLancee) {
+        if (animationEstLancee ) {
             mPlayer.seekTo(media_length);
             mPlayer.start();
+
+
+
         }
     }
 

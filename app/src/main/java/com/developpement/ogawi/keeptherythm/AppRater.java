@@ -17,7 +17,7 @@ public class AppRater {
     private final static String APP_TITLE = "Keep The Rythm";// App Name
     private final static String APP_PNAME = "com.developpement.ogawi.keeptherythm";// Package Name
 
-    private final static int DAYS_UNTIL_PROMPT = 3;//Min number of days
+    private final static int DAYS_UNTIL_PROMPT = 1;//Min number of days
     private final static int LAUNCHES_UNTIL_PROMPT = 4;//Min number of launches
 
     public static void app_launched(Context mContext) {

@@ -16,13 +16,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.appolica.flubber.Flubber;
 import com.developpement.ogawi.keeptherythm.bdd.Score;
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
 import com.developpement.ogawi.keeptherythm.google.example.games.basegameutils.BaseGameActivity;
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.Games;
@@ -61,6 +64,7 @@ public class ResultatsPartie  extends BaseGameActivity {
     ImageView star;
 
     private InterstitialAd mInterstitialAd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -69,12 +73,16 @@ public class ResultatsPartie  extends BaseGameActivity {
 
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.fragment_resultats_partie);
+
+
+
         GoogleSignInAccount googleAccount=GoogleSignIn.getLastSignedInAccount(this);
         if(googleAccount!=null){
              gamesClient = Games.getGamesClient(ResultatsPartie.this, GoogleSignIn.getLastSignedInAccount(this));
-            gamesClient.setViewForPopups(findViewById(R.id.content));
+            gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
 
         }
+
         star=findViewById(R.id.etoile);
         sharedPreferences = getBaseContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
 
@@ -237,6 +245,7 @@ public class ResultatsPartie  extends BaseGameActivity {
 
                     //Reussite 100% niveau
                     if(googleAccount!=null) {
+
                         Games.getAchievementsClient(this, googleAccount).unlock(
                                 getString(R.string.obtenir_100pourcent));
                     }
@@ -551,6 +560,7 @@ public class ResultatsPartie  extends BaseGameActivity {
     }
 
     private InterstitialAd createNewIntAd() {
+       // MobileAds.initialize(this,);
         InterstitialAd intAd = new InterstitialAd(this);
         // set the adUnitId (defined in values/strings.xml)
         intAd.setAdUnitId(getString(R.string.ad_id_interstitial));
@@ -577,7 +587,7 @@ public class ResultatsPartie  extends BaseGameActivity {
     private void showIntAdd() {
 
 // Show the ad if it's ready. Otherwise, toast and reload the ad.
-        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
+        if ( mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
         } else {
             quitterPub();
@@ -586,9 +596,14 @@ public class ResultatsPartie  extends BaseGameActivity {
     private void loadIntAdd() {
         // Disable the  level two button and load the ad.
         accepter.setEnabled(false);
+        Bundle extras = new Bundle();
+        extras.putString("max_ad_content_rating", "G");
         AdRequest adRequest = new AdRequest.Builder()
-              //  .addTestDevice("29B51012AB141B85B95D278930B1EAAB")
+                .addNetworkExtrasBundle(AdMobAdapter.class, extras)
+             // .addTestDevice("29B51012AB141B85B95D278930B1EAAB")
                 .build();
+
+
         mInterstitialAd.loadAd(adRequest);
     }
 

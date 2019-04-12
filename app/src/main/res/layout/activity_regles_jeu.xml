@@ -47,7 +47,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/image_parfait"
+        android:src="@drawable/image_parfait_google"
         android:layout_marginTop="10dp"
         android:adjustViewBounds="true"
         android:cropToPadding="false"
@@ -55,7 +55,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/image_cool"
+        android:src="@drawable/image_cool_google"
         android:layout_marginTop="10dp"
         android:adjustViewBounds="true"
         android:cropToPadding="false"

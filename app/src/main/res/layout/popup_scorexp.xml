@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:htext="http://schemas.android.com/tools"
+    android:layout_centerInParent="true"
+    android:layout_height="wrap_content"
+
+    android:background="@drawable/fragment_accueil_shape">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/xp_jaune"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:id="@+id/textscorexp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:paddingLeft="20dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+
+        android:layout_marginTop="50dp"
+        android:layout_alignParentLeft="true"
+
+        android:text="Score Xp : "/>
+    <TextView
+        android:id="@+id/valeurscorexp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_toRightOf="@id/textscorexp"
+        android:text=""/>
+    <TextView
+        android:id="@+id/textdernierPalierAtteint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:paddingLeft="20dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/textscorexp"
+        android:text="Dernier palier : "/>
+    <TextView
+        android:id="@+id/valeurdernierPalieratteint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:textSize="15sp"
+        android:textColor="@color/vert"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignBottom="@id/textdernierPalierAtteint"
+        android:layout_below="@id/valeurscorexp"
+        android:layout_toRightOf="@id/textdernierPalierAtteint"
+
+        android:text=""/>
+    <TextView
+        android:id="@+id/textProchainPalier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:paddingLeft="20dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/textdernierPalierAtteint"
+        android:text="Prochain palier : "/>
+    <TextView
+        android:id="@+id/valeurProchainPalier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:textSize="15sp"
+        android:textColor="@color/colorRed_A400"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignBottom="@id/textProchainPalier"
+        android:layout_below="@id/valeurdernierPalieratteint"
+        android:layout_toRightOf="@id/textProchainPalier"
+
+        android:text=""/>
+    <Button
+        android:id="@+id/okscorexp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ok"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/jouer_shape"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/textProchainPalier"
+        />
+</RelativeLayout>
+

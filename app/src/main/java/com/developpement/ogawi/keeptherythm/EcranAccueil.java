@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.gesture.GestureOverlayView;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
@@ -21,6 +22,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -39,11 +41,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appolica.flubber.Flubber;
+import com.crashlytics.android.Crashlytics;
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
 import com.developpement.ogawi.keeptherythm.google.example.games.basegameutils.BaseGameActivity;
 import com.github.lzyzsd.circleprogress.DonutProgress;
@@ -55,6 +59,8 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import com.plattysoft.leonids.ParticleSystem;
 
 import java.io.File;
@@ -109,6 +115,7 @@ public class EcranAccueil extends BaseGameActivity {
     ImageView muteUnmute;
     Boolean mute;
     ImageView vibrate;
+    ImageView xpImg;
     Boolean vibrateState;
 
     GoogleSignInClient mGoogleSignInClient;
@@ -117,6 +124,7 @@ public class EcranAccueil extends BaseGameActivity {
     ArrayList<String> nom_txt;
     static int num_musique;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +134,9 @@ public class EcranAccueil extends BaseGameActivity {
        // requestWindowFeature(Window.FEATURE_NO_TITLE);
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_ecran_accueil);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
 
 
         // Configure sign-in to request the user's ID, email address, and basic
@@ -141,6 +152,7 @@ public class EcranAccueil extends BaseGameActivity {
         actionsettings=findViewById(R.id.action_settings);
         muteUnmute = findViewById(R.id.mute_unmute);
         vibrate=findViewById(R.id.vibrate_button);
+        xpImg=findViewById(R.id.xp);
 
         AppRater.app_launched(this);
 
@@ -308,6 +320,7 @@ public class EcranAccueil extends BaseGameActivity {
 
                 i.putExtra("niveau",position+1);
                 j.putExtra("niveau",position+1);
+
                 sharedPreferences = getApplicationContext().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
                 if(sharedPreferences.contains("niveau_max_jouable")) {
                     if (position + 1 > sharedPreferences.getInt("niveau_max_jouable", 0)) {
@@ -451,6 +464,10 @@ public class EcranAccueil extends BaseGameActivity {
                     Intent e=new Intent(EcranAccueil.this,APropos.class);
                     startActivity(e);
                 }
+                else if(position==5){
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://sites.google.com/view/politiquedeconfidentialitektr/accueil")));
+
+                }
                 mDrawer.closeDrawer(GravityCompat.START);
             }
         });
@@ -533,15 +550,19 @@ public class EcranAccueil extends BaseGameActivity {
                         .apply();
             }
         });
+        xpImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showScoreXp(v);
+            }
+        });
+
         btnRec.setVisibility(View.INVISIBLE);
         btnRec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playerAccueil.stop();
 
-
-                startActivity(j);
-                finish();
 
             }
         });
@@ -658,6 +679,100 @@ public class EcranAccueil extends BaseGameActivity {
 
 
 
+            }
+
+        });
+        // If the PopupWindow should be focusable
+        popupWindow.setFocusable(true);
+
+        // If you need the PopupWindow to dismiss when when touched outside
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+
+        int location[] = new int[2];
+
+        // Get the View's(the one that was clicked in the Fragment) location
+        anchorView.getLocationOnScreen(location);
+
+        // Using location, the PopupWindow will be displayed right under anchorView
+        popupWindow.showAtLocation(anchorView, Gravity.CENTER,
+                0,0);
+
+    }
+
+    public void showScoreXp(View anchorView) {
+
+
+        View popupView = getLayoutInflater().inflate(R.layout.popup_scorexp, null);
+
+        PopupWindow popupWindow = new PopupWindow(popupView,LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT );
+
+
+        // Initialize more widgets from `popup_layout.xml`
+        TextView scoreXp=popupView.findViewById(R.id.valeurscorexp);
+
+        TextView dernierPalier=popupView.findViewById(R.id.valeurdernierPalieratteint);
+        TextView prochainPalier=popupView.findViewById(R.id.valeurProchainPalier);
+        if(sharedPreferences.contains("scorexp")) {
+
+
+            long scorexp=sharedPreferences.getInt("scorexp", 0);
+            scoreXp.setText(String.valueOf(scorexp));
+            if (scorexp>= 50000) {
+                //verifier que achievement non debloques
+                dernierPalier.setText("50 000 xp");
+                prochainPalier.setText("Tu fais partie des vétérans, quelle classe !!!");
+            }
+            else if(scorexp>=20000){
+                dernierPalier.setText("20 000 xp");
+                prochainPalier.setText("50 000 xp - dernier palier");
+            }
+            else if(scorexp>=10000){
+                dernierPalier.setText("10 000 xp");
+                prochainPalier.setText("20 000 xp - avant dernier palier");
+            }
+            else if(scorexp>=6000){
+                dernierPalier.setText("6 000 xp - tu en as de l'expérience!");
+                prochainPalier.setText("10 000 xp");
+            }
+            else if(scorexp>=4000){
+                dernierPalier.setText("4 000 xp");
+                prochainPalier.setText("6 000 xp");
+            }
+            else if(scorexp>=2000){
+                dernierPalier.setText("2 000 xp");
+                prochainPalier.setText("4 000 xp");
+            }
+            else if(scorexp>=1000){
+                dernierPalier.setText("1 000 xp - 1er palier ");
+                prochainPalier.setText("2 000 xp");
+            }
+            else{
+
+                dernierPalier.setText("Aucun ");
+                prochainPalier.setText("1 000 xp");
+            }
+        }
+        else{
+            scoreXp.setText("0 - Aucune partie terminée");
+            dernierPalier.setText("Aucun ");
+            prochainPalier.setText("1 000 xp");
+        }
+        Flubber.with()
+                .animation(Flubber.AnimationPreset.SLIDE_RIGHT) // Slide up animation
+
+                .repeatCount(0)                              // Repeat once
+                .duration(1000)                              // Last for 1000 milliseconds(1 second)
+                .createFor(scoreXp)                             // Apply it to the view
+                .start();
+        Button ok=popupView.findViewById(R.id.okscorexp);
+
+
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                
             }
 
         });
@@ -828,12 +943,15 @@ public class EcranAccueil extends BaseGameActivity {
     public int obtenirAvancement(){
         int retour=0;
 
-        sharedPreferences = getApplication().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
-        for(int i=0;i<NUM_ITEMS;i++){
-            if(sharedPreferences.contains("trophy_niveau"+String.valueOf(i+1))){
-                retour++;
+
+            sharedPreferences = getApplication().getSharedPreferences("prefs_joueur", MODE_PRIVATE);
+            for(int i=0;i<NUM_ITEMS;i++){
+                if(sharedPreferences.contains("trophy_niveau"+String.valueOf(i+1))){
+                    retour++;
+                }
             }
-        }
+
+
 
         return retour;
 
