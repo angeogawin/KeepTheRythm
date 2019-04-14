@@ -50,6 +50,7 @@ import com.appolica.flubber.Flubber;
 import com.crashlytics.android.Crashlytics;
 import com.developpement.ogawi.keeptherythm.bdd.ScoreDAO;
 import com.developpement.ogawi.keeptherythm.google.example.games.basegameutils.BaseGameActivity;
+import com.developpement.ogawi.keeptherythm.payment.MainActivityPayment;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -395,15 +396,16 @@ public class EcranAccueil extends BaseGameActivity {
 
                     playerAccueil = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
 
-                }
-                playerAccueil.setLooping(true);
-                playerAccueil.start();
+                    playerAccueil.setLooping(true);
+                    playerAccueil.start();
 
-                if(mute==true){
-                    playerAccueil.setVolume(0,0);
-                    muteUnmute.setImageDrawable(getDrawable(R.drawable.mute2));
+                    if(mute==true){
+                        playerAccueil.setVolume(0,0);
+                        muteUnmute.setImageDrawable(getDrawable(R.drawable.mute2));
 
+                    }
                 }
+
 
             }
         });
@@ -444,7 +446,11 @@ public class EcranAccueil extends BaseGameActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             //    messageTextView.setText("Menu Item at position " + position + " clicked.");;
-                if(position==1){
+                if(position==0){
+                    Intent k=new Intent(getApplicationContext(), MainActivityPayment.class);
+                    startActivity(k);
+                }
+                else if(position==1){
                     Intent e=new Intent(EcranAccueil.this,ReglesJeu.class);
                     startActivity(e);
                 }
@@ -772,7 +778,7 @@ public class EcranAccueil extends BaseGameActivity {
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
-                
+
             }
 
         });

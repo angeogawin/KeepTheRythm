@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#6f6f6f"
+    tools:context="com.developpement.ogawi.keeptherythm.payment.MainActivityPayment">
+
+
+
+
+
+    <TextView
+        android:text="Total  = 0€ "
+        android:id="@+id/response"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/montantdon"
+            android:hint="@string/mainactivitypaymenttext1"
+            android:inputType="numberDecimal"/>
+
+
+    <Button
+
+        android:onClick="pay"
+        android:background="@color/cyan"
+        android:textSize="20sp"
+        android:textColor="#FFF"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/mainactivitypaymenttext2"
+        android:textAllCaps="false"/>
+    <TextView
+        android:text="@string/mainactivitypaymenttext3"
+        android:paddingLeft="15dp"
+        android:paddingTop="15dp"
+        android:textSize="17sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gif"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/thankyoucat"
+
+        />
+</LinearLayout>

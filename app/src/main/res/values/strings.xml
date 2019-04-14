@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">KeepTheRhythm</string>
+
     <string-array name="menusettings">
-        <item>Supprimer les pubs</item>
+        <item>Faire un don</item>
         <item>Règles du jeu</item>
         <item>Partager l\'app</item>
         <item>Noter l\'app</item>
@@ -67,4 +68,9 @@
    <string name="obtenir_50000XP">CgkIvO745pAKEAIQEA</string>
    <string name="terminer_tout">CgkIvO745pAKEAIQDg</string>
 
+
+    <string name="mainactivitypaymentTitre">Faire un don</string>
+    <string name="mainactivitypaymenttext1">Montant en euros</string>
+    <string name="mainactivitypaymenttext2">Valider le montant</string>
+    <string name="mainactivitypaymenttext3">En faisant un don , vous soutenez mon travail de développeur indépendant.Merci à vous.</string>
 </resources>

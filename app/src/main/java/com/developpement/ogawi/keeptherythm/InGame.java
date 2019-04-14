@@ -662,31 +662,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
 
-                mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    public void onCompletion(MediaPlayer mp) {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            public void run() {
-                                // Actions to do after 10 seconds
-                                Intent j = new Intent(getApplicationContext(), ResultatsPartie.class);
-                                j.putExtra("niveau", pos);
-                                j.putExtra("score", score);
-                                j.putExtra("nbTotalMvts", 2*couples.length);
-                                j.putExtra("manques", 2*couples.length - score);
 
-                                j.putExtra("vitesselecture",speed);
-                                mPlayer.reset();
-                                //  mPlayer.release();
-
-                                startActivity(j);
-                                finish();
-                                toast.cancel();
-                                return;
-                            }
-                        }, 1000);
-
-                    }
-                });
 
                // lancerAnimation(sequence);
 
@@ -821,7 +797,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
             //on recupère le fichier depuis le repertoire
             presenceMusic=true;
             mPlayer = MediaPlayer.create(this, Uri.parse(filePath));
-
+            definirMediaPlayerOnCompletionLister();
             go.setVisibility(View.VISIBLE);
             if(sharedPreferences.contains("mute")){
                 Boolean mute=sharedPreferences.getBoolean("mute",false);
@@ -894,7 +870,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                                 File mFolderMusic = new File(getFilesDir() + "/Music");
                                 String filePath = mFolderMusic.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
                                 mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
-
+                                definirMediaPlayerOnCompletionLister();
                                 go.setVisibility(View.VISIBLE);
 
                                 mProgressDialog.dismiss();
@@ -1009,6 +985,36 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
 
 
 
+    }
+
+    public void definirMediaPlayerOnCompletionLister(){
+        //permet de lancer l'activité résultats partie a la fin de la musique
+
+        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mp) {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        // Actions to do after 10 seconds
+                        Intent j = new Intent(getApplicationContext(), ResultatsPartie.class);
+                        j.putExtra("niveau", pos);
+                        j.putExtra("score", score);
+                        j.putExtra("nbTotalMvts", 2*couples.length);
+                        j.putExtra("manques", 2*couples.length - score);
+
+                        j.putExtra("vitesselecture",speed);
+                        mPlayer.reset();
+                        //  mPlayer.release();
+
+                        startActivity(j);
+                        finish();
+                        toast.cancel();
+                        return;
+                    }
+                }, 1000);
+
+            }
+        });
     }
 
     public void showPopup(View anchorView) {
@@ -1187,6 +1193,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 //erreur ici sur LA CONdition isPlaying
                 if (mPlayer.isPlaying()) {
                     mPlayer.pause();
+
                     media_length = mPlayer.getCurrentPosition();
                 }
 
@@ -1210,8 +1217,12 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 handler_stopperPartie_vieTerminee.removeCallbacks(stopperPartie_vieTerminee);
             }
             aQuitteJeu=true;
-            mPlayer.stop();
-            mPlayer.release();
+
+            if(mPlayer!=null){
+                mPlayer.stop();
+                mPlayer.release();
+            }
+
 
             Intent i = new Intent(this, EcranAccueil.class);
             startActivity(i);
@@ -1389,7 +1400,7 @@ public class InGame extends AppCompatActivity {//  implements OnGesturePerformed
                 File mFolderMusic = new File(getFilesDir() + "/Music");
                 String filePath = mFolderMusic.getAbsolutePath() + "/" + nom_txt.get(pos - 1) + extensionFichier;
                 mPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(filePath));
-
+                definirMediaPlayerOnCompletionLister();
                 go.setVisibility(View.VISIBLE);
                 if(sharedPreferences.contains("mute")){
                     Boolean mute=sharedPreferences.getBoolean("mute",false);
